@@ -29,15 +29,6 @@ function NavLinks() {
   return (
     <nav className="ml-auto text-sm font-medium flex items-center space-x-2">
       <Link
-        href="/"
-        className="p-2 rounded-lg text-gray-600 dark:text-gray-400
-                   hover:bg-purple-50 dark:hover:bg-purple-900/10
-                   hover:text-purple-700 dark:hover:text-purple-300
-                   transition-colors duration-200"
-      >
-        Home
-      </Link>
-      <Link
         href="/about"
         className="p-2 rounded-lg text-gray-600 dark:text-gray-400
                    hover:bg-purple-50 dark:hover:bg-purple-900/10
@@ -107,11 +98,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <div className="max-w-4xl mx-auto py-10 px-4">
             <div className="rounded-lg bg-white dark:bg-slate-950 shadow-sm">
               <div className="p-8">
-                <header>
+                <header className="pb-2 border-b border-gray-200 dark:border-gray-800">
                   <div className="flex items-center justify-between">
-                    <div className="font-mono text-2xl font-bold tracking-tight transition-colors duration-200">
-                      PC&gt;<span className="animate-[blink_1s_steps(1)_infinite]">_</span>
-                    </div>
+                    <Link
+                      href="/"
+                      className="font-mono text-2xl font-bold tracking-tight text-gray-600 dark:text-gray-400
+                 hover:bg-purple-50 dark:hover:bg-purple-900/10
+                 hover:text-purple-700 dark:hover:text-purple-300
+                 transition-colors duration-200
+                 p-2 rounded-lg"
+                    >
+                      PC{">"}<span className="animate-cursor-blink">_</span>
+                    </Link>
                     <NavLinks />
                     <div className="mx-4 w-px h-6 bg-gray-200 dark:bg-gray-700" />
                     <SocialLinks />
