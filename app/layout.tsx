@@ -1,6 +1,6 @@
 import Link from "next/link"
 import "./globals.css"
-import { Inter } from "next/font/google"
+import { Inter, JetBrains_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@/components/analytics"
 import { ModeToggle } from "@/components/mode-toggle"
@@ -10,6 +10,11 @@ import {
 } from "simple-icons";
 
 const inter = Inter({ subsets: ["latin"] })
+
+const jetbrainsMono = JetBrains_Mono({ 
+  subsets: ['latin'],
+  variable: '--font-mono'  // This lets you reference it in Tailwind
+})
 
 export const metadata = {
   title: "Phillip Carter",
@@ -96,7 +101,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body
-        className={`antialiased min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 ${inter.className}`}
+        className={`antialiased min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 ${inter.className} ${jetbrainsMono.variable}`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="max-w-3xl mx-auto py-10 px-4">
