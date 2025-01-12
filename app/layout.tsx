@@ -11,9 +11,9 @@ import {
 
 const inter = Inter({ subsets: ["latin"] })
 
-const jetbrainsMono = JetBrains_Mono({ 
+const codeFont = JetBrains_Mono({ 
   subsets: ['latin'],
-  variable: '--font-mono'  // This lets you reference it in Tailwind
+  variable: '--font-mono'
 })
 
 export const metadata = {
@@ -101,20 +101,24 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body
-        className={`antialiased min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 ${inter.className} ${jetbrainsMono.variable}`}
+        className={`antialiased min-h-screen bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-50 ${inter.className} ${codeFont.variable}`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="max-w-3xl mx-auto py-10 px-4">
-            <header>
-              <div className="flex items-center justify-between">
-                <NavLinks />
-                <div className="mx-4 w-px h-6 bg-gray-200 dark:bg-gray-700" />
-                <SocialLinks />
-                <div className="mx-4 w-px h-6 bg-gray-200 dark:bg-gray-700" />
-                <ModeToggle />
+          <div className="max-w-4xl mx-auto py-10 px-4">
+            <div className="rounded-lg bg-white dark:bg-slate-950 shadow-sm">
+              <div className="p-8">
+                <header>
+                  <div className="flex items-center justify-between">
+                    <NavLinks />
+                    <div className="mx-4 w-px h-6 bg-gray-200 dark:bg-gray-700" />
+                    <SocialLinks />
+                    <div className="mx-4 w-px h-6 bg-gray-200 dark:bg-gray-700" />
+                    <ModeToggle />
+                  </div>
+                </header>
+                <main className="mt-8">{children}</main>
               </div>
-            </header>
-            <main>{children}</main>
+            </div>
           </div>
           <Analytics />
         </ThemeProvider>
