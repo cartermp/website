@@ -3,6 +3,7 @@ import { allPosts } from "contentlayer/generated"
 
 import { Metadata } from "next"
 import { Mdx } from "@/components/mdx-components"
+import Link from "next/link"
 
 interface PostProps {
   params: {
@@ -59,6 +60,22 @@ export default async function PostPage({ params }: PostProps) {
       )}
       <hr className="my-4" />
       <Mdx code={post.body.code} />
+
+      <footer className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between">
+          <Link
+            href="/"
+            className="text-base text-gray-600 dark:text-gray-400
+                     hover:text-purple-700 dark:hover:text-purple-300
+                     transition-colors"
+          >
+            ← Home
+          </Link>
+          <time className="text-base text-gray-500 dark:text-gray-400">
+            {new Date(post.date).toLocaleDateString()}
+          </time>
+        </div>
+      </footer>
     </article>
   )
 }
