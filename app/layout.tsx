@@ -11,7 +11,7 @@ import {
 
 const inter = Inter({ subsets: ["latin"] })
 
-const codeFont = JetBrains_Mono({ 
+const codeFont = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono'
 })
@@ -109,6 +109,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
               <div className="p-8">
                 <header>
                   <div className="flex items-center justify-between">
+                    <div className="font-mono text-2xl font-bold tracking-tight transition-colors duration-200">
+                      PC&gt;<span className="animate-[blink_1s_steps(1)_infinite]">_</span>
+                    </div>
                     <NavLinks />
                     <div className="mx-4 w-px h-6 bg-gray-200 dark:bg-gray-700" />
                     <SocialLinks />
