@@ -11,6 +11,21 @@ interface PostProps {
   }
 }
 
+function getReadingTime(text: string): string {
+  const WORDS_PER_MINUTE = 225;
+  const wordCount = text.trim().split(/\s+/).length;
+  const minutes = Math.ceil(wordCount / WORDS_PER_MINUTE);
+  return `${minutes} min read`;
+}
+
+function formatDate(date: string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 async function getPostFromParams(params: PostProps["params"]) {
   const slug = params?.slug?.join("/")
   const post = allPosts.find((post) => post.slugAsParams === slug)
@@ -50,6 +65,9 @@ export default async function PostPage({ params }: PostProps) {
     notFound()
   }
 
+  const date = formatDate(post.date)
+  const readingTime = getReadingTime(post.body.code)
+
   return (
     <article className="py-6 prose dark:prose-invert">
       <h1 className="mb-2">{post.title}</h1>
@@ -58,6 +76,11 @@ export default async function PostPage({ params }: PostProps) {
           {post.description}
         </p>
       )}
+      <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
+        <time>{date}</time>
+        <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
+        <span>{readingTime}</span>
+      </div>
       <hr className="my-4" />
       <Mdx code={post.body.code} />
 
