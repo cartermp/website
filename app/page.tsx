@@ -2,6 +2,10 @@ import { allPosts } from "@/.contentlayer/generated"
 import Link from "next/link"
 
 export default function Home() {
+  // sort posts by date
+  allPosts.sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime()
+  })
   return (
     <ul className="space-y-4">
       {allPosts.map((post) => (
