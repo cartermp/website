@@ -123,6 +123,16 @@ const MARKDOWN_COMPONENTS: Components = {
       {children}
     </LinkableHeading>
   ),
+  a: ({ children, ...props }) => (
+    <a
+      {...props}
+      className="text-purple-700 dark:text-purple-300 
+                 hover:text-purple-500 dark:hover:text-purple-400
+                 transition-colors duration-200"
+    >
+      {children}
+    </a>
+  ),
   section: ({ children, className }) => {
     if (className === "footnotes") {
       return (
