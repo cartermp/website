@@ -89,6 +89,30 @@ const MARKDOWN_COMPONENTS: Components = {
       {children}
     </LinkableHeading>
   ),
+  h4: ({ children }) => (
+    <LinkableHeading 
+      level="h4" 
+      className="mt-8 mb-4 text-2xl font-semibold text-purple-700 dark:text-purple-300"
+    >
+      {children}
+    </LinkableHeading>
+  ),
+  h5: ({ children }) => (
+    <LinkableHeading 
+      level="h5" 
+      className="mt-8 mb-4 text-2xl font-semibold text-purple-700 dark:text-purple-300"
+    >
+      {children}
+    </LinkableHeading>
+  ),
+  h6: ({ children }) => (
+    <LinkableHeading 
+      level="h6" 
+      className="mt-8 mb-4 text-2xl font-semibold text-purple-700 dark:text-purple-300"
+    >
+      {children}
+    </LinkableHeading>
+  ),
   section: ({ children, className }) => {
     if (className === "footnotes") {
       return (
