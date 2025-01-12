@@ -2,6 +2,29 @@ import { Components } from "react-markdown";
 import { Code } from "bright"
 import { useMDXComponent } from "next-contentlayer/hooks"
 
+const LinkableHeading = ({ level, children, className }: { 
+  level: 'h2' | 'h3' | 'h4' | 'h5' | 'h6', 
+  children: React.ReactNode,
+  className?: string 
+}) => {
+  const slug = typeof children === 'string'
+    ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    : '';
+  
+  const Tag = level;
+  
+  return (
+    <Tag id={slug} className={`group ${className}`}>
+      <a href={`#${slug}`} className="no-underline text-inherit">
+        {children}
+        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          #
+        </span>
+      </a>
+    </Tag>
+  );
+};
+
 const CODE_THEME_CONFIG = {
   dark: "github-dark",
   light: "github-light",
@@ -31,30 +54,52 @@ const MARKDOWN_COMPONENTS: Components = {
     return (
       <code
         className="bg-purple-50 dark:bg-purple-900/20
-                         hover:bg-purple-100 dark:hover:bg-purple-900/30
-                         px-1.5 py-0.5 rounded text-purple-700 dark:text-purple-300
-                         transition-colors duration-200"
+                       hover:bg-purple-100 dark:hover:bg-purple-900/30
+                       px-1.5 py-0.5 rounded text-purple-700 dark:text-purple-300
+                       transition-colors duration-200"
         {...props}
       >
         {children}
       </code>
     );
   },
+  p: ({ children, ...props }) => (
+    <p className="leading-7 [&:not(:first-child)]:mt-6" {...props}>
+      {children}
+    </p>
+  ),
   h1: ({ children }) => (
     <h1 className="mt-8 mb-4 text-2xl font-bold text-purple-700 dark:text-purple-300">
       {children}
     </h1>
   ),
   h2: ({ children }) => (
-    <h2 className="mt-8 mb-4 text-2xl font-semibold text-purple-700 dark:text-purple-300">
+    <LinkableHeading 
+      level="h2" 
+      className="mt-8 mb-4 text-2xl font-semibold text-purple-700 dark:text-purple-300"
+    >
       {children}
-    </h2>
+    </LinkableHeading>
   ),
   h3: ({ children }) => (
-    <h3 className="mt-8 mb-4 text-2xl font-semibold text-purple-700 dark:text-purple-300">
+    <LinkableHeading 
+      level="h3" 
+      className="mt-8 mb-4 text-2xl font-semibold text-purple-700 dark:text-purple-300"
+    >
       {children}
-    </h3>
+    </LinkableHeading>
   ),
+  section: ({ children, className }) => {
+    if (className === "footnotes") {
+      return (
+        <section className="prose dark:prose-invert mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <h2 className="mb-4">Footnotes</h2>
+          {children}
+        </section>
+      );
+    }
+    return <section>{children}</section>;
+  },
 }
 
 interface MdxProps {
