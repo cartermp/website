@@ -1,0 +1,209 @@
+---
+title: When the readability of Go falls off a cliff
+description: My take on how "Go is readable" doesn't mean much to me.
+date: "2024-01-15"
+---
+
+I’ve had to pleasure of working on programming languages for several years, including [helping design several features in one of them](https://github.com/fsharp/fslang-design). I’ve always taken an interest into the often unquantifiable, squishy, touchy, feely-weely aspects of languages. Language design is interesting because it’s both technical and art-like. When you help design a language, you’ll straddle the world between extremely complex backwards compatibility issues and whether or not something “feels right”.
+
+Go is a lovely programming language. I used to dislike it several years ago, mostly because I felt that the creators of the language were arrogant and dismissive of innovations in the field of language and compiler design. I still sort of feel that way, but I won’t deny that what they have created is good, works well, and has an excellent community that builds great stuff with it.
+
+A common refrain you’ll see online is that Go is an eminently “readable” language. Entire engineering teams can learn it within a few weeks and be productive the instant they’re dropped into a codebase! What’s funny is that I’ve seen that to be true in every single language I’ve worked in – Java, C#, F#, VB, Haskell, etc. – and while each of those languages is capable of producing code that’s nearly impossible to read, there’s very little about “readability” in the general online vibes for each of them. It’s usually other assets that are talked about, like good tooling, ability to write very little code to get stuff done, and more.
+
+So is there something to Go on the “readability” side of things? Is it a remarkably readable language? I don’t really think so, and I’ll explain why. I still think it’s a fine choice for a lot of software, though.
+
+## Go code often looks similar
+
+Something I’ve noticed hopping around from several Go projects – from OpenTelemetry SDKs to various executable tools at Honeycomb – is that a lot of the code ends up looking similar:
+
+- One way to do loops
+- One way to declare conditionals
+- One way to declare types
+- A common formatting tool that everyone uses
+- A strong culture of trying to keep code uniform (“idiomatic Go”)
+
+A lot of this is in the design of the language (there’s no while loops for example), but I would argue that it’s the formatting tool and culture around the language that makes uniformity across codebases and parts of codebases ring true to folks. I can write Go code in really strange ways, but it’s a culturally bad thing to do and there seems to be a strong community sentiment that weird code shouldn’t be accepted into a codebase.
+
+But enough about that. Let’s dig into some cases where Go code gets hard to read!
+
+## Use of pointer syntax for references always gets me
+
+I may have spent most of my career in managed languages, but I did learn how to program in C, and so any use of pointer syntax immediately makes me think of that. Consider the following function:
+
+```go
+func (imsb *InMemoryExporter) ExportSpans(_ context.Context, spans []trace.ReadOnlySpan) error {
+	imsb.mu.Lock()
+	defer imsb.mu.Unlock()
+	imsb.ss = append(imsb.ss, SpanStubsFromReadOnlySpans(spans)...)
+	return nil
+}
+```
+
+This demonstrates a great feature of Go, implicit interface implementation, and it basically says that ExportSpans belongs to InMemoryExporter (and helps implement the interface).
+
+But notice how you can “dot” into imsb as if it were a newly-created instance of InMemoryExporter. The part of my bran on C tells me that imsb isn’t a InMemoryExporter, it’s a pointer to one, and I need to use the -&gt; operator instead of the . operator (or do something silly like (*imsb).mu.Lock()).
+
+My assumption is that this syntax was chosen because it needed some syntactical representation. I don’t really have an issue with that – the * syntax isn’t a bad choice per se – but the readability of this isn’t clear to me on the outset. Maybe if I spend several more months regularly looking at Go code it’ll just be second nature.
+
+Inline declaration and validation in if blocks is confusing to me
+I find myself reading lines of code like this multiple times so that I don’t miss the logic:
+
+```go
+if enableLocalVisualizationsStr := os.Getenv("HONEYCOMB_ENABLE_LOCAL_VISUALIZATIONS"); enableLocalVisualizationsStr != "" {
+    //...
+}
+```
+
+There’s not a lot going on here – it’s assigning a value in the scope of the if declaration and checking that it’s non-empty before entering he block – but stuffing all of that onto a single line trips me up. I’ve personally mis-written the != as a == and spent more time than I’d like to admit hunting it down.
+
+What’s funny is that I’ve written plenty of Go code in this style, and that’s because I see it everywhere. It’s either a common code convention no-no or considered idiomatic go. But either way, I wouldn’t call it readable, at least not to me.
+
+“Filling in” data types rather than returning them is confusing to me
+A common pattern in Go code, like when you’re working with JSON, is to have the library function “fill in” a buffer that you pass in a reference (pointer?) to, like so:
+
+```go
+hmConfig := &amp;HoneycombMetricsConfig{}
+err := sub.UnmarshalExact(hmConfig)
+if err != nil {
+    return *hmConfig, err
+}
+// ...
+```
+
+Perhaps this is because I’ve been a functional programmer for several years, but my brain nearly always expects things like “turn this JSON into an object” to return the object it’s created. Perhaps I just need to get used to Go more, but code like this still makes me re-read it a few times to remember what’s going on. Maybe it’s also because most Go code I write is just “simple” functions that return a value, and the presence of the occaisional “calling this fills in data” pattern is what throws me off. At any rate, this lack of uniformity compared to most Go code I’ve read and written hurts readability for me.
+
+## Inline functions are noisy to me
+
+Consider the following code:
+
+```go
+func Fibonacci(n uint) (uint64, error) {
+    //... implementation elided
+}
+
+//...
+f, err := func(ctx context.Context) (uint64, error) {
+    _, span := otel.Tracer(name).Start(ctx, "Fibonacci")
+    defer span.End()
+    f, err := Fibonacci(n)
+    if err != nil {
+        span.RecordError(err)
+        span.SetStatus(codes.Error, err.Error())
+    }
+    return f, err
+}(ctx)
+```
+
+This is a relatively simple inline function that you can refactor out, I guess, but it’s also incredibly noisy:
+
+- The lack of a node after func looks weird to me
+- The declaration of the function is also an assignment
+- You call the function with a hard-to-miss parenthesis pair with a parameter passed in
+
+When I first saw code like this as a newcomer, I was pretty confused. In particular, the declaration of a function vs. assigment of a result of calling that function isn’t like anything else I’ve seen. And despite being used to that now, I still always miss how you pass in the parameter at the bottom.
+
+## Inline funcs and goroutines are nonsense to me
+
+I’ve come across this several times, but here’s an example in a codebase that I’ve messed around with:
+
+```go
+func fibHandler(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+	tr := otel.Tracer("fibHandler")
+	var err error
+	var i int
+	var indexParameter = req.URL.Query()["index"]
+	if len(indexParameter) != 1 {
+		err = fmt.Errorf("please pass index as a query parameter")
+	} else {
+		i, err = strconv.Atoi(indexParameter[0])
+	}
+	if err != nil {
+		fmt.Fprintf(w, "Couldn't parse index '%s'.", indexParameter)
+		w.WriteHeader(503)
+		return
+	}
+
+	// CUSTOM ATTRIBUTE: add the index parameter as a custom attribute to the current span here
+	// trace.SpanFromContext(ctx).SetAttributes(attribute.Int("parameter.index", i))
+
+	ret := 0
+	failed := false
+
+	if i &lt;= 0 {
+		ret = 0
+	} else if i &lt;= 1 {
+		ret = 1
+	} else {
+		// Call /fib?index=(n-1) and /fib?index=(n-2) and add them together.
+		var mtx sync.Mutex
+		var wg sync.WaitGroup
+		client := http.DefaultClient
+		for offset := 1; offset &lt; 3; offset++ {
+			wg.Add(1)
+			go func(n int) {
+				err := func() error {
+					ictx, sp := tr.Start(ctx, &quot;fibClient&quot;)
+					defer sp.End()
+					url := fmt.Sprintf(&quot;http://127.0.0.1:3000/fibinternal?index=%d&quot;, n)
+					// trace.SpanFromContext(ictx).SetAttributes(attribute.String(&quot;url&quot;, url))
+					// trace.SpanFromContext(ictx).AddEvent(&quot;Fib loop count&quot;, trace.WithAttributes(attribute.Int(&quot;fib-loop&quot;, n)))
+					req, _ := http.NewRequestWithContext(ictx, &quot;GET&quot;, url, nil)
+					ictx, req = otelhttptrace.W3C(ictx, req)
+					otelhttptrace.Inject(ictx, req)
+					res, err := client.Do(req)
+					if err != nil {
+						return err
+					}
+					body, err := ioutil.ReadAll(res.Body)
+					res.Body.Close()
+					if err != nil {
+						return err
+					}
+					resp, err := strconv.Atoi(string(body))
+					if err != nil {
+						trace.SpanFromContext(ictx).SetStatus(codes.Error, &quot;failure parsing&quot;)
+						return err
+					}
+					trace.SpanFromContext(ictx).SetAttributes(attribute.Int(&quot;result&quot;, resp))
+					mtx.Lock()
+					defer mtx.Unlock()
+
+					// CUSTOM SPAN: ere's some exciting addition. Put it in its own span
+					// _, span := tr.Start(ctx, &quot;calculation&quot;)
+					ret += resp // the big calculation
+					// defer span.End()
+
+					return err
+				}()
+				if err != nil {
+					if !failed {
+						w.WriteHeader(503)
+						failed = true
+					}
+					fmt.Fprintf(w, &quot;Failed to call child index '%d'.\n&quot;, n)
+				}
+				wg.Done()
+			}(i - offset)
+		}
+		wg.Wait()
+	}
+	trace.SpanFromContext(ctx).SetAttributes(attribute.Int(&quot;result&quot;, ret))
+	fmt.Fprintf(w, &quot;%d&quot;, ret)
+}
+```
+
+I’ll admit, I genuinely do not understand what this code does when I read it. There’s several layers of indirection:
+
+- Inline funcs that are declared but also won’t always give back a result (that only happens on an error?)
+- The introduction of goroutines the go keyword in here made it nearly impossible to understand what’s happening in my head
+- How the heck do waitgroups relate to goroutines? Isn’t there a missing &lt;- keyword in here or something?
+- Now, if I run this code it’s pretty clear to me that it’s concurrently generating fibonacci numbers, but this post is about readability and I would argue it’s a failure in readability if you need to run code to see what it’s doing.
+
+Is this inherently a Go problem? No, of course not! This could probably be rewritten to use way less language constructs. But that’s the same argument that can be made for any language: confusing code is always capable of being not confusing if you encode stuff a little differently.
+
+## That’s all for now
+
+There’s several smaller things that get me, like zero-initializing a struct with `{}` rather than `()`, but these aren’t too bad.
+
+Overall, I enjoy the Go language and thing it’s pretty good. But I’m not sure I really buy arguments that it’s readable, or that this aspect of it makes it easy for people to onboard onto a team.

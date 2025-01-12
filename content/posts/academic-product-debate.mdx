@@ -1,0 +1,135 @@
+---
+title: A case for academic debate in product development
+description: A small screed about something that's bothered me about modern Product Management practices.
+date: "2024-11-29"
+---
+
+In the current product management discourse, it’s very much in style to try to “science” your way into decisions around how products should work. The common example of it looks something like this:
+
+**PM or Designer 1:** “I think the table should render in this way!”
+
+**PM or Designer 2:** “No, I think it should render this other way!”
+
+The hero of the story: “You both have great ideas, but let’s not debate this. Run an A/B test and our users will tell us which is the better way to render the table based on how they use it!”
+
+## Hidden organizational dynamics
+
+There’s actually a lot of hidden organizational dynamics in the example scenario that I’ll unpack a bit. This is not exhaustive.
+
+First, as the PM or designer in a team, you’re not actually there to “decide the experience”. You’re there to make sure the best decisions are made, and thus, the best experience relative to business goals is delivered. Chances are you don’t always know what’s best, and when you do stuff like A/B tests, you lean into this reality rather than introduce your own (sometimes suboptimal) opinions dressed up like facts.
+
+Additionally, this is a mechanism to get out of analysis paralysis. Some people in software like talking about stuff more than getting stuff done, but the company you work for isn’t paying you to just talk about stuff. When you have a product development methodology oriented around letting the users “decide”, you can short-circuit a lot of theoretical debate and get to actually shipping stuff.
+
+Another thing going on here is related to the implicit budget that organizations end up assigning to individual feature work. When you sit back and debate ideas about UX, you can often end up over-designing something relative to that budget. How important exactly is it that the table renders in the most ideal way? If we’re being honest with ourselves, probably not that much, and so it’s a big waste of time to argue over it. Just ship both, send 50% of traffic to one design variation, and measure which does better.
+
+And finally, in the above example, focus is actually being shifted towards defining and measuring outcomes. Making the a great design decision is one thing, but the thinking is that you can’t know that it was great unless you have a way to measure and quantify it. And when you can do that, the entire team you work with can move faster and try more things because they have confidence that their outcome measurements will tell them what they need to know.
+
+There’s more going on here, but it’s important to realize that whenever there’s a push for this kind of product development work, it’s often related to these hidden org dynamics that aren’t always made explicit. And people like Marty Cagan who popularized this stuff have crafted the right flavor of playbook that those in management positions eat up like catnip, so that’s also one of the reasons why it’s so prevalent.
+
+## Don’t worry, I think A/B tests are great
+
+Before I make my case for why this line of thinking around product development is flawed, let me just state for the jury that I’m a big fan of shipping really fast, running A/B tests, and deleting features if they’re not working. I’m often one of the people in a group who advocates strongly for doing this, and I’ve truly practiced the “ship to learn” mindset instead of just read a book or blog post about it.
+
+But think there’s a lot of times and places for rigorous academic debate in product work, and probably a lot more than the current discourse would say there is.
+
+## The scenario above is actually bullshit
+
+My example above is dumb. It’s not real and I just made it up. Nobody in their right mind agrees that you should rigorously debate the formatting of a table or the color of a button. Of course that is the stuff of “just ship it and see if it works”. And guess what: most times you hear about examples of why you shouldn’t tie yourself up in debate in product work, it’ll be with fake and dumb examples.
+
+One of the more annoying aspects of reading about PM stuff or listening to people who espouse this style of work is that they usually use simple examples, creating a scenario in which you’d have to be unreasonable to disagree with them. It’s an effective persuasion technique, though.
+
+## Meaningful product work is often untestable
+
+Perhaps an oversimplification, but I tend to view product work in two categories:
+
+1. When it’s okay to be wrong
+2. When you’d better not fuck it up
+
+All the work in category (1) can go through the typical stuff: do whatever you call discovery, test a design somehow (or not), just ship it, maybe do an A/B test if you can’t decide on two choices, whatever. You can fuck around with it for a while, and if we’re really being honest with ourselves, it probably doesn’t matter a whole lot what process you follow. You’ll see what happens when users use it and through sheer exposure to people doing stuff with it, you’ll probably end up with something fine if you stick with it and don’t just drop it on the floor.
+
+Category (2) is where things are, usually, much more interesting, and where I try to spend a lot more time if I can.
+
+Let’s say you work at a place like [Vercel](https://vercel.com/), where you have customers who use your platform to take their code and build process, turn it into a website, and expect you to run it with many 9s of availability. What do you do when:
+
+- You have some pretty gnarly product and tech debt that’s extremely expensive to unwind and hinders everything else you try to do in various ways, but it’s too expensive to resolve right now
+- You have two big customers with conflicting requirements — let’s say it’s related to unsupported components they still need to work — such that it runs exactly into the problems your product and tech debt have created
+- For these customers (and many more), your business already signed some stuff that offer various guarantees that don’t let you just stop supporting various things
+- Your manager’s manager and the account executive for some other account says this all needs to be resolved, somehow, or we will probably lose some big accounts soon (time unspecified, as always)
+Yeah, uhhh, you’re not going to just solve that by turning on a feature flag for 50% of a cohort.
+
+This is the sort of thing that every serious product team ends up having to deal with at some point, but there’s no playbook to follow, no test you can just run, and no way your users will somehow hold the answer for you all along if you just try enough things and measure the right outcomes.
+
+## Academic debate underpins foundations
+
+It’s my belief that nearly every good product has a small handful of aspects that make it “click” that are traced back to rigorous arguments and debate, and products that stink or have otherwise stagnated have shifted mostly away from this style of work.
+
+For example, at [Honeycomb](https://www.honeycomb.io/) (my current employer at time of writing), the “differentiator” in the product is a data querying engine with some fundamental characteristics:
+
+- Has little intrinsic limitations on which fields you can group, filter, or aggregate data by, nor the cardinality of those fields
+- All data is represented as a uniform event model
+- Everything revolves around the concept of a query — home queries, query builder, triggers (alert queries), service maps (also queryable objects), traces (a trace is just another query), etc.
+- It’s extremely fast and scales to absolutely absurd numbers of events
+None of these characteristics were A/B tested like a table design — there was no cardinality limitation introduced for 50% of a cohort to see which metric does better.
+
+The same is true of the C# programming language (housed by my former employer), wherein every language feature that gets built has a design consideration, “how will IDE tooling light this up”, from the beginning. Users don’t drive particular metrics that tell the Language Design Meeting which flavor of a feature is the right one. Does the team try stuff out? Yes! Do they get user feedback all along the way? Absolutely! While signals like this are important, they’re ultimately supplementary to the process, and no success metric informs the ways in which they hammer out IDE design concerns.
+
+In both cases, the foundations of what countless people rely on were developed through rigorous academic debate. Both Honeycomb and C# are considered best of breed tools (or close to that) in their respective product domains, with tons of extremely happy and downright loyal users. Is academic debate the sole reason why? Of course not, but you can trace critical product behaviors back to it.
+
+## Academic debate underpins deep product understanding
+
+Earlier in this post, I mentioned how in my example of running an A/B test, there’s an organizational force at work that shifts focus towards measuring outcomes. While growth-focused PMs also live and breathe this stuff, focusing on outcome measurement is ultimately most comfortable for managers, because this is the world in which they operate. After all, it’s a manager’s job to drive towards whatever success is defined as.
+
+However, I believe that when a product team shifts their focus towards outcome measurement, they’re also shifting away from their own understanding of what makes a product great in the first place … and often, what great things could be done next. And in a sick twist of irony, this can often produce overall outcomes that managers don’t actually want!
+
+I think an example of this is the Instagram organization at Meta. Meta’s product development practices are notoriously driven by metrics and running small experiments. This is clearly the right strategy when your goal is to serve the most relevant ads to users and keep people scrolling on their phones. However, this only works when the other alternatives are all doing the same thing.
+
+Meta’s Threads, a social media app being [forced to dance by the upstart Bluesky](https://techcrunch.com/2024/11/27/metas-threads-is-developing-its-own-take-on-blueskys-starter-packs/), because nowhere in the rigorous engagement metric-driven world of Threads’ product design process is there a system that encourages people to debate what, exactly, makes for a great social media app in 2024. Another example from Meta (and Instagram) is Reels, which was obviously just a defensive maneuver to prevent TikTok from eating their lunch in the world of video social media, rather than a principled approach towards centering things around video content. Meta employs high numbers of unbelievably intelligent people, and I wouldn’t be shocked if several of them had already proposed features like this in the past. But the institution of Instagram didn’t allow for those to ship, and all they can really seem to do from the outside is chase whatever a competitor does that people actually seem to like.
+
+Back to developer tools, one of the best sets of product decisions I’ve seen were in the design and creation of the [.NET SDK](https://dotnet.microsoft.com/en-us/). Like anything complex, it has some warts, but it nailed three critical things:
+
+1. Ensuring a clean installation of SDK artifacts
+2. Sound mechanisms to pin and easily switch SDKs on the same machine safely and without clobbering (or getting clobbered by) other installations
+3. Security patching several SDKs on the same host is straightforward
+
+Having been “in the room” (sometimes it was a room, sometimes not) for several of these things as the sausage was being made, I can assure you that the debates were numerous and they were highly academic. People wrote detailed design proposals, built prototypes, designed alternative systems, shipped bad previews and had to back out of them, and more. But a key behavior exhibited is that everyone deeply interrogated everyone else’s propositions, be they in the form of an email, document, or code, at every step of the way.
+
+And the end result of all that?
+
+Firstly, a system that makes easy things easy, harder things possible, and doesn’t just fall apart once your own requirements start to get a little more complicated. Anyone who’s had the (dis)pleasure of working with Python or thinking they can “just bump this golang package to 2.0” will find that if they work with modern .NET, problems of this nature just kind of don’t exist. It’s freeing.
+
+But more importantly, everyone involved in the process of building the .NET SDK developed a _deep and fundamental understanding_ of what makes the entire .NET SDK product “click”. What’s good about it, what’s bad about it, what can change, what should change, what the downstream and multi-level impacts of those changes might be, etc. The idea that someone involved in the day-to-day of this process would be less connected from the gnarly details of this product’s behavior and instead focus on driving some top line metric is, frankly, fucking absurd.
+
+Now, again, this isn’t me decrying the idea of using product metrics or having some good ways to measure outcomes. In the .NET SDK example, there were some director-level folks who focused on making sure there were some top-line metrics defined and hit, and “the business” ultimately cared that we drove our number of active users into the millions, which we did. But they weren’t there to make product decisions. They were there to make sure that the people who did were successful.
+
+Developing deep product understanding doesn’t come automatically. Sometimes that means talking to customers. Sometimes that means building a prototype. Sometimes that means using the product yourself, daily, just as you users do, and having empathy for all the problems they have. Sometimes that means signing up to give a talk and then getting horrified that you’re not qualified to give that talk, acting as a forcing function to actually understand something. Sometimes that just means sitting down and thinking critically for an hour. There’s no playbook here, but if you earnestly do enough of these kinds of things — and don’t just stick to one thing, like talking to customers — you’ll get that understanding.
+
+My point in this diversion is that to rigorously debate what a product should or shouldn’t do, you need to develop a deep understanding of that product and the space it occupies. When focus is shifted away from that, a deep understanding of what makes a product great can often be sacrificed in the process. It’s at this point that I expect someone to ask, “why can’t you do both?”, and I think the reality is that it’s extremely rare to do both things well. Organizations will bias in one direction or the other, and as any manager who’s done it long enough knows, people will act in a way that they believe will get them promoted, not what actually produces the best things. I don’t have an answer for what a given team should do here, but I believe strongly that you don’t have to focus hard on measuring out comes to achieve great outcomes.
+
+## Academic debate doesn’t mean not shipping
+
+I think one of the reason why academic product debate gets a bad rap because people think it replaces actually building and shipping product. And that’s a valid concern!
+
+Even in a healthy team environment with psychological safety and an organization that gives people agency (if they want it), it’s very easy to get trapped in all kinds of ways that result in not a lot of stuff getting out to users:
+
+- Having poor systems in place that make it difficult to actually ship working code to users
+- Getting stuck in endless debate about things
+- Debating things without building a prototype to “see how it feels”
+- Becoming too insular rather than seeking outside feedback early and often
+- Getting stuck in “discovery” forever because “there’s too many unknowns”
+- Requiring whole-team consensus on every decision, big or small
+- Being too afraid to make something available because users might misuse it somehow
+- Having stakeholders across the org push back hard on something
+- Being afraid of triggering an incident (which can be scary!)
+- Not having good incident management practices for when an incident inevitably occurs
+- Having the majority of the team be largely unfamiliar with the codebase
+- etc.
+
+The list can go on, so I won’t continue. My point here is that academic debate can hold things up, but it’s not the only thing that can, and it’s probably not the major factor that prevents teams from shipping.
+
+## Maybe debate more sometimes?
+
+I’d like to stick my neck out for academic product debate. There’s a lot of ways it could go poorly, especially when people with big egos crowd out those who aren’t comfortable with debate, or worse, operate in an environment that isn’t inclusive and kind. Teams and product processes are hard.
+
+But I don’t think the solutions to any shortcomings in product processes always lie in doing less debate and more outcome measurement. To the contrary, I believe that product teams should be quite opinionated about the shapes of their products, have a true vision for what they’d like to accomplish and why, and produce rigorous reasoning behind all of these things. Sometimes, the right solution is to plan to run 20 different product experiments, invest in a growth initiative, or some other practice that isn’t centered on academic debate. But I don’t think that’s what ultimately produces a compelling product, I think it’s what optimizes something that’s already been made compelling in some way.
+
+I also believe that products go through phases in their lifespan, and some phases require more “sciency” approaches, while others simply don’t. However, if you’re not at a point where you need to optimize the local maxima of outcomes your product can achieve, I think you could stand to do some rigorous academic debate on what comes next.

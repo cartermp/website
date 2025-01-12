@@ -1,0 +1,103 @@
+---
+title: Three properties of data for making LLMs awesome
+description: How Data Relevancy, Data Magnitude, and Data Quality impact the effectiveness of LLMs for your use cases.
+date: "2024-03-04"
+---
+
+Back in May 2023, I helped launch my [first bona fide feature that uses LLMs in production](https://www.honeycomb.io/blog/introducing-query-assistant). It was difficult in lots of different ways, but one thing I didn’t elaborate in several blog posts was how lucky I was to have a coherent way to get the data I needed to make the feature actually useful for users.
+
+## LLMs move the problem from the model to the data
+
+I imagine a well-trained data scientist may roll their eyes here, but as someone without an ML background, it’s always been my perception that the biggest barrier to entry for incorporating ML into software was that the models weren’t good enough and it took too much effort to make them good. That’s why only big tech had stuff that was useful.
+
+Now in 2024, we have our pick of all kinds of amazing models that are an API call away, all of which perfectly capable of powering a proof-of-concept for nearly any product or feature that could use ML. That’s an incredible step change because it empowers people like me — those who haven’t been doing ML for a decade — to build useful stuff.
+
+However, models being powerful enough for most tasks says nothing about an actual product or feature being good enough for users. The model is just one component in a compelling product or feature. The other “half” of the equation is having the right data to feed into the model to handle most use cases your users expect.
+
+## LLMs need useful data fed into them to be good
+
+You may have heard the term “Retrieval Augmented Generation” or RAG for short. The gist of it is that LLMs don’t know about your data, so instead of training or fine-tuning a model, you just pass in your data to each request. It’s **shockingly effective**, to the point that even when you’re using your own fine-tuned LLM you’re likely to still use RAG.
+
+However, to make RAG effective, you need to consider three properties:
+
+1. Data relevancy — are you able to include data relevant to your use case?
+2. Data magnitude — are you including enough useful data?
+3. Data quality — do you have data involved that you actually know to be good?
+
+There’s a gulf of difference between a cute demo you can post on Twitter and a reliable product customers enjoy using long-term. The only way to achieve the latter is to have good data you feed into your model.
+
+The good news is that you don’t need to be a data scientist, and you may not even need data engineering systems or data pipelines to do it either. “Data” doesn’t necessarily mean something fancy either — it can be just 1 piece of information if it’s good — but how you decide which data is useful is anything but trivial. Having a deep understanding of your product, how people use it, and what information is available to you is essential.
+
+## Dive into a concrete example
+
+By way of example, here’s how Query Assistant works at a high level:
+
+- Create a [vector embedding](https://platform.openai.com/docs/guides/embeddings) of every column in a dataset schema and store them in Redis (this is done asynchronously)
+- Create a vector embedding of the user’s input (e.g., “which users have the highest latency per-service?”)
+- Use [cosine similarity](https://platform.openai.com/docs/guides/embeddings/which-distance-function-should-i-use) to pluck out the top 50-most semantically relevant column names with respect to the user’s input
+- Get the current query, if it exists
+- Fetch any named suggested query pairs and include them
+- Combine the user’s input, list of columns, current query (if exists), suggested queries, and some additional prompt engineering and ask GPT-3.5 to create a new query based on this information
+
+There’s a lot of other details involved, though.
+
+## All about data age – a data relevancy problem
+
+We don’t just embed every column in a dataset schema — we are only ever concerned with columns that have “received data in the past N days”, where N is 14 days. We experimented with what N should be and landed at 14 for a few reasons. Firstly, the default query range for Honeycomb is the past 2 hours. It’d be odd to create a query if the data involved isn’t in that time range! However, lots of people ask about stuff over longer time ranges, and week-over-week comparisons aren’t uncommon either. Additionally, we found that once a column hasn’t received data in the past 14 days, it’s usually going to be “stale”, which means it’s still a part of the schema but won’t have any data in it. In other words, if the data is older than 14 days, it’s likely to be stale anyways, so it’s not worth it for us to embed it and potentially make it available for querying.
+
+As you might imagine, arriving at the right behavior here took quite a bit of research and experimentation. But it was worth it, because if we fed in stale columns then we’d ship a bad experience! Alternatively, if we only used columns within the default query range, that wouldn’t work for a lot of people either. And we didn’t wish to embed every column on-demand either, because that could lead to unacceptable latency, increased change of hitting API restrictions or timeout problems with OpenAI, and a chance of including irrelevant data in someone’s query.
+
+This is a specific instance of a topic that I’m calling **data relevancy**. You need to know what data is relevant for your use case with LLMs, which is a function of what user interaction patterns you’re designing for and the data you have.
+
+## How many columns? A data magnitude problem
+
+I mentioned that Query Assistant takes the top 50 columns that are semantically relevant. The short answer to why that is is if you include too many columns, GPT can go off the rails, but if you don’t include enough, you’ll actually miss out on relevant data for the user’s input, since what GPT sees as relevant is different from what embedding models + cosine similarity see as relevant. Here’s an example:
+
+One [unexpectedly common use case](https://www.honeycomb.io/blog/we-shipped-ai-product#the_-byte_hex_value) for Query Assistant is to pull up a trace by its ID. People will paste an input like `0x6f781c83394ed2f33120370a11fced47` and expect a result. If you compare the embedding of this input to an embedded, typical OpenTelemetry tracing dataset and pull out the top 10 results, you’ll get a list like this:
+
+```
+{
+  'error': 0.7858631994285529,
+  'message.id': 0.7850713370035042,
+  'name': 0.7844270670322381,
+  'ip': 0.7836124628039474,
+  'library.name': 0.7757603571395939,
+  'rpc.system': 0.7735195113982846,
+  'net.transport': 0.7712116720157992,
+  'message.type': 0.7711391052561097,
+  'net.host.ip': 0.7710806712396305,
+  'http.target': 0.7707503603050173
+}
+```
+
+(the above is a map of a column name to is similarity score, as per cosine similarity run over OpenAI-embedded vectors to the above hex value)
+
+However, the column name that’s actually most relevant is `trace.trace_id`, which you’ll notice is missing from that list! Depending on the dataset, this column may show up in the top 10, but we’ve observed it usually doesn’t, and only around top 30 or so columns will it reliably appear.
+
+Even though cosine similarity on embeddings determines that a column like error is more relevant to the user’s input, GPT has information about tracing in its model weights, and a 16-byte hex-encoded value is actually a well-known ID for tracing systems like OpenTelemetry! And so GPT will reliably produce a good query with that input.
+
+What this means is that embeddings + cosine similarity isn’t enough to produce good results. You need to sometimes include “less relevant” data of a sufficient magnitude to actually produce good outputs. How much data is enough, too much, or too little? I can’t tell you, and currently there’s no tools or systems out there that can tell you this in advance either.
+
+This is a specific instance of a topic that I’m calling **data magnitude**. You have some relevant data, but you may not have enough of it. Relevancy by one measure isn’t the same as relevancy by another, and one of the best ways to deal with this is to include more data.
+
+## What is a good example query? A data quality problem
+
+For Query Assistant, the feature operates in a brownfield environment. For new users, they tend not to have much set up. But existing teams, some of whom have been using Honeycomb for years, the context in which they query is very different.
+
+Honeycomb has a feature called “suggested queries”, which are named queries that you can customize. The idea is that if you’re new to a dataset, you have a small set of example queries (which are named!) that you can click on and see the results for.
+
+We found that if we include these queries, especially when they were customized, the outputs of GPT are significantly better. This is often because there can be special naming conventions for columns that come from custom telemetry, some of which are very domain-specific. When there are named queries that include these kinds of columns, it informs GPT of what the meaning of those columns are!
+
+I consider this to be in the topic of **data quality**. Note that quality and relevancy may seem similar, but a key difference is that quality implies you have some ground truth around what is actually known to be “good”.
+
+## How do you do it yourself?
+
+Honestly, I can’t say. Weird, given that I did it myself? Maybe I should elaborate a bit:
+
+Firstly, if you have no idea how your users use your product, or how you’d like them to use it, you should go figure that out. And figure out it to a high degree of detail. The reason why this matters is that **the data you need to be successful with an LLM will emerge from this understanding**. For example, most developer tools that use LLMs consider deeply the kinds of context (data) that’s relevant for a particular action in a code editor (such as the name of a file, or some evluated results in a jupyter notebook).
+
+Next, you need to figure out how you get this data. Is it just some stuff in a UI state? Great, your job is easy. Is this coming from a whole other database somewhere? Well, maybe not hard, but you’ll need to figure it out. Is your application based on a large corpus of data you’ve got stored in a data lake somewhere? You probably have a lot more work to do to organize and build pipelines to that data.
+
+Finally, you need to experiment a bunch with relevancy, magnitude, and accuracy of this data. How much do you know to be “right” for a use case? How do you label those things? How much contextual data do you need? What is the right contextual data? All these questions need answers.
+
+To my knowledge, there isn’t much in the way of data tools that let you easily figure out which data you have that’s relevant, of good quality, and of the right magnitude for your use case. I’d love to learn about them if they exist, though.

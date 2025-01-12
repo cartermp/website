@@ -1,0 +1,58 @@
+---
+title: The Observability CAP Theorm
+description: My elaboration on why I think Observability as a CAP theorm of its own.
+date: "2024-09-14"
+---
+
+Observability is a pretty wild field. Almost everyone has their own definition of it. I won’t get into that nonsense. Instead, I’ll elaborate a bit on what I believe to be a fundamental nature of this space.
+
+## The theorem
+
+Observability has a similar dynamic as the [CAP Theorem](https://en.wikipedia.org/wiki/CAP_theorem). Generally speaking, sufficient observability for nontrivial, live applications/systems involves these properties:
+
+1. Fast queries on your data right now
+2. Enough data to access per query (days, months, years, back)
+3. Access to all the data you care about for a given context
+4. A bill at the end of the month that doesn’t make you cry
+
+Of these, you can definitely get one, probably get two, maybe get three, and you **absolutely, positively cannot get all four**. The only way that’s possible is if you’re just not generating much data to begin with (e.g., a small business like [Basecamp](https://basecamp.com/)).
+
+Every year, legions of engineers are tasked by their management to get all four properties themselves after experiencing an eye-watering Datadog bill. After having some fun trying to build baby’s first large-scale data analysis system, they ultimately fail. Sometimes what they built sticks around because it’s crappy but cheap, but a lot of the time they end up crawling back to Datadog or a competitor. It’s a story I’ve seen play out countless times over the years, and it’ll keep happening.
+
+## Tradeoffs and their failings
+
+Because observability systems can’t have all four properties at once – not for large enough volumes of data – they employ some tradeoffs that optimize one experience over another:
+
+- Cheaply storing and observing metrics for everything under the sun, at the expense of easily investigating why something is happening
+- Letting you keep all your log data, including in your own cloud, but at the cost of having to pay each time you run a query
+- Fast queries and analysis on trace data, at the expense of needing to employ effective sampling techniques
+- The ability to pull up a trace or profile, at the expense of letting you aggregate across that data directly
+- The ability to send all your data to one tool, at the expense of a disparate and often confusing set of experiences depending on what you’re analyzing
+- Uniform analysis and visualization of all data no matter the source, at the expense of analysis and visualization capabilities designed only for one particular kind of source
+etc.
+
+This is because observability involves heterogeneous streams of many different kinds of data with varying and unpredictable volume. And just so we’re clear, I’m not talking about Google, I’m talking about banks and mobile app companies.
+
+The technical reasons why these tradeoffs are fundamental and likely insurmountable. You can build a database that handles large volumes of sparse data cheaply and efficiently, or you can do so for smaller volumes of dense data, but you can’t do it for both. And more importantly, the notion of “cheap” and “efficient” is a moving target.
+
+The most important factor that plays into why every tradeoff ultimately fails in some way is that observability is also about organizational priorities. Organizations have varying tolerances for incident length, auditability of data, tool spread across teams, and budget for observability. These factors also change within an organization over time, whether for political reasons or something more legitimate. Observability products and tools “scale” across an organization differently, and each organization only finds out later if the one they’re using scales in the way that works for them. It’s pretty hard, if not impossible, to accurately forecast how that’s going to play out.
+
+## Who optimizes for what
+
+Whether you get one, two, or three of these properties is up to the tool or product you pick, or how much you’re willing to invest in significant self-hosted infrastructure.
+
+Seasoned engineers who’ve been through terrible incidents, and prevented their fair share before it got bad, tend to prefer fast queries over a window of at most a few months. These folks know that in practice, you don’t need “all of the data” and split unsampled data to some low-cost archive, then sample or otherwise process data so a small but relevant fraction goes into a fast querying data store.
+
+That isn’t to say that seasoned engineers don’t value the third property. Anyone working in US finance knows you have to keep all data around unsampled for a period of time for compliance reasons. Or you may need to keep all data just in case you “need that one trace” from a particular customer who escalated their problem through support. However, these are typically secondary concerns for these folks. They know that effective sampling and preprocessing of data will usually get them what they need, when they need it.
+
+The third property is usually most valued by larger and less “tech forward” enterprises. In my experience, a lot of the time these are engineers who aren’t aware of how you can aggregate logs, filter metrics, or sample all data to get a high degree of representativeness. Their organizations often also lack sophistication in how they generate data in the first place, often because they’re “subject to other bullshit” that makes cleaning up their data act not worth the time and money.
+
+The fourth property is valued most by executive or sub-executive level folks who are forced through socio-technical incentive structures to view observability as a cost center.
+
+I say all of this to highlight that each of these three categories of person can all exist within the same organization. This is why you get companies paying not just for Datadog, but also for New Relic, and Splunk, sometimes Honeycomb, a little Instana here and there, and usually some degree of Grafana in the mix.
+
+## Will it change?
+
+Probably not. I would argue we’re in the second or third “era” of observability right now, and we certainly haven’t figured it all out as an industry. As my friend and sorta-boss Charity says, we might need to even [version observability](https://charity.wtf/2024/08/07/is-it-time-to-version-observability-signs-point-to-yes/) as a concept.
+
+I like to think of the future being much more akin to real-time data analysis than anything else. Less focus on “Metrics, Events, Logs, Traces” and more on if you have a continuous stream of relevant data that tells you what is going on in your systems when they’re live. To do that effectively, you need to get real about adopting [OpenTelemetry](https://opentelemetry.io/docs/) thoughtfully and start educating developers on how to analyze data so that they don’t see production as some scary place for burned out, alcoholic SREs to deal with. That’s a big task wrought with myriad technical and organizational hurdles to jump over. But maybe in that world we can get the best set of tradeoffs.
