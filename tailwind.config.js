@@ -14,7 +14,14 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            pre: false, // Completely disable prose styling for pre tags
+            pre: false,
+            'code': {
+              fontSize: '0.82em',
+            },
+            'pre code': {
+              fontSize: '0.82em',
+              fontFamily: 'var(--font-mono)',
+            },
           }
         },
       },
