@@ -11,6 +11,10 @@ module.exports = {
       fontFamily: {
         mono: ['var(--font-mono)'],
       },
+      animation: {
+        'cursor-blink': 'blink 1s step-start infinite',
+        'cursor-spin': 'spin 0.5s linear infinite', // Add this - using Tailwind's built-in spin keyframes
+      },
       typography: {
         DEFAULT: {
           css: {

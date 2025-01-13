@@ -102,13 +102,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   <div className="flex items-center justify-between">
                     <Link
                       href="/"
-                      className="font-mono text-2xl font-bold tracking-tight text-gray-600 dark:text-gray-400
-                 hover:bg-purple-50 dark:hover:bg-purple-900/10
-                 hover:text-purple-700 dark:hover:text-purple-300
-                 transition-colors duration-200
-                 p-2 rounded-lg"
+                      className="group font-mono text-2xl font-bold tracking-tight text-gray-600 dark:text-gray-400 hover:bg-purple-50 dark:hover:bg-purple-900/10
+                      hover:text-purple-700 dark:hover:text-purple-300
+                      transition-colors duration-200
+                      p-2 rounded-lg"
                     >
-                      PC{">"}<span className="animate-cursor-blink">_</span>
+                      PC{">"}
+                      <span className="animate-cursor-blink group-hover:animate-cursor-spin inline-block">_</span>
                     </Link>
                     <NavLinks />
                     <div className="mx-4 w-px h-6 bg-gray-200 dark:bg-gray-700" />
