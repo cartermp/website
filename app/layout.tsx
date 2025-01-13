@@ -1,5 +1,6 @@
 import Link from "next/link"
 import "./globals.css"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@/components/analytics"
@@ -122,6 +123,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </div>
           </div>
           <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
