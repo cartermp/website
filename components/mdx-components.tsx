@@ -30,8 +30,8 @@ const LinkableHeading = ({ level, children, className }: {
 };
 
 const CODE_THEME_CONFIG = {
-  dark: "github-dark",
-  light: "github-light",
+  dark: "dark-plus",
+  light: "light-plus",
   lightSelector: 'html[class="light"]',
 } as const;
 
@@ -133,17 +133,6 @@ const MARKDOWN_COMPONENTS: Components = {
       {children}
     </a>
   ),
-  section: ({ children, className }) => {
-    if (className === "footnotes") {
-      return (
-        <section className="prose dark:prose-invert mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
-          <h2 className="mb-4">Footnotes</h2>
-          {children}
-        </section>
-      );
-    }
-    return <section>{children}</section>;
-  },
 }
 
 interface MdxProps {
