@@ -143,12 +143,12 @@ func fibHandler(w http.ResponseWriter, req *http.Request) {
 			wg.Add(1)
 			go func(n int) {
 				err := func() error {
-					ictx, sp := tr.Start(ctx, &quot;fibClient&quot;)
+					ictx, sp := tr.Start(ctx, "fibClient")
 					defer sp.End()
-					url := fmt.Sprintf(&quot;http://127.0.0.1:3000/fibinternal?index=%d&quot;, n)
-					// trace.SpanFromContext(ictx).SetAttributes(attribute.String(&quot;url&quot;, url))
-					// trace.SpanFromContext(ictx).AddEvent(&quot;Fib loop count&quot;, trace.WithAttributes(attribute.Int(&quot;fib-loop&quot;, n)))
-					req, _ := http.NewRequestWithContext(ictx, &quot;GET&quot;, url, nil)
+					url := fmt.Sprintf("http://127.0.0.1:3000/fibinternal?index=%d", n)
+					// trace.SpanFromContext(ictx).SetAttributes(attribute.String("url", url))
+					// trace.SpanFromContext(ictx).AddEvent("Fib loop count", trace.WithAttributes(attribute.Int("fib-loop", n)))
+					req, _ := http.NewRequestWithContext(ictx, "GET", url, nil)
 					ictx, req = otelhttptrace.W3C(ictx, req)
 					otelhttptrace.Inject(ictx, req)
 					res, err := client.Do(req)
@@ -162,15 +162,15 @@ func fibHandler(w http.ResponseWriter, req *http.Request) {
 					}
 					resp, err := strconv.Atoi(string(body))
 					if err != nil {
-						trace.SpanFromContext(ictx).SetStatus(codes.Error, &quot;failure parsing&quot;)
+						trace.SpanFromContext(ictx).SetStatus(codes.Error, "failure parsing")
 						return err
 					}
-					trace.SpanFromContext(ictx).SetAttributes(attribute.Int(&quot;result&quot;, resp))
+					trace.SpanFromContext(ictx).SetAttributes(attribute.Int("result", resp))
 					mtx.Lock()
 					defer mtx.Unlock()
 
 					// CUSTOM SPAN: ere's some exciting addition. Put it in its own span
-					// _, span := tr.Start(ctx, &quot;calculation&quot;)
+					// _, span := tr.Start(ctx, "calculation")
 					ret += resp // the big calculation
 					// defer span.End()
 
@@ -181,15 +181,15 @@ func fibHandler(w http.ResponseWriter, req *http.Request) {
 						w.WriteHeader(503)
 						failed = true
 					}
-					fmt.Fprintf(w, &quot;Failed to call child index '%d'.\n&quot;, n)
+					fmt.Fprintf(w, "Failed to call child index '%d'.\n", n)
 				}
 				wg.Done()
 			}(i - offset)
 		}
 		wg.Wait()
 	}
-	trace.SpanFromContext(ctx).SetAttributes(attribute.Int(&quot;result&quot;, ret))
-	fmt.Fprintf(w, &quot;%d&quot;, ret)
+	trace.SpanFromContext(ctx).SetAttributes(attribute.Int("result", ret))
+	fmt.Fprintf(w, "%d", ret)
 }
 ```
 
