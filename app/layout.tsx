@@ -109,7 +109,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                       p-2 rounded-lg"
                     >
                       PC{">"}
-                      <span className="animate-cursor-blink group-hover:animate-cursor-spin inline-block">_</span>
+                      <span className="ml-2 animate-cursor-blink group-hover:animate-cursor-spin inline-block">_</span>
                     </Link>
                     <NavLinks />
                     <div className="mx-4 w-px h-6 bg-gray-200 dark:bg-gray-700" />
