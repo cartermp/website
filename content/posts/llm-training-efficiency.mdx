@@ -1,0 +1,71 @@
+---
+title: LLM training is finally getting more efficient
+description: DeepSeek V3 shows a 14x reduction in compute to train a state-of-the-art AI model.
+date: "2025-01-18"
+---
+
+On December 26th 2024, [DeepSeek V3](https://huggingface.co/deepseek-ai/DeepSeek-V3) was released by the [DeepSeek](https://www.deepseek.com/) organization, a Chinese AI lab.
+
+This model was among the last of a flurry of model releases by the end of 2024, most of which were open source and in the "GPT-4 class" of model.
+
+## 2024: the year of runtime efficiency gains in LLMs
+
+A major theme of 2024 was taking GPT-4 levels of model quality, but making them so efficient to run that you can even use them on an M1 laptop. In reality, this is a bit more complicated, since most models are released as a family of models, some of which are quite small (7B parameters or less) and some of which are quite large (70B parameters or more). The 70B+ models can still be run on local hardware, but the barrier to entry is a lot higher than the 7B+ models.
+
+This has been an extremely welcome development. Like many people, I was offended by the compute requirements needed to run models in 2023, and couldn't make much use of a lot of their capabilities in practice because integrating GPT-4 (or similar) to an application meant making that application very slow.
+
+Now a year later, the world is completely different. Tasks that used to take OpenAI 30 seconds to run on a fleet of GPUs now take 1 second on my desktop gaming computer. And I'm excited to squeeze even more compute efficiency out of these models in the future, as I believe there's still much ground to cover.
+
+But what about training? 2024 didn't show much progress on that front until DeepSeek V3.
+
+## The CHIPS act and GPU scarcity
+
+To get into this, I think it's important to mention the sociopolitical environment that AI labs operate in.
+
+Most American AI labs have done two things:
+
+1. Buy a ridiculous amount of the top-of-the-line AI chips from NVIDIA
+2. Not worry about burning GPU cycles on these chips
+
+They have lots of money to buy the hardware and lots of money to spend on compute. They're not in profit-seeking mode and they do not suffer scarcity in terms of capital nor talent.
+
+However, this is not necessarily true for AI labs around the world. The [CHIPS and Science Act](https://en.wikipedia.org/wiki/CHIPS_and_Science_Act) enacted under the Biden administration, amongst many other things, imposes a sanction on China. Chinese AI labs don't get the top of the line AI hardware that American companies predominantly design. And so as a consequence, Chinese AI labs must work with substandard hardware.
+
+One unintended consequence of creating scarcity in the market is that it forces different levels of innovation. In the case of DeepSeek, they had worse GPUs and less of them.
+
+## DeepSeek V3: A 14x reduction in GPU hours on worse hardware
+
+I like to compare [DeepSeek V3](https://huggingface.co/deepseek-ai/DeepSeek-V3) and [Llama3.3](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct), because despite the fact that these are technically different model families that serve different purposes, there are a lot of similarities in their training figures:
+
+- Both trained on a GPU cluster
+- Both pre-trained on ~15 trillion tokens
+- Both support long(ish) context inputs
+- Both had extensive post-training runs, like any modern LLM these days
+
+But when you stack up the compute, DeepSeek V3 is astonishing:
+
+
+Meta:
+
+- H100-80GB GPUs
+- 39.3 million GPU-hours of training
+
+DeepSeek:
+
+- H800 GPUs
+- 2.764 million of training
+
+
+That's a **14x reduction in total compute** on worse hardware. This is an astonishing achievement.
+
+## Is there funny business going on?
+
+There's speculation that [DeepSeek is training models on OpenAI outputs](https://bsky.app/profile/beebl.es/post/3lfqdwtttvs2y), which may allow them to bypass a lot of work to assemble better training data. It's not uncommon for Chinese companies to ignore the Terms of Service for US companies (and vice/versa), so this may also be a contributing factor.
+
+However, I don't think this is a unique problem. I would expect that every AI lab is "stealing" from one another to various extents because it's an extremely competitive market right now. Moreover, as a consumer, I don't really are. I care a lot more that we can get high quality models for less compute.
+
+## Will 2025 be the year of compute efficient training?
+
+There's a lot of demand for AI models that run faster, which is why they run faster for less compute now. But there's not as much demand for less compute used in training, at least directly. I may balk at the carbon emissions of a large-scale training run, but the final output is an artifact that runs efficiently.
+
+However, I must imagine that AI labs are craving more compute efficient training so that they can train more models, try different techniques, and produce better overall products. I sincerely hope this is just the first step in a miniature revolution in compute efficiency for training LLMs.
