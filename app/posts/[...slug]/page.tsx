@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation"
 import { allPosts } from "contentlayer/generated"
-
 import { Metadata } from "next"
 import { Mdx } from "@/components/mdx-components"
 import Link from "next/link"
+import { TagList } from "@/components/TagList"
 
 interface PostProps {
   params: {
@@ -24,14 +24,14 @@ function formatDate(date: string): string {
     month: "long",
     day: "numeric",
   });
-};
+}
 
 async function getPostFromParams(params: PostProps["params"]) {
   const slug = params?.slug?.join("/")
   const post = allPosts.find((post) => post.slugAsParams === slug)
 
   if (!post) {
-    null
+    return null
   }
 
   return post
@@ -76,15 +76,30 @@ export default async function PostPage({ params }: PostProps) {
           {post.description}
         </p>
       )}
-      <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
-        <time>{date}</time>
-        <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
-        <span>{readingTime}</span>
+      <div className="flex flex-col gap-4 mb-8">
+        <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
+          <time>{date}</time>
+          <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
+          <span>{readingTime}</span>
+        </div>
+        <div className="not-prose">
+          {post.tags && <TagList tags={post.tags} />}
+        </div>
       </div>
       <hr className="my-4" />
       <Mdx code={post.body.code} />
 
       <footer className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-800">
+        <div className="not-prose mb-4">
+          {post.tags && (
+            <>
+              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                Tagged with
+              </h3>
+              <TagList tags={post.tags} />
+            </>
+          )}
+        </div>
         <div className="flex items-center justify-between">
           <Link
             href="/"

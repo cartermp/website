@@ -2,6 +2,7 @@
 title: Three properties of data for making LLMs awesome
 description: How Data Relevancy, Data Magnitude, and Data Quality impact the effectiveness of LLMs for your use cases.
 date: "2024-03-04"
+tags: llms, data
 ---
 
 Back in May 2023, I helped launch my [first bona fide feature that uses LLMs in production](https://www.honeycomb.io/blog/introducing-query-assistant). It was difficult in lots of different ways, but one thing I didn’t elaborate in several blog posts was how lucky I was to have a coherent way to get the data I needed to make the feature actually useful for users.
@@ -55,7 +56,7 @@ I mentioned that Query Assistant takes the top 50 columns that are semantically 
 
 One [unexpectedly common use case](https://www.honeycomb.io/blog/we-shipped-ai-product#the_-byte_hex_value) for Query Assistant is to pull up a trace by its ID. People will paste an input like `0x6f781c83394ed2f33120370a11fced47` and expect a result. If you compare the embedding of this input to an embedded, typical OpenTelemetry tracing dataset and pull out the top 10 results, you’ll get a list like this:
 
-```
+```json
 {
   'error': 0.7858631994285529,
   'message.id': 0.7850713370035042,
