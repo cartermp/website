@@ -81,8 +81,7 @@ export default async function PostPage({ params }: PostProps) {
           <time>{date}</time>
           <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
           <span>{readingTime}</span>
-        </div>
-        <div className="not-prose">
+          <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
           {post.tags && <TagList tags={post.tags} />}
         </div>
       </div>
@@ -90,12 +89,9 @@ export default async function PostPage({ params }: PostProps) {
       <Mdx code={post.body.code} />
 
       <footer className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-800">
-        <div className="not-prose mb-4">
+        <div className="not-prose mb-4 space-y-2">
           {post.tags && (
             <>
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                Tagged with
-              </h3>
               <TagList tags={post.tags} />
             </>
           )}
