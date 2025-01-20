@@ -1,4 +1,3 @@
-// app/tags/[...tag]/page.tsx
 import { allPosts } from 'contentlayer/generated'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -16,12 +15,12 @@ export async function generateStaticParams(): Promise<TagPageProps["params"][]> 
   ))
   
   return Array.from(tags).map((tag) => ({
-    tag: [tag] // Return tag as an array
+    tag: [tag],
   }))
 }
 
 export default function TagPage({ params }: TagPageProps) {
-  const tag = params.tag[0] // Get the first (and only) tag segment
+  const tag = params.tag[0]
   
   const posts = allPosts
     .filter(post => post.tags?.split(',').map(t => t.trim()).includes(tag))
@@ -32,25 +31,36 @@ export default function TagPage({ params }: TagPageProps) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Posts tagged with &ldquo;{tag}&rdquo;</h1>
-      <div className="space-y-6">
-        {posts.map((post) => (
-          <article key={post._id} className="border-b border-gray-200 pb-6">
-            <Link href={post.slug} className="no-underline">
-              <h2 className="text-2xl font-semibold hover:text-purple-600 transition-colors">
-                {post.title}
-              </h2>
+    <ul className="space-y-6">
+      {posts.map((post) => (
+        <li key={post._id} className="group">
+          <div className="space-y-2">
+            <Link href={post.slug} className="block -mx-2 p-2 rounded">
+              <div className="flex items-baseline justify-between gap-4">
+                <span className="text-purple-700 dark:text-purple-300 text-lg">❯</span>
+                <span className="flex-1 font-medium text-lg text-gray-600 dark:text-gray-400
+                                hover:text-purple-700 dark:hover:text-purple-300 
+                                transition-colors">
+                  {post.title}
+                </span>
+                <time className="text-lg text-gray-500 dark:text-gray-400">
+                  {new Date(post.date).toLocaleDateString()}
+                </time>
+              </div>
             </Link>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">{post.description}</p>
+            {post.description && (
+              <p className="text-sm text-gray-600 dark:text-gray-400 ml-6">
+                {post.description}
+              </p>
+            )}
             {post.tags && (
-              <div className="mt-4">
+              <div className="ml-6">
                 <TagList tags={post.tags} />
               </div>
             )}
-          </article>
-        ))}
-      </div>
-    </div>
+          </div>
+        </li>
+      ))}
+    </ul>
   )
 }
