@@ -58,7 +58,7 @@ export default async function CalTrackPage() {
           href="/caltrack/add"
           className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
         >
-          Add Today's Calories
+          Add Today&apos;s Calories
         </Link>
       </div>
       
