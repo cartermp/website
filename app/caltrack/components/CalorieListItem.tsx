@@ -34,6 +34,8 @@ export function CalorieListItem({ date, entries, totalCalories, targetCalories }
     total: meals.reduce((sum, meal) => sum + meal.calories, 0)
   }))
 
+  const formattedDate = new Date(date).toISOString().split('T')[0];
+
   return (
     <li className="group border rounded-lg overflow-hidden">
       <button
@@ -47,7 +49,7 @@ export function CalorieListItem({ date, entries, totalCalories, targetCalories }
             ❯
           </span>
           <span className="flex-1 font-medium text-lg text-gray-600 dark:text-gray-400">
-            {new Date(`${date}T12:00:00`).toLocaleDateString()}
+            {formattedDate}
           </span>
           <span className={`text-lg ${
             totalCalories > targetCalories 
@@ -63,7 +65,7 @@ export function CalorieListItem({ date, entries, totalCalories, targetCalories }
         <div className="px-12 pb-4 space-y-4">
           <div className="flex justify-end">
             <Link
-              href={`/caltrack/edit/${date}`}
+              href={`/caltrack/edit/${formattedDate}`}
               className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
             >
               Edit Day

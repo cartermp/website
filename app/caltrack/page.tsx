@@ -1,33 +1,11 @@
-import { promises as fs } from 'fs'
-import path from 'path'
-import Papa from 'papaparse'
 import Link from 'next/link'
 import { CalorieListItem } from './components/CalorieListItem'
-
-interface CalorieEntry {
-  date: string
-  meal_type: string
-  meal_name: string
-  calories: number
-}
+import { getData } from '@/lib/getData'
 
 const TARGET_CALORIES = 2400
 
-async function getData(): Promise<CalorieEntry[]> {
-  const csvFile = path.join(process.cwd(), 'data', 'calorie_tracking.csv')
-  const fileContent = await fs.readFile(csvFile, 'utf-8')
-  
-  const { data } = Papa.parse<CalorieEntry>(fileContent, {
-    header: true,
-    dynamicTyping: true,
-    skipEmptyLines: true
-  })
-  
-  return data
-}
-
 export default async function CalTrackPage() {
-  const entries = await getData()
+  const entries = await getData() as CalorieEntry[]
   
   // Group entries by date
   const entriesByDate = entries.reduce((acc, entry) => {
