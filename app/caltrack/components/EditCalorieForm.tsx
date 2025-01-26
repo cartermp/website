@@ -170,7 +170,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
           
           <div className="space-y-4">
             {meal.items.map((item, itemIndex) => (
-              <div key={itemIndex} className="grid grid-cols-[1fr,1fr,auto] gap-4">
+              <div key={itemIndex} className="grid grid-cols-[minmax(0,1fr),120px,40px] gap-4 items-start">
                 <div className="flex flex-col w-full">
                   <input
                     type="text"
