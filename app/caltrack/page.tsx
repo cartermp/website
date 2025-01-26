@@ -9,7 +9,7 @@ const TARGET_CALORIES = 2400
 
 export default async function CalTrackPage() {
   const entries = await getData() as CalorieEntry[]
-  
+
   // Group entries by date
   const entriesByDate = entries.reduce((acc, entry) => {
     if (!acc[entry.date]) {
@@ -31,18 +31,23 @@ export default async function CalTrackPage() {
   // Calculate average
   const average = dailyEntries.reduce((sum, day) => sum + day.totalCalories, 0) / dailyEntries.length
 
+  const today = new Date().toISOString();
+  const todayEntry = dailyEntries.find(day =>
+    new Date(day.date).toISOString().split('T')[0] === today.split('T')[0]
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Calorie Tracking</h1>
-        <Link 
-          href="/caltrack/add"
+        <Link
+          href={todayEntry ? `/caltrack/edit/${today}` : "/caltrack/add"}
           className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
         >
           Add Today&apos;s Calories
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded">
         <div>
           <span className="text-gray-600 dark:text-gray-400">Daily Target:</span>
