@@ -30,7 +30,7 @@ interface EditCalorieFormProps {
 
 export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) {
   const router = useRouter()
-  
+
   // Group initial entries by meal type
   const initialMealsByType: MealGroup[] = MEAL_TYPES.map(type => ({
     type,
@@ -50,7 +50,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
   })
 
   const [meals, setMeals] = useState<MealGroup[]>(initialMealsByType)
-  
+
   const [errors, setErrors] = useState<{
     mealType: MealType;
     invalidItems: { index: number; nameError: string; caloriesError: string; }[];
@@ -61,7 +61,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
     newMeals[mealTypeIndex].items.push({ name: '', calories: '' })
     setMeals(newMeals)
   }
-  
+
   const removeItem = (mealTypeIndex: number, itemIndex: number) => {
     const newMeals = [...meals]
     newMeals[mealTypeIndex].items.splice(itemIndex, 1)
@@ -70,7 +70,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
     }
     setMeals(newMeals)
   }
-  
+
   const updateItem = (mealTypeIndex: number, itemIndex: number, field: keyof MealItem, value: string) => {
     const newMeals = [...meals]
     newMeals[mealTypeIndex].items[itemIndex] = {
@@ -79,7 +79,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
     }
     setMeals(newMeals)
   }
-  
+
   const validateForm = () => {
     // Check if any meal type has items with missing data
     const invalidMeals = meals.map((meal, mealIndex) => ({
@@ -95,7 +95,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
 
     return invalidMeals
   }
-  
+
   const getTotalCalories = () => {
     return meals.reduce((total, meal) => {
       return total + meal.items.reduce((mealTotal, item) => {
@@ -108,32 +108,50 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
     if (e.key === 'Enter') {
       // Prevent form submission on regular enter
       e.preventDefault()
-      
+
       // Submit only if cmd/ctrl + enter
       if (e.metaKey || e.ctrlKey) {
         handleSubmit(e)
       }
     }
   }
-  
+
+  const [currentFieldRefs] = useState(MEAL_TYPES.map(() => ({
+    nameRef: React.createRef<HTMLInputElement>(),
+    caloriesRef: React.createRef<HTMLInputElement>()
+  })))
+
+  const handleItemKeyDown = (e: React.KeyboardEvent, mealTypeIndex: number, itemIndex: number) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      const item = meals[mealTypeIndex].items[itemIndex]
+      if (item.name && item.calories) {
+        addItem(mealTypeIndex)
+        setTimeout(() => {
+          currentFieldRefs[mealTypeIndex].nameRef.current?.focus()
+        }, 0)
+      }
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     const formErrors = validateForm()
     if (formErrors.length > 0) {
       setErrors(formErrors)
       return
     }
-    
+
     setErrors([])
     try {
       // First, delete all entries for this date
       await fetch(`/api/caltrack/delete/${date}`, {
         method: 'DELETE'
       })
-      
+
       // Then add the new entries
-      const entries = meals.flatMap(meal => 
+      const entries = meals.flatMap(meal =>
         meal.items
           .filter(item => item.name && item.calories)
           .map(item => ({
@@ -143,7 +161,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
             calories: Number(item.calories)
           }))
       )
-      
+
       const res = await fetch('/api/caltrack/add', {
         method: 'POST',
         headers: {
@@ -151,7 +169,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
         },
         body: JSON.stringify({ entries }),
       })
-      
+
       if (res.ok) {
         router.push('/caltrack')
       }
@@ -167,12 +185,14 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
           <h2 className="text-xl font-medium text-gray-700 dark:text-gray-300">
             {meal.type}
           </h2>
-          
+
           <div className="space-y-4">
             {meal.items.map((item, itemIndex) => (
               <div key={itemIndex} className="grid grid-cols-[minmax(0,1fr),120px,40px] gap-4 items-start">
                 <div className="flex flex-col w-full">
                   <input
+                    ref={currentFieldRefs[mealIndex].nameRef}
+                    onKeyDown={(e) => handleItemKeyDown(e, mealIndex, itemIndex)}
                     type="text"
                     placeholder="Meal name"
                     value={item.name}
@@ -180,11 +200,10 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
                       updateItem(mealIndex, itemIndex, 'name', e.target.value)
                       setErrors([])
                     }}
-                    className={`p-2 border rounded dark:bg-gray-800 dark:border-gray-700 ${
-                      errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.nameError
-                        ? 'border-red-500'
-                        : ''
-                    }`}
+                    className={`p-2 border rounded dark:bg-gray-800 dark:border-gray-700 ${errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.nameError
+                      ? 'border-red-500'
+                      : ''
+                      }`}
                   />
                   {errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.nameError && (
                     <span className="text-red-500 text-sm mt-1">
@@ -194,6 +213,8 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
                 </div>
                 <div className="flex flex-col w-full">
                   <input
+                    ref={currentFieldRefs[mealIndex].nameRef}
+                    onKeyDown={(e) => handleItemKeyDown(e, mealIndex, itemIndex)}
                     type="number"
                     placeholder="Calories"
                     value={item.calories}
@@ -201,11 +222,10 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
                       updateItem(mealIndex, itemIndex, 'calories', e.target.value)
                       setErrors([])
                     }}
-                    className={`p-2 border rounded dark:bg-gray-800 dark:border-gray-700 ${
-                      errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.caloriesError
-                        ? 'border-red-500'
-                        : ''
-                    }`}
+                    className={`p-2 border rounded dark:bg-gray-800 dark:border-gray-700 ${errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.caloriesError
+                      ? 'border-red-500'
+                      : ''
+                      }`}
                   />
                   {errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.caloriesError && (
                     <span className="text-red-500 text-sm mt-1">
@@ -225,7 +245,7 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
               </div>
             ))}
           </div>
-          
+
           <button
             type="button"
             onClick={() => addItem(mealIndex)}
@@ -235,12 +255,12 @@ export function EditCalorieForm({ date, initialEntries }: EditCalorieFormProps) 
           </button>
         </div>
       ))}
-      
+
       <div className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-800 rounded">
         <span className="text-lg font-medium">Total Calories:</span>
         <span className="text-lg">{getTotalCalories()}</span>
       </div>
-      
+
       <div className="flex justify-end gap-4">
         <button
           type="button"
