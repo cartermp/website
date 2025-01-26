@@ -1,4 +1,4 @@
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, '')
 
 export async function getData() {
     const res = await fetch(`${baseUrl}/api/caltrack`, {
