@@ -16,6 +16,14 @@ interface CalorieListItemProps {
   targetCalories: number
 }
 
+function formatDate(date: string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 export function CalorieListItem({ date, entries, totalCalories, targetCalories }: CalorieListItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -49,7 +57,7 @@ export function CalorieListItem({ date, entries, totalCalories, targetCalories }
             ❯
           </span>
           <span className="flex-1 font-medium text-lg text-gray-600 dark:text-gray-400">
-            {formattedDate}
+            {formatDate(date)}
           </span>
           <span className={`text-lg ${
             totalCalories > targetCalories 
