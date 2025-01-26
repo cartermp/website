@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CalorieListItem } from './components/CalorieListItem'
 import { getData } from '@/lib/getData'
 
+export const revalidate = 0
 const TARGET_CALORIES = 2400
 
 export default async function CalTrackPage() {

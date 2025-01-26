@@ -2,6 +2,8 @@ import { EditCalorieForm } from '../../components/EditCalorieForm'
 import { notFound } from 'next/navigation'
 import { getEntriesForDate } from '@/lib/getData'
 
+export const revalidate = 0
+
 interface CalorieEntry {
   date: string
   meal_type: string
