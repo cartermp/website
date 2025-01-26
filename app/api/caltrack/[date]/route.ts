@@ -1,6 +1,8 @@
 import { sql } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic"
+
 export async function GET(request: Request, { params }: { params: { date: string } }) {
     const data = await sql`
       SELECT date::text, meal_type, meal_name, calories 

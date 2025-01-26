@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getEntriesForDate } from '@/lib/getData'
 
 export const revalidate = 0
+export const dynamic = "force-dynamic"
 
 interface CalorieEntry {
   date: string

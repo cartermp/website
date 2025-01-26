@@ -3,6 +3,8 @@ import { CalorieListItem } from './components/CalorieListItem'
 import { getData } from '@/lib/getData'
 
 export const revalidate = 0
+export const dynamic = "force-dynamic"
+
 const TARGET_CALORIES = 2400
 
 export default async function CalTrackPage() {
