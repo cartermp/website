@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { CalorieListItem } from './components/CalorieListItem'
 import { getData } from '@/lib/getData'
+import { PageHeader } from './components/PageHeader'
 
 export const revalidate = 0
 export const dynamic = "force-dynamic"
@@ -31,22 +32,17 @@ export default async function CalTrackPage() {
   // Calculate average
   const average = dailyEntries.reduce((sum, day) => sum + day.totalCalories, 0) / dailyEntries.length
 
-  const today = new Date().toISOString();
+  const today = new Date().toISOString().split('T')[0]
   const todayEntry = dailyEntries.find(day =>
     new Date(day.date).toISOString().split('T')[0] === today.split('T')[0]
   );
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Calorie Tracking</h1>
-        <Link
-          href={todayEntry ? `/caltrack/edit/${today}` : "/caltrack/add"}
-          className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
-        >
-          Add Today&apos;s Calories
-        </Link>
-      </div>
+      <PageHeader
+        today={today}
+        todayEntry={!!todayEntry}
+      />
 
       <div className="grid grid-cols-2 gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded">
         <div>

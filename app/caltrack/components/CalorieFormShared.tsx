@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { MEAL_TYPES } from '@/lib/constants'
 
-const MEAL_TYPES = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'] as const
 type MealType = typeof MEAL_TYPES[number]
 
 interface CalorieEntry {
