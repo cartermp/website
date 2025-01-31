@@ -10,6 +10,7 @@ import { CalorieListItem } from './components/CalorieListItem'
 import { Card } from './components/ui/card'
 import { StatDisplay } from './components/ui/stat-display'
 import type { CalorieEntry } from '@/lib/types'
+import { CalorieTrendChart } from './components/CalorieTrendChart'
 
 export const revalidate = 0
 export const dynamic = "force-dynamic"
@@ -40,6 +41,18 @@ export default async function CalTrackPage() {
             value={`${Math.round(average)} calories`}
           />
         </div>
+      </Card>
+
+
+
+      <Card variant="outline" className="p-4">
+        <h2 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
+          Calorie Intake Trends
+        </h2>
+        <CalorieTrendChart 
+          entries={dailyEntries} 
+          targetCalories={TARGET_CALORIES}
+        />
       </Card>
 
       <ul className="space-y-4">
