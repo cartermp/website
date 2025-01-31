@@ -20,6 +20,7 @@
     "@vercel/speed-insights": "^1.1.0",
     "autoprefixer": "10.4.14",
     "bright": "^1.0.0",
+    "class-variance-authority": "^0.7.1",
     "contentlayer": "^0.3.2",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",

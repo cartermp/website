@@ -1,5 +1,6 @@
 'use client'
 
+import { CalorieEntry } from "@/lib/types"
 import { CalorieFormShared } from "./CalorieFormShared"
 
 interface EditCalorieFormProps {

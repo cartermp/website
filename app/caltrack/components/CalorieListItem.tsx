@@ -3,40 +3,41 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { formatDate } from '@/lib/dateUtils'
-
-interface MealEntry {
-  meal_type: string
-  meal_name: string
-  calories: number
-}
+import { groupEntriesByMealType, calculateMealTypeTotals } from '@/lib/calorieUtils'
+import { Card } from './ui/card'
+import type { CalorieEntry } from '@/lib/types'
 
 interface CalorieListItemProps {
   date: string
-  entries: MealEntry[]
+  entries: CalorieEntry[]
   totalCalories: number
   targetCalories: number
 }
 
-export function CalorieListItem({ date, entries, totalCalories, targetCalories }: CalorieListItemProps) {
+export function CalorieListItem({ 
+  date, 
+  entries, 
+  totalCalories, 
+  targetCalories 
+}: CalorieListItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
-  // Group entries by meal type
-  const mealsByType = entries.reduce((acc, entry) => {
-    if (!acc[entry.meal_type]) {
-      acc[entry.meal_type] = []
-    }
-    acc[entry.meal_type].push(entry)
-    return acc
-  }, {} as Record<string, MealEntry[]>)
+  // Use utility functions for consistent data organization
+  const mealsByType = groupEntriesByMealType(entries)
+  const mealTypeTotals = calculateMealTypeTotals(mealsByType)
 
-  // Calculate totals for each meal type
-  const mealTypeTotals = Object.entries(mealsByType).map(([type, meals]) => ({
-    type,
-    total: meals.reduce((sum, meal) => sum + meal.calories, 0)
-  }))
+  // Determine color based on calorie comparison
+  const calorieColor = totalCalories > targetCalories
+    ? 'text-red-500 dark:text-red-400'
+    : 'text-green-500 dark:text-green-400'
 
   return (
-    <li className="group border rounded-lg overflow-hidden">
+    <Card<'li'> 
+      as="li"
+      variant="outline"
+      padding="none"
+      className="overflow-hidden"
+    >
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
@@ -50,29 +51,26 @@ export function CalorieListItem({ date, entries, totalCalories, targetCalories }
           <span className="flex-1 font-medium text-lg text-gray-600 dark:text-gray-400">
             {formatDate(date)}
           </span>
-          <span className={`text-lg ${
-            totalCalories > targetCalories 
-              ? 'text-red-500 dark:text-red-400'
-              : 'text-green-500 dark:text-green-400'
-          }`}>
-            {totalCalories} calories
-          </span>
+          <div className="flex items-center gap-4">
+            <span className={`text-lg ${calorieColor}`}>
+              {totalCalories} calories
+            </span>
+            <Link href={`/caltrack/edit/${date}`}>
+              <span className="text-lg text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300">
+                Edit
+              </span>
+            </Link>
+          </div>
         </div>
       </button>
 
       {isExpanded && (
         <div className="px-12 pb-4 space-y-4">
-          <div className="flex justify-end">
-            <Link
-              href={`/caltrack/edit/${date}`}
-              className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
-            >
-              Edit Day
-            </Link>
-          </div>
           {mealTypeTotals.map(({ type, total }) => (
             <div key={type}>
-              <h3 className="font-medium text-gray-700 dark:text-gray-300">{type} ({total} cal)</h3>
+              <h3 className="font-medium text-gray-700 dark:text-gray-300">
+                {type} ({total} cal)
+              </h3>
               <ul className="mt-2 space-y-1">
                 {mealsByType[type].map((meal, index) => (
                   <li key={index} className="text-gray-600 dark:text-gray-400 flex justify-between">
@@ -85,6 +83,6 @@ export function CalorieListItem({ date, entries, totalCalories, targetCalories }
           ))}
         </div>
       )}
-    </li>
+    </Card>
   )
 }

@@ -1,78 +1,80 @@
 import { getEntriesForDate } from "@/lib/getData"
+import { formatDate } from "@/lib/dateUtils"
+import { 
+    groupEntriesByMealType, 
+    calculateMealTypeTotals, 
+    TARGET_CALORIES 
+} from "@/lib/calorieUtils"
+import type { CalorieEntry } from "@/lib/types"
+import { Card } from "../../components/ui/card"
+import { StatDisplay } from "../../components/ui/stat-display"
 
 interface Props {
     params: { date: string }
 }
 
-interface MealEntry {
-    meal_type: string
-    meal_name: string
-    calories: number
-}
-
-function formatDate(date: string): string {
-    return new Date(date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        timeZone: 'UTC',
-    });
-}
-
-export default async function SharedCaloriePage({ params: { date } }: Props) {
-    const TARGET_CALORIES = 2400
-
+export default async function SharableCalorieReportPage({ params: { date } }: Props) {
     const entries = await getEntriesForDate(date) as CalorieEntry[]
     const totalCalories = entries.reduce((sum, entry) => sum + entry.calories, 0)
 
     // Group entries by meal type
-    const mealsByType = entries.reduce((acc, entry) => {
-        if (!acc[entry.meal_type]) {
-            acc[entry.meal_type] = []
-        }
-        acc[entry.meal_type].push(entry)
-        return acc
-    }, {} as Record<string, MealEntry[]>)
+    const mealsByType = groupEntriesByMealType(entries)
+    const mealTypeTotals = calculateMealTypeTotals(mealsByType)
 
-    // Calculate totals for each meal type
-    const mealTypeTotals = Object.entries(mealsByType).map(([type, meals]) => ({
-        type,
-        total: meals.reduce((sum, meal) => sum + meal.calories, 0)
-    }))
+    // Determine color for total calories
+    const calorieColor = totalCalories > TARGET_CALORIES
+        ? 'text-red-600 dark:text-red-400'
+        : 'text-green-600 dark:text-green-400'
 
     return (
         <div className="max-w-2xl mx-auto p-6 space-y-6">
-            <h1 className="text-2xl font-bold">Phillip&apos;s Calorie Log -- {formatDate(date)}</h1>
-
-            <div className="grid grid-cols-2 gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded">
-                <div>
-                    <span className="text-lg text-gray-600 dark:text-gray-400">Target:</span>
-                    <span className="ml-2 text-lg font-medium">{TARGET_CALORIES} calories</span>
-                </div>
-                <div>
-                    <span className="text-lg text-gray-600 dark:text-gray-400">Actual:</span>
-                    <span className={`ml-2 text-lg font-medium ${totalCalories > TARGET_CALORIES
-                        ? 'text-red-600 dark:text-red-400'
-                        : 'text-green-600 dark:text-green-400'
-                        }`}>
-                        {totalCalories} calories
-                    </span>
-                </div>
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-purple-300">
+                    Daily Food Journal
+                </h1>
+                <p className="text-xl text-gray-500 dark:text-gray-400 mt-2">
+                    {formatDate(date)}
+                </p>
             </div>
 
-            <div className="px-12 pb-4 space-y-4">
+            <Card variant="stats" className="p-4">
+                <div className="grid grid-cols-2 gap-4">
+                    <StatDisplay
+                        label="Target"
+                        value={`${TARGET_CALORIES} calories`}
+                    />
+                    <StatDisplay
+                        label="Actual"
+                        value={`${totalCalories} calories`}
+                        valueColor={calorieColor}
+                    />
+                </div>
+            </Card>
+
+            <div className="space-y-4">
                 {mealTypeTotals.map(({ type, total }) => (
-                    <div key={type}>
-                        <h3 className="font-medium text-gray-700 dark:text-gray-300">{type} ({total} cal)</h3>
-                        <ul className="mt-2 space-y-1">
-                            {mealsByType[type].map((meal, index) => (
-                                <li key={index} className="text-gray-600 dark:text-gray-400 flex justify-between">
-                                    <span>{meal.meal_name}</span>
-                                    <span>{meal.calories} cal</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    <Card 
+                        key={type} 
+                        variant="outline"
+                        className="overflow-hidden"
+                    >
+                        <div className="p-4">
+                            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                                {type} ({total} cal)
+                            </h3>
+                            <ul className="mt-3 space-y-2">
+                                {mealsByType[type].map((meal, index) => (
+                                    <li 
+                                        key={index} 
+                                        className="text-gray-600 dark:text-gray-400 flex justify-between"
+                                    >
+                                        <span>{meal.meal_name}</span>
+                                        <span>{meal.calories} cal</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </Card>
                 ))}
             </div>
         </div>
