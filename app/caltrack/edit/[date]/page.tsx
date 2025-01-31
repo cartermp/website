@@ -5,12 +5,7 @@ import { getEntriesForDate } from '@/lib/getData'
 export const revalidate = 0
 export const dynamic = "force-dynamic"
 
-interface CalorieEntry {
-  date: string
-  meal_type: string
-  meal_name: string
-  calories: number
-}
+import { CalorieEntry } from '@/lib/types'
 
 export default async function EditCaloriesPage({
   params
@@ -18,7 +13,7 @@ export default async function EditCaloriesPage({
   params: { date: string }
 }) {
   const entries = await getEntriesForDate(params.date) as CalorieEntry[]
-  
+
   if (entries.length === 0) {
     notFound()
   }
@@ -28,7 +23,7 @@ export default async function EditCaloriesPage({
       <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
         Edit Calories for {new Date(params.date).toLocaleDateString()}
       </h1>
-      
+
       <EditCalorieForm date={params.date} initialEntries={entries} />
     </div>
   )
