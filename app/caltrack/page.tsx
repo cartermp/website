@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CalorieListItem } from './components/CalorieListItem'
 import { getData } from '@/lib/getData'
 import { PageHeader } from './components/PageHeader'
+import { getToday, groupEntriesByDate, compareDates } from '@/lib/dateUtils'
 
 export const revalidate = 0
 export const dynamic = "force-dynamic"
@@ -11,14 +12,8 @@ const TARGET_CALORIES = 2400
 export default async function CalTrackPage() {
   const entries = await getData() as CalorieEntry[]
 
-  // Group entries by date
-  const entriesByDate = entries.reduce((acc, entry) => {
-    if (!acc[entry.date]) {
-      acc[entry.date] = []
-    }
-    acc[entry.date].push(entry)
-    return acc
-  }, {} as Record<string, CalorieEntry[]>)
+  // Group entries by date using our utility function
+  const entriesByDate = groupEntriesByDate(entries)
 
   // Calculate daily totals and sort by date
   const dailyEntries = Object.entries(entriesByDate)
@@ -27,22 +22,19 @@ export default async function CalTrackPage() {
       entries: dayEntries,
       totalCalories: dayEntries.reduce((sum, entry) => sum + entry.calories, 0)
     }))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .sort((a, b) => -compareDates(a.date, b.date)) // Negative to sort in descending order
 
   // Calculate average
-  const average = dailyEntries.reduce((sum, day) => sum + day.totalCalories, 0) / dailyEntries.length
+  const average = dailyEntries.length > 0
+    ? dailyEntries.reduce((sum, day) => sum + day.totalCalories, 0) / dailyEntries.length
+    : 0
 
-  const today = new Date().toISOString().split('T')[0]
-  const todayEntry = dailyEntries.find(day =>
-    new Date(day.date).toISOString().split('T')[0] === today.split('T')[0]
-  );
+  const today = getToday()
+  const todayEntry = dailyEntries.find(day => day.date === today)
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        today={today}
-        todayEntry={!!todayEntry}
-      />
+      <PageHeader todayEntry={!!todayEntry} />
 
       <div className="grid grid-cols-2 gap-4 p-4 bg-gray-100 dark:bg-gray-800 rounded">
         <div>

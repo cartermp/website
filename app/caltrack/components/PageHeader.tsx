@@ -2,13 +2,15 @@
 
 import Link from 'next/link'
 import { ShareButton } from './ShareButton'
+import { getToday } from '@/lib/dateUtils'
 
 interface PageHeaderProps {
-    today: string
     todayEntry?: boolean
 }
 
-export function PageHeader({ today, todayEntry }: PageHeaderProps) {
+export function PageHeader({ todayEntry }: PageHeaderProps) {
+    const today = getToday()
+    
     return (
         <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Calorie Tracking</h1>

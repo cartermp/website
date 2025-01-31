@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { formatDate } from '@/lib/dateUtils'
 
 interface MealEntry {
   meal_type: string
@@ -14,15 +15,6 @@ interface CalorieListItemProps {
   entries: MealEntry[]
   totalCalories: number
   targetCalories: number
-}
-
-function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    timeZone: 'UTC',
-  });
 }
 
 export function CalorieListItem({ date, entries, totalCalories, targetCalories }: CalorieListItemProps) {
@@ -42,8 +34,6 @@ export function CalorieListItem({ date, entries, totalCalories, targetCalories }
     type,
     total: meals.reduce((sum, meal) => sum + meal.calories, 0)
   }))
-
-  const formattedDate = new Date(date).toISOString().split('T')[0];
 
   return (
     <li className="group border rounded-lg overflow-hidden">
@@ -74,7 +64,7 @@ export function CalorieListItem({ date, entries, totalCalories, targetCalories }
         <div className="px-12 pb-4 space-y-4">
           <div className="flex justify-end">
             <Link
-              href={`/caltrack/edit/${formattedDate}`}
+              href={`/caltrack/edit/${date}`}
               className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
             >
               Edit Day
