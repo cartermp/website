@@ -33,11 +33,13 @@ export function dateToString(date: string | Date): string {
  */
 export function formatDate(dateStr: string): string {
     const [year, month, day] = dateStr.split('-').map(Number)
-    const date = new Date(year, month - 1, day)  // month is 0-based in JS
+    // Create date in UTC by using Date.UTC()
+    const date = new Date(Date.UTC(year, month - 1, day))
     return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
-        day: "numeric"
+        day: "numeric",
+        timeZone: 'UTC'  // Ensure we interpret the date in UTC
     })
 }
 
