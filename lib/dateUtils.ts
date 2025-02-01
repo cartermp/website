@@ -13,9 +13,14 @@ export function getToday(): string {
 
 /**
  * Converts any date string or Date object to YYYY-MM-DD format
- * Preserves the timezone of the input date
+ * Handles various input formats including ISO strings with time components
  */
 export function dateToString(date: string | Date): string {
+    // If it's already in YYYY-MM-DD format, return as is
+    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        return date
+    }
+
     const d = typeof date === 'string' ? new Date(date) : date
     const year = d.getFullYear()
     const month = String(d.getMonth() + 1).padStart(2, '0')
@@ -24,8 +29,7 @@ export function dateToString(date: string | Date): string {
 }
 
 /**
- * Formats a date string for display
- * @param dateStr Date string in any format
+ * Formats a date for display using the user's timezone
  */
 export function formatDate(dateStr: string): string {
     const [year, month, day] = dateStr.split('-').map(Number)
@@ -38,29 +42,7 @@ export function formatDate(dateStr: string): string {
 }
 
 /**
- * Validates if a string is a valid YYYY-MM-DD date
- * @param dateStr Date string to validate
- */
-export function isValidDateString(dateStr: string): boolean {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-        return false
-    }
-
-    const date = new Date(dateStr)
-    return date.toString() !== 'Invalid Date'
-}
-
-/**
- * Normalizes a Date object or string to local timezone midnight
- * @param date Date object or string to normalize
- */
-export function normalizeToLocalMidnight(date: Date | string): Date {
-    const d = typeof date === 'string' ? new Date(date) : date
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate())
-}
-
-/**
- * Groups entries by date, ensuring consistent date format in local timezone
+ * Groups entries by date, ensuring consistent date format
  * @param entries Array of entries with a date property
  */
 export function groupEntriesByDate<T extends { date: string }>(entries: T[]): Record<string, T[]> {
@@ -78,11 +60,11 @@ export function groupEntriesByDate<T extends { date: string }>(entries: T[]): Re
 }
 
 /**
- * Compares two dates (ignoring time) in local timezone
+ * Compares two dates (ignoring time)
  * @returns -1 if date1 < date2, 0 if equal, 1 if date1 > date2
  */
 export function compareDates(date1: string | Date, date2: string | Date): number {
-    const d1 = normalizeToLocalMidnight(date1)
-    const d2 = normalizeToLocalMidnight(date2)
+    const d1 = new Date(dateToString(date1))
+    const d2 = new Date(dateToString(date2))
     return d1 < d2 ? -1 : d1 > d2 ? 1 : 0
 }
