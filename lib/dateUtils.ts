@@ -1,20 +1,26 @@
 // lib/dateUtils.ts
 
 /**
- * Gets today's date in YYYY-MM-DD format, normalized to UTC midnight
+ * Gets today's date in YYYY-MM-DD format in the user's local timezone
  */
 export function getToday(): string {
     const now = new Date()
-    return dateToString(now)
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
 }
 
 /**
  * Converts any date string or Date object to YYYY-MM-DD format
- * Handles various input formats including ISO strings with time components
+ * Preserves the timezone of the input date
  */
 export function dateToString(date: string | Date): string {
     const d = typeof date === 'string' ? new Date(date) : date
-    return d.toISOString().split('T')[0]
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
 }
 
 /**
@@ -22,13 +28,11 @@ export function dateToString(date: string | Date): string {
  * @param dateStr Date string in any format
  */
 export function formatDate(dateStr: string): string {
-    // Ensure we're working with YYYY-MM-DD
-    const normalizedDate = dateToString(dateStr)
-    return new Date(normalizedDate + 'T00:00:00Z').toLocaleDateString("en-US", {
+    const date = new Date(dateStr)
+    return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
-        day: "numeric",
-        timeZone: 'UTC'
+        day: "numeric"
     })
 }
 
@@ -41,21 +45,21 @@ export function isValidDateString(dateStr: string): boolean {
         return false
     }
 
-    const date = new Date(dateStr + 'T00:00:00Z')
+    const date = new Date(dateStr)
     return date.toString() !== 'Invalid Date'
 }
 
 /**
- * Normalizes a Date object or string to UTC midnight
+ * Normalizes a Date object or string to local timezone midnight
  * @param date Date object or string to normalize
  */
-export function normalizeToUTCMidnight(date: Date | string): Date {
-    const dateStr = dateToString(date)
-    return new Date(dateStr + 'T00:00:00Z')
+export function normalizeToLocalMidnight(date: Date | string): Date {
+    const d = typeof date === 'string' ? new Date(date) : date
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate())
 }
 
 /**
- * Groups entries by date, ensuring consistent date format
+ * Groups entries by date, ensuring consistent date format in local timezone
  * @param entries Array of entries with a date property
  */
 export function groupEntriesByDate<T extends { date: string }>(entries: T[]): Record<string, T[]> {
@@ -73,11 +77,11 @@ export function groupEntriesByDate<T extends { date: string }>(entries: T[]): Re
 }
 
 /**
- * Compares two dates (ignoring time)
+ * Compares two dates (ignoring time) in local timezone
  * @returns -1 if date1 < date2, 0 if equal, 1 if date1 > date2
  */
 export function compareDates(date1: string | Date, date2: string | Date): number {
-    const d1 = normalizeToUTCMidnight(date1)
-    const d2 = normalizeToUTCMidnight(date2)
+    const d1 = normalizeToLocalMidnight(date1)
+    const d2 = normalizeToLocalMidnight(date2)
     return d1 < d2 ? -1 : d1 > d2 ? 1 : 0
 }
