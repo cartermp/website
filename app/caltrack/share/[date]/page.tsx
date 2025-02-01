@@ -1,19 +1,44 @@
-import { getEntriesForDate } from "@/lib/getData"
+import { getEntriesForDate, getData } from "@/lib/getData"
 import { formatDate } from "@/lib/dateUtils"
-import { 
-    groupEntriesByMealType, 
-    calculateMealTypeTotals, 
-    TARGET_CALORIES 
+import {
+    groupEntriesByMealType,
+    calculateMealTypeTotals,
+    TARGET_CALORIES
 } from "@/lib/calorieUtils"
 import type { CalorieEntry } from "@/lib/types"
 import { Card } from "../../components/ui/card"
 import { StatDisplay } from "../../components/ui/stat-display"
+import type { Metadata } from 'next'
 
 interface Props {
     params: { date: string }
 }
 
-export default async function SharableCalorieReportPage({ params: { date } }: Props) {
+// This sets this page to be statically generated
+export const dynamic = 'force-static'
+export const revalidate = false
+
+// Generate all possible date paths at build time
+export async function generateStaticParams() {
+    const entries = await getData() as CalorieEntry[]
+    const uniqueDates = Array.from(new Set(entries.map(entry => entry.date)))
+
+    return uniqueDates.map((date) => ({
+        date,
+    }))
+}
+
+// Generate metadata for the page
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const formattedDate = formatDate(params.date)
+
+    return {
+        title: `Daily Food Journal - ${formattedDate}`,
+        description: `Food journal entries for ${formattedDate}`,
+    }
+}
+
+export default async function SharedCaloriePage({ params: { date } }: Props) {
     const entries = await getEntriesForDate(date) as CalorieEntry[]
     const totalCalories = entries.reduce((sum, entry) => sum + entry.calories, 0)
 
@@ -53,8 +78,8 @@ export default async function SharableCalorieReportPage({ params: { date } }: Pr
 
             <div className="space-y-4">
                 {mealTypeTotals.map(({ type, total }) => (
-                    <Card 
-                        key={type} 
+                    <Card
+                        key={type}
                         variant="outline"
                         className="overflow-hidden"
                     >
@@ -64,8 +89,8 @@ export default async function SharableCalorieReportPage({ params: { date } }: Pr
                             </h3>
                             <ul className="mt-3 space-y-2">
                                 {mealsByType[type].map((meal, index) => (
-                                    <li 
-                                        key={index} 
+                                    <li
+                                        key={index}
                                         className="text-gray-600 dark:text-gray-400 flex justify-between"
                                     >
                                         <span>{meal.meal_name}</span>
