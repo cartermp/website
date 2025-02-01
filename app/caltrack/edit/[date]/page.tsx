@@ -6,6 +6,7 @@ export const revalidate = 0
 export const dynamic = "force-dynamic"
 
 import { CalorieEntry } from '@/lib/types'
+import { formatDate } from '@/lib/dateUtils'
 
 export default async function EditCaloriesPage({
   params
@@ -21,7 +22,7 @@ export default async function EditCaloriesPage({
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
-        Edit Calories for {new Date(params.date).toLocaleDateString()}
+        Edit Calories for {formatDate(params.date)}
       </h1>
 
       <EditCalorieForm date={params.date} initialEntries={entries} />
