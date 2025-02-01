@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import { getToday, compareDates } from '@/lib/dateUtils'
-import { calculateDailyEntries, calculateDailyAverage, TARGET_CALORIES } from '@/lib/calorieUtils'
+import { calculateDailyEntries, calculateDailyAverage, TARGET_CALORIES, MAX_TDEE_CALORIES } from '@/lib/calorieUtils'
 import { Card } from './ui/card'
 import { StatDisplay } from './ui/stat-display'
 import { CalorieListItem } from './CalorieListItem'
@@ -48,6 +48,7 @@ export function CalorieList({ initialEntries }: CalorieListProps) {
         <CalorieTrendChart 
           entries={dailyEntries} 
           targetCalories={TARGET_CALORIES}
+          maxCalories={MAX_TDEE_CALORIES}
         />
       </Card>
 

@@ -34,4 +34,5 @@ export function calculateMealTypeTotals(mealsByType: Record<string, CalorieEntry
     }))
 }
 
-export const TARGET_CALORIES = 2400 // Moved from individual components
+export const TARGET_CALORIES = 2400
+export const MAX_TDEE_CALORIES = 3500

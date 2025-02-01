@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import type { MealGroup, CalorieEntry, MealType } from '../types'
+import type { MealGroup, CalorieEntry } from '../types'
 import { MEAL_TYPES } from '../types'
 
 interface UseCalorieFormProps {
@@ -10,12 +10,7 @@ interface UseCalorieFormProps {
 }
 
 interface FormError {
-    mealType: MealType
-    invalidItems: {
-        index: number
-        nameError: string
-        caloriesError: string
-    }[]
+    message: string;
 }
 
 export function useCalorieForm({ date, initialEntries = [], mode }: UseCalorieFormProps) {
@@ -42,7 +37,7 @@ export function useCalorieForm({ date, initialEntries = [], mode }: UseCalorieFo
     })
 
     const [meals, setMeals] = useState<MealGroup[]>(initialMealsByType)
-    const [errors, setErrors] = useState<FormError[]>([])
+    const [error, setError] = useState<FormError | null>(null)
 
     const currentFieldRefs = useRef(MEAL_TYPES.map(() => ({
         nameRef: { current: null } as React.RefObject<HTMLInputElement>,
@@ -50,13 +45,26 @@ export function useCalorieForm({ date, initialEntries = [], mode }: UseCalorieFo
     })))
 
     const addItem = useCallback((mealTypeIndex: number) => {
-        console.log('Adding item to meal type:', mealTypeIndex) // Debug log
-
         setMeals(prev => {
             const newMeals = [...prev]
-            // Explicitly create a new items array with a single new item
+            const newMeal = { name: '', calories: '' }
+            newMeals[mealTypeIndex].items = [...newMeals[mealTypeIndex].items, newMeal]
+            return newMeals
+        })
+    }, [])
+
+    const removeItem = useCallback((mealTypeIndex: number, itemIndex: number) => {
+        setMeals(prev => {
+            const newMeals = [...prev]
             const currentItems = [...newMeals[mealTypeIndex].items]
-            currentItems.push({ name: '', calories: '' })
+
+            // Remove the specific item
+            currentItems.splice(itemIndex, 1)
+
+            // Ensure at least one empty item remains
+            if (currentItems.length === 0) {
+                currentItems.push({ name: '', calories: '' })
+            }
 
             newMeals[mealTypeIndex] = {
                 ...newMeals[mealTypeIndex],
@@ -67,54 +75,38 @@ export function useCalorieForm({ date, initialEntries = [], mode }: UseCalorieFo
         })
     }, [])
 
-    const removeItem = useCallback((mealTypeIndex: number, itemIndex: number) => {
+    const updateItem = useCallback((mealTypeIndex: number, itemIndex: number, field: keyof MealGroup['items'][number], value: string) => {
         setMeals(prev => {
             const newMeals = [...prev]
-            const mealGroup = [...newMeals[mealTypeIndex].items]
-
-            // Remove the specific item
-            mealGroup.splice(itemIndex, 1)
-
-            // Ensure at least one empty item remains
-            if (mealGroup.length === 0) {
-                mealGroup.push({ name: '', calories: '' })
+            const currentItems = [...newMeals[mealTypeIndex].items]
+            currentItems[itemIndex] = {
+                ...currentItems[itemIndex],
+                [field]: value
             }
 
             newMeals[mealTypeIndex] = {
                 ...newMeals[mealTypeIndex],
-                items: mealGroup
+                items: currentItems
             }
 
-            return newMeals
-        })
-    }, [])
-
-    const updateItem = useCallback((mealTypeIndex: number, itemIndex: number, field: keyof MealGroup['items'][number], value: string) => {
-        setMeals(prev => {
-            const newMeals = [...prev]
-            newMeals[mealTypeIndex].items = [...newMeals[mealTypeIndex].items]
-            newMeals[mealTypeIndex].items[itemIndex] = {
-                ...newMeals[mealTypeIndex].items[itemIndex],
-                [field]: value
-            }
             return newMeals
         })
         setSubmitError(null)
     }, [])
 
     const validateForm = useCallback(() => {
-        const invalidMeals = meals.map((meal, mealIndex) => ({
-            mealType: meal.type,
-            invalidItems: meal.items
-                .map((item, itemIndex) => ({
-                    index: itemIndex,
-                    nameError: !item.name.trim() ? "Name is required" : "",
-                    caloriesError: !item.calories ? "Calories are required" : ""
-                }))
-                .filter(item => item.nameError || item.caloriesError)
-        })).filter(meal => meal.invalidItems.length > 0)
+        // Check if there's at least one complete meal entry
+        const hasCompleteMeal = meals.some(meal =>
+            meal.items.some(item =>
+                item.name.trim() && item.calories
+            )
+        )
 
-        return invalidMeals
+        if (!hasCompleteMeal) {
+            return { message: "Please add at least one meal with both name and calories" }
+        }
+
+        return null
     }, [meals])
 
     const getTotalCalories = useCallback(() => {
@@ -128,14 +120,14 @@ export function useCalorieForm({ date, initialEntries = [], mode }: UseCalorieFo
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setSubmitError(null)
+        setError(null)
 
-        const formErrors = validateForm()
-        if (formErrors.length > 0) {
-            setErrors(formErrors)
+        const formError = validateForm()
+        if (formError) {
+            setError(formError)
             return
         }
 
-        setErrors([])
         setIsSubmitting(true)
 
         try {
@@ -152,7 +144,7 @@ export function useCalorieForm({ date, initialEntries = [], mode }: UseCalorieFo
             // Filter out empty entries before submitting
             const entries = meals.flatMap(meal =>
                 meal.items
-                    .filter(item => item.name.trim() && Number(item.calories) > 0)
+                    .filter(item => item.name.trim() && item.calories)
                     .map(item => ({
                         date,
                         meal_type: meal.type,
@@ -184,7 +176,7 @@ export function useCalorieForm({ date, initialEntries = [], mode }: UseCalorieFo
 
     return {
         meals,
-        errors,
+        error,
         isSubmitting,
         submitError,
         currentFieldRefs,

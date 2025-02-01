@@ -18,7 +18,7 @@ export function CalorieFormShared({ date, initialEntries = [], mode }: CalorieFo
   const router = useRouter()
   const {
     meals,
-    errors,
+    error,
     isSubmitting,
     submitError,
     currentFieldRefs,
@@ -41,21 +41,20 @@ export function CalorieFormShared({ date, initialEntries = [], mode }: CalorieFo
     // Handle regular Enter for new item creation
     if (e.key === 'Enter' && !e.shiftKey && !e.metaKey && !e.ctrlKey) {
       e.preventDefault()
-      console.log('Enter key pressed on item:', { mealTypeIndex, itemIndex }) // Debug log
 
       const item = meals[mealTypeIndex].items[itemIndex]
       const isLastItem = itemIndex === meals[mealTypeIndex].items.length - 1
 
       if (item.name.trim() && item.calories && isLastItem) {
-        console.log('Adding new item after validation') // Debug log
         addItem(mealTypeIndex)
+        setTimeout(() => {
+          const nameRef = currentFieldRefs.current[mealTypeIndex].nameRef.current
+          if (nameRef) {
+            nameRef.focus()
+          }
+        }, 0)
       }
     }
-  }
-
-  const handleAddButtonClick = (mealTypeIndex: number) => {
-    console.log('Add button clicked for meal type:', mealTypeIndex) // Debug log
-    addItem(mealTypeIndex)
   }
 
   return (
@@ -81,17 +80,8 @@ export function CalorieFormShared({ date, initialEntries = [], mode }: CalorieFo
                     }}
                     disabled={isSubmitting}
                     className={`p-2 border rounded dark:bg-gray-800 dark:border-gray-700 
-                      ${errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.nameError
-                        ? 'border-red-500'
-                        : ''
-                      }
                       ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
-                  {errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.nameError && (
-                    <span className="text-red-500 text-sm mt-1">
-                      {errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.nameError}
-                    </span>
-                  )}
                 </div>
                 <div className="flex flex-col w-full">
                   <input
@@ -105,17 +95,8 @@ export function CalorieFormShared({ date, initialEntries = [], mode }: CalorieFo
                     }}
                     disabled={isSubmitting}
                     className={`p-2 border rounded dark:bg-gray-800 dark:border-gray-700 
-                      ${errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.caloriesError
-                        ? 'border-red-500'
-                        : ''
-                      }
                       ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                   />
-                  {errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.caloriesError && (
-                    <span className="text-red-500 text-sm mt-1">
-                      {errors.find(e => e.mealType === meal.type)?.invalidItems.find(i => i.index === itemIndex)?.caloriesError}
-                    </span>
-                  )}
                 </div>
                 {itemIndex > 0 && (
                   <Button
@@ -137,7 +118,7 @@ export function CalorieFormShared({ date, initialEntries = [], mode }: CalorieFo
           <Button
             type="button"
             variant="secondary"
-            onClick={() => handleAddButtonClick(mealIndex)}
+            onClick={() => addItem(mealIndex)}
             disabled={isSubmitting}
           >
             + Add another item
@@ -152,9 +133,9 @@ export function CalorieFormShared({ date, initialEntries = [], mode }: CalorieFo
         />
       </Card>
 
-      {submitError && (
+      {(error || submitError) && (
         <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {submitError}
+          {error?.message || submitError}
         </div>
       )}
 

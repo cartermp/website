@@ -16,15 +16,16 @@ import type { DailyEntry } from '@/lib/types';
 interface CalorieTrendChartProps {
     entries: DailyEntry[];
     targetCalories: number;
+    maxCalories: number;
 }
 
-export function CalorieTrendChart({ entries, targetCalories }: CalorieTrendChartProps) {
-    // Prepare data for the chart
+export function CalorieTrendChart({ entries, targetCalories, maxCalories }: CalorieTrendChartProps) {
     const chartData = useMemo(() => {
         return entries.slice().reverse().map(entry => ({
             date: formatDate(entry.date),
             calories: entry.totalCalories,
             target: targetCalories,
+            max: maxCalories,
         }));
     }, [entries, targetCalories]);
 
@@ -61,6 +62,14 @@ export function CalorieTrendChart({ entries, targetCalories }: CalorieTrendChart
                             borderRadius: '0.375rem',
                             color: '#e5e7eb',
                         }}
+                    />
+                    <Line
+                        type="monotone"
+                        dataKey="max"
+                        stroke="#4b5563"
+                        strokeDasharray="5 5"
+                        dot={false}
+                        strokeWidth={2}
                     />
                     <Line
                         type="monotone"
