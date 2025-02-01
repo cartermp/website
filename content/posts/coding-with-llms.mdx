@@ -1,0 +1,66 @@
+---
+title: How I code with LLMs
+description: Practical tips for developers looking to effectively use AI coding assistants into their workflow
+date: "2025-01-31"
+tags: ai, development
+---
+
+When I first started using AI coding assistants in early 2023, I made a lot of mistakes. Like many developers, I formed early opinions based on limited exposure to free tools, and I approached the technology with both skepticism and unrealistic expectations. Now in 2025, after extensive use of these tools in production environments, I've developed a much clearer understanding of how to effectively use them into development workflows.
+
+## The Model Matters More Than You Think
+
+Let's address the elephant in the room: you need to pay for good AI assistance. This isn't a controversial stance in other domains—we readily pay for IDEs, CI services, and cloud infrastructure—but there's a persistent belief that free AI models should be sufficient.
+
+This belief is particularly harmful because it leads to incorrect conclusions about AI's capabilities in software development. Saying "AI is bad at coding" after using a free model is like declaring "cloud computing is too slow" because you're using the free tier with rate limiting. The reality is that premium models like Claude (and increasingly, others) are significantly more capable than their free counterparts.
+
+At the risk of being too direct: if you formed your opinion about AI coding assistants from using free ChatGPT in 2023, you need to radically update your priors. The gap between free and premium models has only widened, and the capabilities have advanced dramatically.
+
+## Domain Knowledge is Your Multiplier 
+
+The effectiveness of AI coding assistants varies significantly based on the type of development work you're doing. I've found three key factors that predict success:
+
+1. Task commonality: The more common your development task, the more likely the AI will excel at it. This makes intuitive sense—models have been trained on vast amounts of public code, and common patterns are well-represented in that training data.
+
+2. "Online" development: Web development, in particular, benefits enormously from AI assistance. This is partly due to the vast amount of web development code available for training, but also because web technologies often have immediate visual feedback loops.
+
+3. Rapid feedback cycles: The easier it is to run and verify code, the more effective AI assistance becomes. This is why tasks with quick feedback loops (like frontend development or unit test writing) tend to work particularly well.
+
+## Rethinking the Build vs. Integrate Decision
+
+One unexpected lesson from working with AI coding assistants is that they've completely changed the calculus of when to use external libraries. Here's a controversial take: many of the libraries we traditionally use to "save time" are actually creating more complexity than they're worth in an AI-assisted workflow.
+
+Consider the typical scenario: you need some boilerplate code, so you reach for a library that handles it for you. But now you need to:
+
+1. Learn the library's API
+2. Handle its dependencies
+3. Deal with version conflicts
+4. Navigate breaking changes
+5. Work around its limitations
+
+In an AI-assisted workflow, generating that boilerplate code directly is often faster and results in more maintainable code. The AI can generate exactly what you need, and you maintain full control over the implementation.
+
+This isn't universally true—libraries that solve genuinely hard problems are still invaluable. But it's worth re-examining your assumptions about what constitutes a "hard problem" versus just "tedious work."
+
+## The New Development Loop
+
+The most profound change I've observed is in the fundamental development loop itself. Traditional development often follows a linear path: write code, run it, debug, repeat. With AI assistance, the loop becomes more dynamic and iterative:
+
+1. Build context first: Spend time upfront creating a "context package"—code samples, screenshots, architectural diagrams, and clear constraints. This investment pays off in more accurate and relevant code generation.
+
+2. Focus on specificity: Vague instructions lead to vague results. Be explicit about your requirements, constraints, and success criteria. The AI can handle complexity, but it needs clear direction.
+
+3. Embrace rapid iteration: Code generation is cheap. Instead of trying to get everything perfect in one go, iterate quickly. Show the AI error messages, ask for adjustments, and refine the implementation incrementally.
+
+4. Verify intentionally: Define how you'll verify the code works before you generate it. This forces clarity about requirements and helps avoid the "looks good, ship it" trap.
+
+One particularly effective pattern I've developed is asking the AI to "think about this a bit" for complex tasks. This prompt often leads to more thoughtful and robust solutions, as it encourages the model to consider edge cases and potential issues before generating code.
+
+## Start Small, Think Big
+
+The most common mistake I see developers make is trying to generate too much code at once. While modern AI models are capable of generating substantial amounts of code, the complexity of specifying behavior and constraints grows exponentially with the size of the generated codebase.
+
+Instead, start with small, well-defined components or features. As you become more comfortable with the AI-assisted workflow, you'll naturally develop patterns for handling larger pieces of functionality. This approach also helps you build intuition about what kinds of tasks are well-suited to AI assistance and which are better handled traditionally.
+
+Remember: the goal isn't to replace traditional development practices but to augment them with AI capabilities where they make sense. Sometimes that means generating an entire component; other times, it means using the AI as a sounding board for design decisions or documentation writing.
+
+The future of development isn't about AI replacing developers—it's about developers who know how to effectively use AI tools outperforming those who don't. The sooner you start building that capability, the better positioned you'll be for what's coming next.
