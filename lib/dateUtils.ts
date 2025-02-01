@@ -28,7 +28,8 @@ export function dateToString(date: string | Date): string {
  * @param dateStr Date string in any format
  */
 export function formatDate(dateStr: string): string {
-    const date = new Date(dateStr)
+    const [year, month, day] = dateStr.split('-').map(Number)
+    const date = new Date(year, month - 1, day)  // month is 0-based in JS
     return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
