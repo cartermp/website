@@ -1,4 +1,3 @@
-// lib/calorieUtils.ts
 import type { CalorieEntry, DailyEntry } from './types'
 import { groupEntriesByDate } from './dateUtils'
 
