@@ -1,19 +1,39 @@
 ---
 title: How I code with LLMs
-description: Practical tips for developers looking to effectively use AI coding assistants into their workflow
+description: Practical tips for developers looking to use AI coding assistants
 date: "2025-01-31"
 tags: ai, development
 ---
 
-When I first started using AI coding assistants in early 2023, I made a lot of mistakes. Like many developers, I formed early opinions based on limited exposure to free tools, and I approached the technology with both skepticism and unrealistic expectations. Now in 2025, after extensive use of these tools in production environments, I've developed a much clearer understanding of how to effectively use them into development workflows.
+I first started using AI coding assistants in early 2021, with an invite code from a friend who worked on the original GitHub Copilot team. Back then the workflow was just single-line tab completion, but you could also guide code generation with comments and it'd try its best to implement what you want.
 
-## The Model Matters More Than You Think
+Fast forward now to 2025, and there's a wide range of coding assistants that are packed with features, the models have gotten substantially more powerful, and the way I develop with them has changed too. They're an essential part of coding for me in various contexts.
 
-Let's address the elephant in the room: you need to pay for good AI assistance. This isn't a controversial stance in other domains—we readily pay for IDEs, CI services, and cloud infrastructure—but there's a persistent belief that free AI models should be sufficient.
+However, many developers remain skeptical of the of AI coding assistants. This is usually because they tried a vague task with a free AI model in the past and noticed incorrect code, hallucinated API calls, or some other issue. Others have incorporated these tools, as have their teams, but use of these tools hasn't resulted in more working software. In some cases, the tools have lowered overall productivity because teams had to hunt down bugs where the root cause involved a developer who blindly trusted AI-generated code.
 
-This belief is particularly harmful because it leads to incorrect conclusions about AI's capabilities in software development. Saying "AI is bad at coding" after using a free model is like declaring "cloud computing is too slow" because you're using the free tier with rate limiting. The reality is that premium models like Claude (and increasingly, others) are significantly more capable than their free counterparts.
+I've chosen to write this post specifically for those who are skeptical or have came away unimpressed. I can't promise that if you follow what I say that you'll fall in love with AI coding assistants. But I do believe that if you adopt some of the following tips, you'll come away substantially more impressed than you might be today.
 
-At the risk of being too direct: if you formed your opinion about AI coding assistants from using free ChatGPT in 2023, you need to radically update your priors. The gap between free and premium models has only widened, and the capabilities have advanced dramatically.
+## But first, skill issue
+
+AI-assistants are tools, not magic, and to use them effectively, you need to develop skills to be effective. If there's one single thing to take away from my post, it's that AI is a tool that requires developing skills to weild effectively. If you do not invest in these skills, you will be ineffective using AI for coding.
+
+## Use Claude and pay for it
+
+Before you stress about getting skilled at using AI coding tools, first you need to actually get a good tool.
+
+Right now, the best AI model for coding is [Claude](https://claude.ai/new). There are [coding benchmarks](https://www.anthropic.com/research/swe-bench-sonnet) that Claude scores well for, but you'll find in the AI community that everyone claims that these benchmarks don't come close to doing it justice. Somehow, in some way, Claude has this _je ne sais quoi_ where it doesn't veer off course much as you use it, the code it writes for your codebase seems to fit the style of your code, and it just doesn't make up API calls that don't exist.
+
+You can suffice with ChatGPT or Gemini or other models, but you'll need to be on your guard more because these tend to "drift" from the style and goals you set in the code that they suggest over time.
+
+Do not take this recommendation lightly. Claude is the only model that you can reliably _not_ have to second-guess every time you use it. I have found that it can still make mistakes, but more often than not, these mistakes have come becuase I didn't provide enough (or accurate) context, such as forgetting to mention that I updated some other part of the codebase. And as I'll discuss later on, you can eliminate most of these problems as well with particular prompting techniques.
+
+**If you formed your opinion about AI coding assistants from using free ChatGPT a year ago, you need to radically update your priors**. The gap between free AI tools and premium models like Claude has widened substantially, and the capabilities have advanced dramatically.
+
+Maybe at some point, another model will de-throne Claude for coding. Claude is also not necessarily the best for non-coding workflows. But for now, it's the one to use.
+
+### Use Claude in whatever tool you like
+
+Since Claude is not just the chatbot, but a model, it can be used to power any number of coding assistants -- Copilot, Cursor, WindSurf, and more. I personally don't use these tools much and usually just copy/paste from the Claude web interface, but little that I'll describe in this post prohibits the use of other tools.
 
 ## Domain Knowledge is Your Multiplier 
 
