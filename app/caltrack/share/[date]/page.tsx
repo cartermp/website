@@ -14,29 +14,29 @@ interface Props {
     params: { date: string }
 }
 
-// This sets this page to be statically generated
-export const dynamic = 'force-static'
-export const revalidate = false
+// Tell Next.js to generate a static page that revalidates every 60 seconds
+export const dynamic = "force-static"
+// Instead of revalidate = false, we set a revalidation period (in seconds)
+export const revalidate = 60
 
 // Generate all possible date paths at build time
 export async function generateStaticParams() {
-    const entries = await getData() as CalorieEntry[]
-    const uniqueDates = Array.from(new Set(entries.map(entry => entry.date)))
-
-    return uniqueDates.map((date) => ({
-        date,
-    }))
+  const entries = (await getData()) as CalorieEntry[]
+  const uniqueDates = Array.from(new Set(entries.map((entry) => entry.date)))
+  return uniqueDates.map((date) => ({
+    date,
+  }))
 }
 
 // Generate metadata for the page
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const formattedDate = formatDate(params.date)
-
+  
     return {
-        title: `Daily Food Journal - ${formattedDate}`,
-        description: `Food journal entries for ${formattedDate}`,
+      title: `Daily Food Journal - ${formattedDate}`,
+      description: `Food journal entries for ${formattedDate}`,
     }
-}
+  }
 
 export default async function SharedCaloriePage({ params: { date } }: Props) {
     const entries = await getEntriesForDate(date) as CalorieEntry[]
