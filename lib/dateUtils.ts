@@ -12,31 +12,28 @@ export function getToday(): string {
 }
 
 /**
- * Converts any date string or Date object to YYYY-MM-DD format
- * Handles various input formats including ISO strings with time components
+ * Converts any date string to YYYY-MM-DD format, properly handling UTC timestamps
  */
 export function dateToString(date: string | Date): string {
-    // If it's already in YYYY-MM-DD format, return as is
-    if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
-        return date
-    }
-
+    // Handle ISO strings with time components
     const d = typeof date === 'string' ? new Date(date) : date
-    const year = d.getFullYear()
-    const month = String(d.getMonth() + 1).padStart(2, '0')
-    const day = String(d.getDate()).padStart(2, '0')
+    // Since these are UTC timestamps, use UTC methods
+    const year = d.getUTCFullYear()
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0')
+    const day = String(d.getUTCDate()).padStart(2, '0')
     return `${year}-${month}-${day}`
 }
 
 /**
- * Formats a date for display using the user's timezone
- * @param dateStr Date string in YYYY-MM-DD format
+ * Formats a date for display
  */
 export function formatDate(dateStr: string): string {
-    // Since our input is already in YYYY-MM-DD format representing the intended day,
-    // we can just format it directly
-    const [year, month, day] = dateStr.split('-').map(Number)
-    return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+    const date = new Date(dateStr) // Will parse as UTC since string includes Z
+    const year = date.getUTCFullYear()
+    const month = date.getUTCMonth()  // 0-based
+    const day = date.getUTCDate()
+    
+    return new Date(year, month, day).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric"
