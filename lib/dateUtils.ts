@@ -30,11 +30,13 @@ export function dateToString(date: string | Date): string {
 
 /**
  * Formats a date for display using the user's timezone
+ * @param dateStr Date string in YYYY-MM-DD format
  */
 export function formatDate(dateStr: string): string {
-    // Add a time component that ensures this date is interpreted in the local timezone
-    const date = new Date(`${dateStr}T12:00:00`)  // Use noon to avoid any DST issues
-    return date.toLocaleDateString("en-US", {
+    // Since our input is already in YYYY-MM-DD format representing the intended day,
+    // we can just format it directly
+    const [year, month, day] = dateStr.split('-').map(Number)
+    return new Date(year, month - 1, day).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric"
