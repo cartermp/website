@@ -32,14 +32,12 @@ export function dateToString(date: string | Date): string {
  * Formats a date for display using the user's timezone
  */
 export function formatDate(dateStr: string): string {
-    const [year, month, day] = dateStr.split('-').map(Number)
-    // Create date in UTC by using Date.UTC()
-    const date = new Date(Date.UTC(year, month - 1, day))
+    // Add a time component that ensures this date is interpreted in the local timezone
+    const date = new Date(`${dateStr}T12:00:00`)  // Use noon to avoid any DST issues
     return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
-        day: "numeric",
-        timeZone: 'UTC'  // Ensure we interpret the date in UTC
+        day: "numeric"
     })
 }
 
