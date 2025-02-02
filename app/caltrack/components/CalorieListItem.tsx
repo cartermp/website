@@ -1,11 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { formatDate } from '@/lib/dateUtils'
 import { groupEntriesByMealType, calculateMealTypeTotals } from '@/lib/calorieUtils'
 import { Card } from './ui/card'
 import type { CalorieEntry } from '@/lib/types'
+import { getCalorieColor } from '@/lib/colorUtils'
 
 interface CalorieListItemProps {
   date: string
@@ -14,25 +15,38 @@ interface CalorieListItemProps {
   targetCalories: number
 }
 
-export function CalorieListItem({ 
-  date, 
-  entries, 
-  totalCalories, 
-  targetCalories 
+export function CalorieListItem({
+  date,
+  entries,
+  totalCalories,
+  targetCalories
 }: CalorieListItemProps) {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isDark, setIsDark] = useState(false)
 
   // Use utility functions for consistent data organization
   const mealsByType = groupEntriesByMealType(entries)
   const mealTypeTotals = calculateMealTypeTotals(mealsByType)
 
-  // Determine color based on calorie comparison
-  const calorieColor = totalCalories > targetCalories
-    ? 'text-red-500 dark:text-red-400'
-    : 'text-green-500 dark:text-green-400'
+  // Watch for dark mode changes
+  useEffect(() => {
+    const updateDarkMode = () => {
+      setIsDark(document.documentElement.classList.contains('dark'))
+    }
+
+    updateDarkMode()
+
+    const observer = new MutationObserver(updateDarkMode)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    })
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <Card<'li'> 
+    <Card<'li'>
       as="li"
       variant="outline"
       padding="none"
@@ -43,16 +57,18 @@ export function CalorieListItem({
         className="w-full text-left p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
       >
         <div className="flex items-baseline justify-between gap-4">
-          <span className={`text-purple-700 dark:text-purple-300 text-lg transition-transform ${
-            isExpanded ? 'transform rotate-90' : ''
-          }`}>
+          <span className={`text-purple-700 dark:text-purple-300 text-lg transition-transform ${isExpanded ? 'transform rotate-90' : ''
+            }`}>
             ❯
           </span>
           <span className="flex-1 font-medium text-lg text-gray-600 dark:text-gray-400">
             {formatDate(date)}
           </span>
           <div className="flex items-center gap-4">
-            <span className={`text-lg ${calorieColor}`}>
+            <span
+              className="text-lg font-medium"
+              style={{ color: getCalorieColor(totalCalories, isDark) }}
+            >
               {totalCalories} calories
             </span>
             <Link href={`/caltrack/edit/${date}`}>
