@@ -35,45 +35,426 @@ Maybe at some point, another model will de-throne Claude for coding. Claude is a
 
 Since Claude is not just the chatbot, but a model, it can be used to power any number of coding assistants -- Copilot, Cursor, WindSurf, and more. I personally don't use these tools much and usually just copy/paste from the Claude web interface, but little that I'll describe in this post prohibits the use of other tools.
 
-## Domain Knowledge is Your Multiplier 
+## The kind of code you write matters 
 
-The effectiveness of AI coding assistants varies significantly based on the type of development work you're doing. I've found three key factors that predict success:
+AI coding assistants vary wildly in their effectiveness based on the kind of code you're writing. Generally speaking, I think about this in three ways.
 
-1. Task commonality: The more common your development task, the more likely the AI will excel at it. This makes intuitive sense—models have been trained on vast amounts of public code, and common patterns are well-represented in that training data.
+### Task commonality
 
-2. "Online" development: Web development, in particular, benefits enormously from AI assistance. This is partly due to the vast amount of web development code available for training, but also because web technologies often have immediate visual feedback loops.
+The more common the kind of code you're trying to write, the more likely an AI model will do a good job. For example, if you're writing a NextJS app with Tailwind CSS, most modern models will not only be up to date on the exact patterns that work best, but they'll also work with older versions too. But if you're writing code in your custom backend with significant domain-specific constraints, you'll probably find that the AI model struggles to generate code that fits your needs.
 
-3. Rapid feedback cycles: The easier it is to run and verify code, the more effective AI assistance becomes. This is why tasks with quick feedback loops (like frontend development or unit test writing) tend to work particularly well.
+That said, this doesn't mean you can't be effective with AI and domain-specific constraints. It just means you'll need to be more explicit about what you want, and you'll need to carefully specify what those constrains are up front. If don't know these contraints, or you can't explain them clearly to another person, you probably won't be able to get an AI model to work well with them either.
 
-## Rethinking the Build vs. Integrate Decision
+### Likelihood that similar code is widely available online
 
-One unexpected lesson from working with AI coding assistants is that they've completely changed the calculus of when to use external libraries. Here's a controversial take: many of the libraries we traditionally use to "save time" are actually creating more complexity than they're worth in an AI-assisted workflow.
+If the code you're writing for your domain has a lot of similar code available online, chances are an AI model will write good code for you without much work.
 
-Consider the typical scenario: you need some boilerplate code, so you reach for a library that handles it for you. But now you need to:
+Web development, relatively boring backend development, mobile development, library development, and "CNCF-adjacent" cloud development, are some domains taht I've found AI models do well with. This is mostly due to the vast amount of this sort of code available that modern AI models pre-train on.
 
-1. Learn the library's API
-2. Handle its dependencies
-3. Deal with version conflicts
-4. Navigate breaking changes
-5. Work around its limitations
+### Rapid feedback cycles
 
-In an AI-assisted workflow, generating that boilerplate code directly is often faster and results in more maintainable code. The AI can generate exactly what you need, and you maintain full control over the implementation.
+The easier it is to run and verify code, the more effective AI assistance becomes. This is why tasks with quick feedback loops (like frontend development or unit test writing) tend to work particularly well, but tasks with slower feedback loops (like non-kubernetes infrastructure code) can be more challenging.
 
-This isn't universally true—libraries that solve genuinely hard problems are still invaluable. But it's worth re-examining your assumptions about what constitutes a "hard problem" versus just "tedious work."
+## Rethinking the deicsion to use libraries
 
-## The New Development Loop
+One unexpected lesson I learned is that because AI makes it very cheap to generate code, I think differently about if I want to use a library or not.
 
-The most profound change I've observed is in the fundamental development loop itself. Traditional development often follows a linear path: write code, run it, debug, repeat. With AI assistance, the loop becomes more dynamic and iterative:
+I view libraries as falling into one of two categories:
 
-1. Build context first: Spend time upfront creating a "context package"—code samples, screenshots, architectural diagrams, and clear constraints. This investment pays off in more accurate and relevant code generation.
+1. Libraries that solve genuinely hard problems for me
+2. Libraries that save me from writing a bunch of code that I don't want to write
 
-2. Focus on specificity: Vague instructions lead to vague results. Be explicit about your requirements, constraints, and success criteria. The AI can handle complexity, but it needs clear direction.
+For the first category, I will obviously use a library. There are many libraries that are rigorously tested, have a large community, and are well-maintained. And in fact, AI models like Claude will often recommend using good libraries in the first place.
 
-3. Embrace rapid iteration: Code generation is cheap. Instead of trying to get everything perfect in one go, iterate quickly. Show the AI error messages, ask for adjustments, and refine the implementation incrementally.
+Sometimes, if a model recommend a library for me, I'll interrogate the suggestion to see if it's _really_ needed, or if it requires a lot of code to replicate.
 
-4. Verify intentionally: Define how you'll verify the code works before you generate it. This forces clarity about requirements and helps avoid the "looks good, ship it" trap.
+Below is an example from a conversation where Claude recommended using `react-router`:
 
-One particularly effective pattern I've developed is asking the AI to "think about this a bit" for complex tasks. This prompt often leads to more thoughtful and robust solutions, as it encourages the model to consider edge cases and potential issues before generating code.
+```text
+<me>
+Why do you think I should use `react-router`?
+</me>
+
+<assistant>
+React Router is worth considering for your web app for several key reasons:
+
+1. Client-side routing - Instead of making full page requests to your server, React Router handles navigation smoothly on the client side, making your app feel more responsive and app-like rather than website-like.
+
+2. URL-based state management - It gives users the ability to bookmark specific views and use the browser's back/forward buttons naturally. This improves user experience and makes your app's state more predictable.
+
+3. Dynamic routing - You can easily handle dynamic route parameters like `/users/:id` or `/products/:category/:id`, which is essential for most modern web apps.
+
+4. Built-in features that solve common problems:
+   - Nested routes for complex layouts
+   - Protected routes for authentication
+   - Route matching priorities 
+   - Loading and error states
+   - Query parameter handling
+
+For example, if you later decide to add user authentication, protecting certain routes becomes straightforward:
+
+<Route 
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  }
+/>
+
+Would you like me to show you some specific examples of how these features could benefit your particular use case? Or would you prefer to explore alternative routing solutions?
+</assistant>
+
+<me>
+How much code would I have to write if I didn't use `react-router`?
+</me>
+
+<assistant>
+Let me show you a basic custom routing implementation without React Router so you can compare:
+
+(...generated code)
+
+As you can see, even for a basic router you need to:
+
+1. Create your own Link component that manages history updates
+2. Build a Router component that tracks URL changes
+3. Manage event listeners for browser navigation
+4. Handle route matching manually
+
+And this basic implementation is still missing many features that React Router provides out of the box:
+- No nested routes
+- No dynamic route parameters
+- No route ranking/matching priorities
+- No built-in handling for query parameters
+- No loading states
+- No error boundaries
+
+You'd need to write significantly more code to implement these features yourself. Plus, React Router's code is battle-tested by thousands of developers and handles many edge cases you might not think of initially.
+
+Would you like me to show you what the code would look like to add any of those missing features to our custom implementation?
+</assistant>
+
+<me>
+lol okay
+</me>
+```
+
+**In general, it's a good idea to "question" an AI model's suggestions here.**
+
+However, AI has made me completely re-evaluate the second category. It's very often the case that I only need a small piece of functionality that a library provides me, or it's mostly a convenience thing. Because code is so cheap to generate now, I will usually just generate the code and tests for it, package it up somewhere, and have one less hellish dependency to manage over time.
+
+## A different development loop
+
+With AI assistance, my development loop is more dynamic and iterative than the before-times, and requires several techniques that I've learned over time to be effective.
+
+### Building durable context
+
+[RAG](https://arxiv.org/abs/2005.11401) is something most people building with AI have learned is an essential pattern, and the quality of an AI integration is a direct function of the [relevancy, magnitude, and quality](./llms-three-properties) of the contextual data you pass to an AI model.
+
+This is especially true for using AI for real-world coding instead of tiny little side projects. However, this context needs to be durable. You can't just pass everything a model needs to know into each chat invocation. Here's how I approach it.
+
+#### Using projects or pasting context into a chat session
+
+I usually start by creating a "project" in the AI tool I'm using. In Claude or ChatGPT, this is literally called "projects", and these are a way to provide a bunch of files that make the model produce significantly better code.
+
+Note that it's not just text files that are supported, but also images. I've found that images are particularly useful for showing things like architecture diagrams or screenshots of a working app to contextualize how the code makes something work. You can also provide custom documents that reference other documents, such as a file that explains the names of several screenhots and how they relate to the codebase.
+
+If you're not using a tool that supports this sort of thing, you can even get by with simply pasting in a single file -- preferably following the [llms.txt standard](https://llmstxt.org/) -- and your single chat session will produce substantially better code.
+
+#### Sharing existing code structure and important context
+
+I typically start by dumping the output of [`tre`](https://github.com/dduan/tre) to a text file and including that. For simple projects, this alone can be enough to make AI coding assistants good enough.
+
+For larger projects, I spend some time writing up an [llms.txt](https://llmstxt.org/) markdown file that describes the high-level goals of the system, the key areas of the codebase, and then the full file structure. This is a bit of work, but it's a one-time cost that pays off in the long run.
+
+For example, here's one that could be used for a production system, [Refinery](https://github.com/honeycombio/refinery):
+
+```md
+# Refinery
+
+## Refinery overview
+
+Refinery is a tail-based distributed tracing sampler that:
+
+1. Collects and distributes trace data across the cluster it's run on
+    a. It defaults to using trace locality, meaning that all data in a trace is forwarded to be on the same node
+    b. If trace locality is turned off, only metadata is forwarded across a cluster
+2. Once a trace is considered fully recieved (its root span is collected or a timeout is reached), it processes the trace by looking at the configured sampling rules, and decides to either sample (keep) or drop the trace.
+3. If a trace is sampled, it is enqueued for transmission.
+    a. Sampled trace IDs are also saved to a cache, which allows any late-arriving spans to also be transmitted instead of dropped.
+4. Operational metrics, trace data, and logs are created throughout Refinery's operation and transmitted as OpenTelemetry data by default.
+    a. In particular, Refinery uses a notion of "stress level" to determine if and when it should start backing off on processing and applying rudimentary (but compute-inexpensive) sampling rules. This stress level is often monitored to determine if a Refinery cluster has adequate resources to run.
+
+In particular, it specializes in dynamic sampling, which is a technique that adjusts the sampling rate of traces based on the uniqueness of the data and the desired throughput or sample rates. By combining dynamic sampling with rules-based sampling, Refinery allows a high degree of flexibility and sophistication in how traces are sampled.
+
+## Key refinery operational characteristics
+
+Refinery is also itself a sophisticated distributed system. It gossips its internal state and information about data in its nodes across the rest of the cluster. It also supports distributing trace data across a cluster in different ways using Redis.
+
+Refinery also defines a notion of a "stress level", which is a measure of how much load a Refinery node is under. This stress level is used to determine if and when Refinery should start backing off on processing and applying rudimentary deterministic sampling, which ensures that data is still sampled rather than always dropped, but comes at the cost of not being able to apply more sophisticated sampling rules.
+
+## Key areas of the codebase
+
+Refinery has many files and folders, but these in particular are most helpful to understand the system and know where to make tweaks.
+
+1. collect/ and collect/collect.go, which contains much of the logic for collecting and distributing trace data
+2. types/ and types/event.go, which contains the data structures for trace data (confusingly, the term "event" is used for any unit of a trace, not just log events)
+3. pubsub/ and pubsub/pubsub.go, which contains the logic for gossipping information about refinery nodes and the data resident within them across the cluster
+4. sample/, which contains a variety of samplers. In particular, the dynamic samplers (such as ema_throughput.go) are heavily used in production because they automatically adjust sampling rates based on uniqueness of data and desired throughput or sample rates.
+5. config/ and config/config.go, which contains the configuration loading and validation logic for Refinery. Refinery uses a TOML configuration file, but also supports YAML and JSON for configuration.
+
+## Full file structure
+
+├── .circleci
+│   └── config.yml
+├── .github
+│   ├── CODEOWNERS
+│   ├── ISSUE_TEMPLATE
+│   │   ├── bug_report.md
+│   │   ├── feature_request.md
+│   │   ├── question-discussion.md
+│   │   └── security-vulnerability-report.md
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   ├── dependabot.yml
+│   ├── release.yml
+│   └── workflows
+│       ├── add-to-project-v2.yml
+│       ├── apply-labels.yml
+│       ├── release.yml
+│       ├── stale.yml
+│       └── validate-pr-title.yml
+├── .gitignore
+├── .tool-versions
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── Makefile
+├── NOTICE
+├── OSSMETADATA
+├── README.md
+├── RELEASE_NOTES.md
+├── RELEASING.md
+├── SECURITY.md
+├── SUPPORT.md
+├── app
+│   ├── app.go
+│   └── app_test.go
+├── build-docker.sh
+├── build-pkg.sh
+├── cmd
+│   ├── refinery
+│   │   └── main.go
+│   └── test_redimem
+│       └── main.go
+├── collect
+│   ├── cache
+│   │   ├── cache.go
+│   │   ├── cache_test.go
+│   │   ├── cuckoo.go
+│   │   ├── cuckooSentCache.go
+│   │   ├── cuckoo_test.go
+│   │   ├── kept_reason_cache_test.go
+│   │   ├── kept_reasons_cache.go
+│   │   └── traceSentCache.go
+│   ├── collect.go
+│   ├── collect_test.go
+│   ├── mockCollector.go
+│   ├── stressRelief.go
+│   ├── stress_relief_test.go
+│   ├── trace_decision.go
+│   ├── trace_decision_test.go
+│   ├── trace_redistributer.go
+│   └── trace_redistributer_test.go
+├── config.md
+├── config.toml
+├── config.yaml
+├── config
+│   ├── cmdenv.go
+│   ├── cmdenv_test.go
+│   ├── config.go
+│   ├── configLoadHelpers.go
+│   ├── configLoadHelpers_test.go
+│   ├── config_test.go
+│   ├── config_test_reload_error_test.go
+│   ├── file_config.go
+│   ├── file_config_test.go
+│   ├── level.go
+│   ├── memorysize.go
+│   ├── memorysize_test.go
+│   ├── metadata.go
+│   ├── metadata
+│   │   ├── configMeta.yaml
+│   │   └── rulesMeta.yaml
+│   ├── metadataFS.go
+│   ├── mock.go
+│   ├── sampler_config.go
+│   ├── sampler_config_test.go
+│   ├── validate.go
+│   └── validate_test.go
+├── config_complete.1.x.toml
+├── config_complete.yaml
+├── generics
+│   ├── fanout.go
+│   ├── fanout_test.go
+│   ├── mapttl.go
+│   ├── mapttl_test.go
+│   ├── set.go
+│   ├── set_test.go
+│   ├── setttl.go
+│   └── setttl_test.go
+├── go.mod
+├── go.sum
+├── internal
+│   ├── configwatcher
+│   │   └── watcher.go
+│   ├── health
+│   │   ├── health.go
+│   │   └── health_test.go
+│   ├── otelutil
+│   │   └── otel_tracing.go
+│   ├── peer
+│   │   ├── file.go
+│   │   ├── file_test.go
+│   │   ├── mock.go
+│   │   ├── peers.go
+│   │   ├── peers_test.go
+│   │   ├── pubsub_redis.go
+│   │   └── pubsub_test.go
+│   └── redimem
+│       └── redimem.go
+├── logger
+│   ├── honeycomb.go
+│   ├── logger.go
+│   ├── logger_test.go
+│   ├── logrus.go
+│   ├── mock.go
+│   └── null.go
+├── metrics.md
+├── metrics
+│   ├── legacy.go
+│   ├── legacy_test.go
+│   ├── metrics.go
+│   ├── metrics_test.go
+│   ├── metricsnamer.go
+│   ├── mock.go
+│   ├── multi_metrics.go
+│   ├── multi_metrics_test.go
+│   ├── nullmetrics.go
+│   ├── otel_metrics.go
+│   ├── prometheus.go
+│   └── prometheus_test.go
+├── preinstall
+├── pubsub
+│   ├── pubsub.go
+│   ├── pubsub_goredis.go
+│   ├── pubsub_local.go
+│   └── pubsub_test.go
+├── refinery.service
+├── refinery.upstart
+├── refinery_config.md
+├── refinery_rules.md
+├── route
+│   ├── errors.go
+│   ├── errors_test.go
+│   ├── middleware.go
+│   ├── middleware_test.go
+│   ├── mock.go
+│   ├── otlp_logs.go
+│   ├── otlp_logs_test.go
+│   ├── otlp_trace.go
+│   ├── otlp_trace_test.go
+│   ├── proxy.go
+│   ├── route.go
+│   └── route_test.go
+├── rules.json
+├── rules.md
+├── rules.toml
+├── rules.yaml
+├── rules_complete.1.x.toml
+├── rules_complete.yaml
+├── rules_conditions.md
+├── sample
+│   ├── deterministic.go
+│   ├── deterministic_test.go
+│   ├── dynamic.go
+│   ├── dynamic_ema.go
+│   ├── dynamic_ema_test.go
+│   ├── dynamic_test.go
+│   ├── ema_throughput.go
+│   ├── ema_throughput_test.go
+│   ├── rules.go
+│   ├── rules_test.go
+│   ├── sample.go
+│   ├── sample_test.go
+│   ├── totalthroughput.go
+│   ├── totalthroughput_test.go
+│   ├── trace_key.go
+│   ├── trace_key_test.go
+│   ├── windowed_throughput.go
+│   └── windowed_throughput_test.go
+├── service
+│   └── debug
+│       └── debug_service.go
+├── sharder
+│   ├── deterministic.go
+│   ├── deterministic_test.go
+│   ├── mock.go
+│   ├── sharder.go
+│   ├── sharder_test.go
+│   └── single.go
+├── smoke-test
+│   ├── .gitignore
+│   ├── README.md
+│   ├── config-tls.yaml
+│   ├── config.yaml
+│   ├── docker-compose-tls.yaml
+│   ├── docker-compose.yaml
+│   └── rules.yaml
+├── test
+│   ├── EMAThroughput_rules.yaml
+│   ├── TotalThroughput_rules.yaml
+│   ├── WindowedThroughput_rules.yaml
+│   ├── config.yaml
+│   └── rules.yaml
+├── tools
+│   ├── convert
+│   │   ├── Makefile
+│   │   ├── README.md
+│   │   ├── configDataNames.txt
+│   │   ├── helpers.go
+│   │   ├── helpers_test.go
+│   │   ├── main.go
+│   │   ├── metrics.go
+│   │   ├── metricsMeta.yaml
+│   │   ├── minimal_config.yaml
+│   │   ├── ruleconvert.go
+│   │   ├── ruleconvert_test.go
+│   │   └── templates
+│   │       ├── cfg_docrepo.tmpl
+│   │       ├── cfg_docsite.tmpl
+│   │       ├── configV2.tmpl
+│   │       ├── genfield.tmpl
+│   │       ├── genfile.tmpl
+│   │       ├── gengroup.tmpl
+│   │       ├── genremoved.tmpl
+│   │       ├── metrics.tmpl
+│   │       ├── names.tmpl
+│   │       ├── rules_docrepo.tmpl
+│   │       ├── rules_docsite.tmpl
+│   │       └── sample.tmpl
+│   └── loadtest
+│       └── .gitignore
+├── transmit
+│   ├── mock.go
+│   ├── transmit.go
+│   └── transmit_test.go
+└── types
+    ├── event.go
+    └── event_test.go
+```
+
+
 
 ## Start Small, Think Big
 
