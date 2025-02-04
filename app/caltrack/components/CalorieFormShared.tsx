@@ -7,14 +7,15 @@ import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { StatDisplay } from './ui/stat-display'
 import type { CalorieEntry } from '@/lib/types'
+import { getToday } from '@/lib/dateUtils'
 
 interface CalorieFormSharedProps {
-  date: string
+  date?: string
   initialEntries?: CalorieEntry[]
   mode: 'add' | 'edit'
 }
 
-export function CalorieFormShared({ date, initialEntries = [], mode }: CalorieFormSharedProps) {
+export function CalorieFormShared({ date = getToday(), initialEntries = [], mode }: CalorieFormSharedProps) {
   const router = useRouter()
   const {
     meals,
