@@ -487,7 +487,7 @@ AI models are highly complex systems that increasingly get things wrong when you
 
 ### Small changes with agents
 
-These guidelines are not hard and fast, but also hold true with agents in my experience. While an agent can do a better job of defining an internal library of utility functions given a desired goal and constraints (or just a spec), I've found that agents simply don't work well with existing codebases and nontrivial tasks. Right now, they seem especially tuned for generating brand-new codebases from sratch, and simple ones at that.
+These guidelines are not hard and fast, but also hold true with agents in my experience. While an agent can do a better job of defining an internal library of utility functions given a desired goal and constraints (or just a spec), [I've found that agents simply don't work well with existing codebases and nontrivial tasks](https://bsky.app/profile/phillipcarter.dev/post/3lhosyazt7s26). Right now, they seem especially tuned for generating brand-new codebases from sratch, and simple ones at that.
 
 For agents, my inuition so far is that you really need to establish firm guardrails around their scope. Think of an agent as helping implement a small ticket end-to-end, with you dictacting how it should clarify requirements, test code, and perform the iterative loop. I've found that if I don't do this, the agent will wander off into the wilderness and eventually just generate nonsensical, often uncompilable code.
 
