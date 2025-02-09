@@ -13,11 +13,19 @@ const LinkableHeading = ({ level, children, className }: {
     : '';
 
   const Tag = level;
+  const textSize =
+    level === 'h2' ? 'text-2xl' :
+    level === 'h3' ? 'text-xl' :
+    level === 'h4' ? 'text-lg' :
+    level === 'h5' ? 'text-base' :
+    'text-xs';
+
+  const theClass = `mt-8 mb-4 font-semibold text-purple-700 dark:text-purple-300 group ${textSize}`;
 
   return (
     <Tag
       id={slug}
-      className="mt-8 mb-4 text-2xl font-semibold text-purple-700 dark:text-purple-300 group"
+      className={theClass}
     >
       <a href={`#${slug}`} className="no-underline text-inherit">
         {children}
