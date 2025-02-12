@@ -1,4 +1,4 @@
-import { getEntriesForDate, getData } from "@/lib/getData"
+import { getStaticEntries, getStaticDates } from "@/lib/getData"
 import { formatDate } from "@/lib/dateUtils"
 import {
     groupEntriesByMealType,
@@ -9,37 +9,41 @@ import type { CalorieEntry } from "@/lib/types"
 import { Card } from "../../components/ui/card"
 import { StatDisplay } from "../../components/ui/stat-display"
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
 interface Props {
     params: { date: string }
 }
 
-// Tell Next.js to generate a static page that revalidates every 60 seconds
+// Tell Next.js this is a static page that revalidates every hour
 export const dynamic = "force-static"
-// Instead of revalidate = false, we set a revalidation period (in seconds)
-export const revalidate = 60
+export const revalidate = 3600 // 1 hour
 
 // Generate all possible date paths at build time
 export async function generateStaticParams() {
-  const entries = (await getData()) as CalorieEntry[]
-  const uniqueDates = Array.from(new Set(entries.map((entry) => entry.date)))
-  return uniqueDates.map((date) => ({
-    date,
-  }))
+    const dates = await getStaticDates()
+    return dates.map((date) => ({
+        date,
+    }))
 }
 
 // Generate metadata for the page
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const formattedDate = formatDate(params.date)
-  
     return {
-      title: `Daily Food Journal - ${formattedDate}`,
-      description: `Food journal entries for ${formattedDate}`,
+        title: `Daily Food Journal - ${formattedDate}`,
+        description: `Food journal entries for ${formattedDate}`,
     }
-  }
+}
 
 export default async function SharedCaloriePage({ params: { date } }: Props) {
-    const entries = await getEntriesForDate(date) as CalorieEntry[]
+    const entries = await getStaticEntries(date) as CalorieEntry[]
+    
+    // If no entries found for this date, return 404
+    if (!entries || entries.length === 0) {
+        notFound()
+    }
+
     const totalCalories = entries.reduce((sum, entry) => sum + entry.calories, 0)
 
     // Group entries by meal type

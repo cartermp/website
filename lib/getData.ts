@@ -19,3 +19,25 @@ export async function getEntriesForDate(date: string) {
     if (!res.ok) throw new Error(`Failed to fetch calorie tracking data for ${date}`);
     return res.json();
 }
+
+// Special function for static page generation that uses direct DB queries
+export async function getStaticEntries(date: string) {
+    const { sql } = await import('@/lib/db')
+    const data = await sql`
+        SELECT date::text, meal_type, meal_name, calories 
+        FROM calorie_entries 
+        WHERE date = ${date}::date
+    `
+    return data
+}
+
+// Special function to get all unique dates for static generation
+export async function getStaticDates() {
+    const { sql } = await import('@/lib/db')
+    const data = await sql`
+        SELECT DISTINCT date::text
+        FROM calorie_entries
+        ORDER BY date DESC
+    `
+    return data.map(row => row.date)
+}
