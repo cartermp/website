@@ -27,7 +27,7 @@ export function CalorieTrendChart({ entries, targetCalories, maxCalories }: Calo
             target: targetCalories,
             max: maxCalories,
         }));
-    }, [entries, targetCalories]);
+    }, [entries, targetCalories, maxCalories]);
 
     return (
         <div className="w-full h-64">
