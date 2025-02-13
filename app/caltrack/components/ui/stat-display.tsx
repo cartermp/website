@@ -1,14 +1,16 @@
 export function StatDisplay({
     label,
     value,
-    valueColor
+    valueColor,
+    className = ''
 }: {
     label: string;
     value: string | number;
     valueColor?: string;
+    className?: string;
 }) {
     return (
-        <div>
+        <div className={className}>
             <span className="text-gray-600 dark:text-gray-400">{label}:</span>
             <span className={`ml-2 font-medium ${valueColor || ''}`}>{value}</span>
         </div>
