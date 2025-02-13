@@ -56,18 +56,18 @@ export default async function SharedCaloriePage({ params: { date } }: Props) {
         : 'text-green-600 dark:text-green-400'
 
     return (
-        <div className="max-w-2xl mx-auto p-6 space-y-6">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-purple-300">
+        <div className="max-w-2xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
+            <div className="mb-4 sm:mb-8">
+                <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-purple-300">
                     Daily Food Journal
                 </h1>
-                <p className="text-xl text-gray-500 dark:text-gray-400 mt-2">
+                <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mt-2">
                     {formatDate(date)}
                 </p>
             </div>
 
-            <Card variant="stats" className="p-4">
-                <div className="grid grid-cols-2 gap-4">
+            <Card variant="stats" className="p-3 sm:p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <StatDisplay
                         label="Target"
                         value={`${TARGET_CALORIES} calories`}
@@ -80,25 +80,25 @@ export default async function SharedCaloriePage({ params: { date } }: Props) {
                 </div>
             </Card>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
                 {mealTypeTotals.map(({ type, total }) => (
                     <Card
                         key={type}
                         variant="outline"
                         className="overflow-hidden"
                     >
-                        <div className="p-4">
-                            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                        <div className="p-3 sm:p-4">
+                            <h3 className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">
                                 {type} ({total} cal)
                             </h3>
-                            <ul className="mt-3 space-y-2">
+                            <ul className="mt-2 sm:mt-3 space-y-1 sm:space-y-2">
                                 {mealsByType[type].map((meal, index) => (
                                     <li
                                         key={index}
-                                        className="text-gray-600 dark:text-gray-400 flex justify-between"
+                                        className="text-sm sm:text-base text-gray-600 dark:text-gray-400 flex flex-col sm:flex-row justify-between gap-1 sm:gap-0"
                                     >
-                                        <span>{meal.meal_name}</span>
-                                        <span>{meal.calories} cal</span>
+                                        <span className="break-words">{meal.meal_name}</span>
+                                        <span className="text-right">{meal.calories} cal</span>
                                     </li>
                                 ))}
                             </ul>

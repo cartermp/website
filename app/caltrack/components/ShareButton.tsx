@@ -21,8 +21,8 @@ export function ShareButton({ date }: { date: string }) {
     <button
       onClick={handleShare}
       disabled={isSharing}
-      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 
-        transition-colors flex items-center gap-2"
+      className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 
+        transition-colors flex items-center justify-center sm:justify-start gap-2"
     >
       {isSharing ? (
         <>
@@ -33,7 +33,13 @@ export function ShareButton({ date }: { date: string }) {
           Sharing...
         </>
       ) : (
-        'Share Today\'s Report'
+        <>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+          </svg>
+          <span className="hidden sm:inline">Share Today's Report</span>
+          <span className="sm:hidden">Share</span>
+        </>
       )}
     </button>
   )

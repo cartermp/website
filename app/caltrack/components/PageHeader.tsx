@@ -12,12 +12,13 @@ export function PageHeader({ todayEntry }: PageHeaderProps) {
     const today = getToday()
 
     return (
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
             <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Calorie Tracking</h1>
-            <div className="flex gap-4">
-                <ShareButton date={today} /><Link
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
+                <ShareButton date={today} />
+                <Link
                     href={`/caltrack/edit/${today}`}
-                    className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+                    className="w-full sm:w-auto text-center px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
                 >
                     {todayEntry ? "Edit Today's Calories" : "Add Today's Calories"}
                 </Link>
