@@ -15,11 +15,11 @@ interface CalorieListProps {
 }
 
 export function CalorieList({ initialEntries }: CalorieListProps) {
-  const dailyEntries = useMemo(() => 
+  const dailyEntries = useMemo(() =>
     calculateDailyEntries(initialEntries)
       .sort((a, b) => -compareDates(a.date, b.date))
-  , [initialEntries])
-  
+    , [initialEntries])
+
   const average = calculateDailyAverage(dailyEntries)
   const today = getToday() // Get today's date on client side
   const todayEntry = dailyEntries.find(day => day.date === today)
@@ -29,13 +29,13 @@ export function CalorieList({ initialEntries }: CalorieListProps) {
       <PageHeader todayEntry={!!todayEntry} />
 
       <Card variant="stats" className="p-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <StatDisplay
-            label="Daily Target"
+            label="Target"
             value={`${TARGET_CALORIES} calories`}
           />
           <StatDisplay
-            label="Daily Average"
+            label="Average"
             value={`${Math.round(average)} calories`}
           />
         </div>
@@ -45,8 +45,8 @@ export function CalorieList({ initialEntries }: CalorieListProps) {
         <h2 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
           Calorie Intake Trends
         </h2>
-        <CalorieTrendChart 
-          entries={dailyEntries} 
+        <CalorieTrendChart
+          entries={dailyEntries}
           targetCalories={TARGET_CALORIES}
           maxCalories={MAX_TDEE_CALORIES}
         />
