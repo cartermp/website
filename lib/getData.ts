@@ -31,6 +31,18 @@ export async function getStaticEntries(date: string) {
     return data
 }
 
+// Get entries for a date range (inclusive)
+export async function getStaticEntriesForRange(startDate: string, endDate: string) {
+    const { sql } = await import('@/lib/db')
+    const data = await sql`
+        SELECT date::text, meal_type, meal_name, calories 
+        FROM calorie_entries 
+        WHERE date BETWEEN ${startDate}::date AND ${endDate}::date
+        ORDER BY date ASC
+    `
+    return data
+}
+
 // Special function to get all unique dates for static generation
 export async function getStaticDates() {
     const { sql } = await import('@/lib/db')

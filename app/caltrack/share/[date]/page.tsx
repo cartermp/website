@@ -1,13 +1,15 @@
-import { getStaticEntries, getStaticDates } from "@/lib/getData"
+import { getStaticEntries, getStaticDates, getStaticEntriesForRange } from "@/lib/getData"
 import { formatDate } from "@/lib/dateUtils"
 import {
     groupEntriesByMealType,
     calculateMealTypeTotals,
+    calculateDayStats,
     TARGET_CALORIES
 } from "@/lib/calorieUtils"
 import type { CalorieEntry } from "@/lib/types"
 import { Card } from "../../components/ui/card"
 import { StatDisplay } from "../../components/ui/stat-display"
+import { StatsSummary } from "../../components/ui/stats-summary"
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -44,11 +46,22 @@ export default async function SharedCaloriePage({ params: { date } }: Props) {
         notFound()
     }
 
+    // Get entries for the past 7 days (including current day)
+    const sevenDaysAgo = new Date(date)
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6)
+    const rangeEntries = await getStaticEntriesForRange(
+        sevenDaysAgo.toISOString().split('T')[0],
+        date
+    ) as CalorieEntry[]
+
     const totalCalories = entries.reduce((sum, entry) => sum + entry.calories, 0)
 
     // Group entries by meal type
     const mealsByType = groupEntriesByMealType(entries)
     const mealTypeTotals = calculateMealTypeTotals(mealsByType)
+
+    // Calculate statistics
+    const stats = calculateDayStats(entries, rangeEntries)
 
     // Determine color for total calories
     const calorieColor = totalCalories > TARGET_CALORIES
@@ -79,6 +92,8 @@ export default async function SharedCaloriePage({ params: { date } }: Props) {
                     />
                 </div>
             </Card>
+
+            <StatsSummary {...stats} />
 
             <div className="space-y-3 sm:space-y-4">
                 {mealTypeTotals.map(({ type, total }) => (
