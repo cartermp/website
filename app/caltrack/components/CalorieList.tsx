@@ -9,6 +9,7 @@ import { CalorieListItem } from './CalorieListItem'
 import { CalorieTrendChart } from './CalorieTrendChart'
 import { PageHeader } from './PageHeader'
 import type { CalorieEntry } from '@/lib/types'
+import { getCalorieColor } from '@/lib/colorUtils'
 
 interface CalorieListProps {
   initialEntries: CalorieEntry[]
@@ -21,6 +22,7 @@ export function CalorieList({ initialEntries }: CalorieListProps) {
     , [initialEntries])
 
   const average = calculateDailyAverage(dailyEntries)
+  const averageCalorieColor = getCalorieColor(average)
   const today = getToday() // Get today's date on client side
   const todayEntry = dailyEntries.find(day => day.date === today)
 
@@ -37,6 +39,7 @@ export function CalorieList({ initialEntries }: CalorieListProps) {
           <StatDisplay
             label="Average"
             value={`${Math.round(average)} calories`}
+            valueColor={averageCalorieColor}
           />
         </div>
       </Card>

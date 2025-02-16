@@ -24,20 +24,17 @@ export function StatsSummary({
     isLowest,
     mealTypeComparison
 }: StatsSummaryProps) {
-    // Helper to format percentage
     const formatPercent = (num: number) => {
         const rounded = Math.round(num * 10) / 10
         return `${rounded >= 0 ? '+' : ''}${rounded}%`
     }
 
-    // Helper to get color class based on value
     const getColorClass = (value: number) => {
         if (value > 0) return 'text-red-600 dark:text-red-400'
         if (value < 0) return 'text-green-600 dark:text-green-400'
         return 'text-gray-600 dark:text-gray-400'
     }
 
-    // Get color class for average calories based on target
     const getCalorieColorClass = (calories: number) => {
         if (calories > MAX_TDEE_CALORIES) return 'text-red-600 dark:text-red-400'
         if (calories > TARGET_CALORIES) return 'text-red-600 dark:text-red-400'
