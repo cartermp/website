@@ -9,7 +9,6 @@ import { CalorieListItem } from './CalorieListItem'
 import { CalorieTrendChart } from './CalorieTrendChart'
 import { PageHeader } from './PageHeader'
 import type { CalorieEntry } from '@/lib/types'
-import { getCalorieColor } from '@/lib/colorUtils'
 
 interface CalorieListProps {
   initialEntries: CalorieEntry[]
@@ -21,8 +20,36 @@ export function CalorieList({ initialEntries }: CalorieListProps) {
       .sort((a, b) => -compareDates(a.date, b.date))
     , [initialEntries])
 
+  // Calculate overall average
   const average = calculateDailyAverage(dailyEntries)
-  const averageCalorieColor = getCalorieColor(average)
+
+  // Calculate 7-day rolling average
+  const sevenDayEntries = useMemo(() => {
+    return dailyEntries.slice(0, 7)
+  }, [dailyEntries])
+
+  const sevenDayAvg = calculateDailyAverage(sevenDayEntries)
+
+  // Calculate trend (percentage difference from overall average)
+  const trendPercent = average ? ((sevenDayAvg - average) / average) * 100 : 0
+  const formatPercent = (num: number) => {
+    const rounded = Math.round(num * 10) / 10
+    return `${rounded >= 0 ? '+' : ''}${rounded}%`
+  }
+
+  // Get color classes based on values
+  const getColorClass = (value: number) => {
+    if (value > 0) return 'text-red-600 dark:text-red-400'
+    if (value < 0) return 'text-green-600 dark:text-green-400'
+    return 'text-gray-600 dark:text-gray-400'
+  }
+
+  const getCalorieColorClass = (calories: number) => {
+    if (calories > MAX_TDEE_CALORIES) return 'text-red-600 dark:text-red-400'
+    if (calories > TARGET_CALORIES) return 'text-red-600 dark:text-red-400'
+    return 'text-green-600 dark:text-green-400'
+  }
+
   const today = getToday() // Get today's date on client side
   const todayEntry = dailyEntries.find(day => day.date === today)
 
@@ -30,16 +57,21 @@ export function CalorieList({ initialEntries }: CalorieListProps) {
     <>
       <PageHeader todayEntry={!!todayEntry} />
 
-      <Card variant="stats" className="p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+      <Card variant="stats" className="p-3 sm:p-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
           <StatDisplay
             label="Target"
             value={`${TARGET_CALORIES} calories`}
           />
           <StatDisplay
-            label="Average"
-            value={`${Math.round(average)} calories`}
-            valueColor={averageCalorieColor}
+            label="7-Day Avg"
+            value={`${Math.round(sevenDayAvg)} cal`}
+            valueColor={getCalorieColorClass(sevenDayAvg)}
+          />
+          <StatDisplay
+            label="vs Overall"
+            value={formatPercent(trendPercent)}
+            valueColor={getColorClass(trendPercent)}
           />
         </div>
       </Card>
