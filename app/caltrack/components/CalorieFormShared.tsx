@@ -8,6 +8,7 @@ import { Card } from './ui/card'
 import { StatDisplay } from './ui/stat-display'
 import type { CalorieEntry } from '@/lib/types'
 import { getToday } from '@/lib/dateUtils'
+import { FoodAutocomplete } from './FoodAutocomplete'
 
 interface CalorieFormSharedProps {
   date?: string
@@ -72,21 +73,16 @@ export function CalorieFormShared({ date = getToday(), initialEntries = [], mode
                 key={itemIndex} 
                 className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr),120px,40px] gap-2 sm:gap-4 items-start"
               >
-                <div className="flex flex-col w-full">
-                  <input
-                    ref={currentFieldRefs.current[mealIndex].nameRef}
-                    onKeyDown={(e) => handleItemKeyDown(e, mealIndex, itemIndex)}
-                    type="text"
-                    placeholder="Meal name"
-                    value={item.name}
-                    onChange={(e) => {
-                      updateItem(mealIndex, itemIndex, 'name', e.target.value)
-                    }}
-                    disabled={isSubmitting}
-                    className={`p-2 text-base sm:text-base border rounded dark:bg-gray-800 dark:border-gray-700 
-                      ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  />
-                </div>
+                <FoodAutocomplete
+                  value={item.name}
+                  calories={item.calories}
+                  onNameChange={(value) => updateItem(mealIndex, itemIndex, 'name', value)}
+                  onCaloriesChange={(value) => updateItem(mealIndex, itemIndex, 'calories', value)}
+                  onKeyDown={(e) => handleItemKeyDown(e, mealIndex, itemIndex)}
+                  disabled={isSubmitting}
+                  nameRef={currentFieldRefs.current[mealIndex].nameRef}
+                  caloriesRef={currentFieldRefs.current[mealIndex].caloriesRef}
+                />
                 <div className="flex gap-2 items-start">
                   <div className="flex-1 sm:flex-none">
                     <input

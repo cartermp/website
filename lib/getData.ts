@@ -41,3 +41,12 @@ export async function getStaticDates() {
     `
     return data.map(row => row.date)
 }
+
+export async function getFoodItems() {
+    const res = await fetch(`${baseUrl}/api/caltrack/foods`, {
+        method: 'GET',
+        cache: 'no-store',
+    });
+    if (!res.ok) throw new Error('Failed to fetch food items');
+    return res.json();
+}

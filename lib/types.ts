@@ -21,6 +21,11 @@ export interface DailyEntry {
     totalCalories: number
 }
 
+export interface FoodItem {
+    meal_name: string
+    calories: number
+}
+
 export const MEAL_TYPES = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'] as const
 export type MealType = typeof MEAL_TYPES[number]
 
