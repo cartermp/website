@@ -7,7 +7,10 @@
     "build": "next build",
     "preview": "next build && next start",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "npx jest --config jest.config.js",
+    "test:watch": "npx jest --watch --config jest.config.js",
+    "test:coverage": "npx jest --coverage --config jest.config.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
@@ -38,5 +41,14 @@
     "simple-icons": "^14.0.1",
     "tailwindcss": "3.3.2",
     "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jest": "^29.5.6",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.1.1"
   }
 }
