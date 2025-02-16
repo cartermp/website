@@ -60,7 +60,12 @@ export function CalorieFormShared({ date = getToday(), initialEntries = [], mode
   }
 
   return (
-    <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} className="space-y-6 sm:space-y-8">
+    <form 
+      onSubmit={handleSubmit} 
+      onKeyDown={handleFormKeyDown} 
+      className="space-y-6 sm:space-y-8"
+      data-testid="calorie-form"
+    >
       {meals.map((meal, mealIndex) => (
         <Card key={meal.type} className="p-3 sm:p-4 space-y-3 sm:space-y-4">
           <h2 className="text-lg sm:text-xl font-medium text-gray-700 dark:text-gray-300">
