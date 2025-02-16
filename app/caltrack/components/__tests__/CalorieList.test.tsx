@@ -27,7 +27,7 @@ jest.mock('../CalorieTrendChart', () => ({
 // Mock the share button component since we're not testing it here
 jest.mock('../ShareButton', () => ({
     ShareButton: ({ date }: { date: string }) => (
-        <div data-testid="share-button" data-date={date}>Share Today's Report</div>
+        <div data-testid="share-button" data-date={date}>Share Today&apos;s Report</div>
     )
 }))
 
