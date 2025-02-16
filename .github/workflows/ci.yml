@@ -29,8 +29,8 @@ jobs:
     - name: Run tests
       run: npm test
 
-    - name: Build project
-      run: npm run build
+    # - name: Build project
+    #   run: npm run build
 
     - name: Deploy to Vercel
       env:
@@ -39,4 +39,4 @@ jobs:
         VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       run: |
         npm install -g vercel
-        vercel deploy --prebuilt --prod
+        vercel deploy --prod
