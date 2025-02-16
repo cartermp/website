@@ -36,4 +36,16 @@ jobs:
         files: ./coverage/lcov.info
         flags: unittests
         name: codecov-umbrella
-        fail_ci_if_error: true 
+        fail_ci_if_error: true
+
+    - name: Build project
+      run: npm run build
+
+    - name: Deploy to Vercel
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      run: |
+        npm install -g vercel
+        vercel deploy --prebuilt --prod
