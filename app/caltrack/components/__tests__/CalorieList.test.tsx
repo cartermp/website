@@ -32,9 +32,9 @@ jest.mock('../ShareButton', () => ({
 }))
 
 describe('CalorieList', () => {
-    const today = new Date().toISOString().split('T')[0]
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0]
-    const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0]
+    const today = 'February 16, 2025'
+    const yesterday = 'February 15, 2025'
+    const twoDaysAgo = 'February 14, 2025'
 
     const mockEntries: CalorieEntry[] = [
         // Today - high calories
