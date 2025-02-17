@@ -9,6 +9,7 @@ import { StatDisplay } from './ui/stat-display'
 import type { CalorieEntry } from '@/lib/types'
 import { getToday } from '@/lib/dateUtils'
 import { FoodAutocomplete } from './FoodAutocomplete'
+import { getCalorieColor } from '@/lib/colorUtils'
 
 interface CalorieFormSharedProps {
   date?: string
@@ -138,7 +139,7 @@ export function CalorieFormShared({ date = getToday(), initialEntries = [], mode
         <StatDisplay
           label="Total Calories"
           value={`${getTotalCalories()} calories`}
-          valueColor={getTotalCalories() > 2000 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}
+          valueColor={getCalorieColor(getTotalCalories())}
           className="text-base sm:text-lg"
         />
       </Card>
