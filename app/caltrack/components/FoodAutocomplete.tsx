@@ -35,6 +35,7 @@ export function FoodAutocomplete({
     const [showSuggestions, setShowSuggestions] = useState(false)
     const [allFoodItems, setAllFoodItems] = useState<FoodItem[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [selectedIndex, setSelectedIndex] = useState(-1)
     
     // Refs
     const wrapperRef = useRef<HTMLDivElement>(null)
@@ -90,17 +91,50 @@ export function FoodAutocomplete({
         onNameChange(inputValue)
         setSuggestions(filterSuggestions(inputValue))
         setShowSuggestions(true)
+        setSelectedIndex(-1) // Reset selection when input changes
     }, [onNameChange, filterSuggestions])
 
     const handleSuggestionClick = useCallback((suggestion: FoodItem) => {
         onNameChange(suggestion.meal_name)
         onCaloriesChange(suggestion.calories.toString())
         setShowSuggestions(false)
+        setSelectedIndex(-1)
     }, [onNameChange, onCaloriesChange])
+
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!showSuggestions || suggestions.length === 0) {
+            return
+        }
+
+        switch (e.key) {
+            case 'ArrowDown':
+                e.preventDefault()
+                setSelectedIndex(prev => 
+                    prev < suggestions.length - 1 ? prev + 1 : prev
+                )
+                break
+            case 'ArrowUp':
+                e.preventDefault()
+                setSelectedIndex(prev => prev > -1 ? prev - 1 : prev)
+                break
+            case 'Enter':
+            case 'Tab':
+                if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+                    e.preventDefault()
+                    handleSuggestionClick(suggestions[selectedIndex])
+                }
+                break
+            case 'Escape':
+                setShowSuggestions(false)
+                setSelectedIndex(-1)
+                break
+        }
+    }, [showSuggestions, suggestions, selectedIndex, handleSuggestionClick])
 
     const handleFocus = useCallback(() => {
         setSuggestions(filterSuggestions(value))
         setShowSuggestions(true)
+        setSelectedIndex(-1)
     }, [value, filterSuggestions])
 
     // Memoize the suggestions list to prevent unnecessary re-renders
@@ -111,7 +145,11 @@ export function FoodAutocomplete({
                     <li
                         key={`${suggestion.meal_name}-${suggestion.calories}`}
                         onClick={() => handleSuggestionClick(suggestion)}
-                        className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between"
+                        className={`px-4 py-2 cursor-pointer flex justify-between ${
+                            index === selectedIndex 
+                                ? 'bg-purple-100 dark:bg-purple-900/30' 
+                                : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        }`}
                     >
                         <span>{suggestion.meal_name}</span>
                         <span className="text-gray-500 dark:text-gray-400">
@@ -121,7 +159,7 @@ export function FoodAutocomplete({
                 ))}
             </ul>
         )
-    ), [suggestions, showSuggestions, handleSuggestionClick])
+    ), [suggestions, showSuggestions, handleSuggestionClick, selectedIndex])
 
     return (
         <div ref={wrapperRef} className="relative flex-1">
@@ -131,7 +169,10 @@ export function FoodAutocomplete({
                 placeholder={isLoading ? PLACEHOLDER.LOADING : PLACEHOLDER.DEFAULT}
                 value={value}
                 onChange={handleInputChange}
-                onKeyDown={onKeyDown}
+                onKeyDown={(e) => {
+                    handleKeyDown(e)
+                    onKeyDown?.(e)
+                }}
                 onFocus={handleFocus}
                 onClick={handleFocus}
                 disabled={disabled || isLoading}
