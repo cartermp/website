@@ -72,7 +72,7 @@ export function CalorieListItem({
               className="text-lg font-medium"
               style={{ color: getCalorieColor(totalCalories, isDark) }}
             >
-              {totalCalories} calories
+              {Math.round(totalCalories)} calories
             </span>
             <Link
               href={`/caltrack/edit/${date}`}
@@ -89,7 +89,7 @@ export function CalorieListItem({
           {mealTypeTotals.map(({ type, total }) => (
             <div key={type}>
               <h3 className="font-medium text-gray-700 dark:text-gray-300">
-                {type} ({total} cal)
+                {type} ({Math.round(total)} cal)
               </h3>
               <ul className="mt-2 space-y-1">
                 {mealsByType[type].map((meal, index) => (
@@ -98,7 +98,7 @@ export function CalorieListItem({
                     className="text-gray-600 dark:text-gray-400 flex flex-col sm:flex-row justify-between gap-1 sm:gap-0"
                   >
                     <span className="break-words">{meal.meal_name}</span>
-                    <span className="text-right">{meal.calories} cal</span>
+                    <span className="text-right">{Math.round(meal.calories)} cal</span>
                   </li>
                 ))}
               </ul>

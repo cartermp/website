@@ -1,6 +1,6 @@
 import { getData } from '@/lib/getData'
 import { CalorieList } from './components/CalorieList'
-import type { CalorieEntry } from '@/lib/types'
+import type { CalorieData } from '@/lib/types'
 import { Suspense } from 'react'
 import Loading from './loading'
 
@@ -9,8 +9,8 @@ export const dynamic = "force-dynamic"
 
 // Use the special Next.js async component type
 const CalorieListWrapper = async () => {
-  const entries = await getData() as CalorieEntry[]
-  return <CalorieList initialEntries={entries} />
+  const data = await getData() as CalorieData
+  return <CalorieList initialData={data} />
 }
 
 export default function CalTrackPage() {

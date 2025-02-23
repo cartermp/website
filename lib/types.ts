@@ -29,3 +29,17 @@ export interface FoodItem {
 export const MEAL_TYPES = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'] as const
 export type MealType = typeof MEAL_TYPES[number]
 
+export interface DailyStats {
+    date: string;
+    total_calories: number;
+    breakfast_calories: number;
+    lunch_calories: number;
+    dinner_calories: number;
+    snacks_calories: number;
+}
+
+export interface CalorieData {
+    entries: CalorieEntry[];
+    stats: DailyStats | null;
+    overallAverage: number;
+}

@@ -1,37 +1,36 @@
 'use client'
 
 import { useMemo } from 'react'
-import { getToday, compareDates } from '@/lib/dateUtils'
+import { compareDates, getToday } from '@/lib/dateUtils'
 import { calculateDailyEntries, calculateDailyAverage, TARGET_CALORIES, MAX_TDEE_CALORIES } from '@/lib/calorieUtils'
 import { Card } from './ui/card'
 import { StatDisplay } from './ui/stat-display'
 import { CalorieListItem } from './CalorieListItem'
 import { CalorieTrendChart } from './CalorieTrendChart'
 import { PageHeader } from './PageHeader'
-import type { CalorieEntry } from '@/lib/types'
+import type { CalorieData } from '@/lib/types'
 
 interface CalorieListProps {
-  initialEntries: CalorieEntry[]
+  initialData: CalorieData
 }
 
-export function CalorieList({ initialEntries }: CalorieListProps) {
-  const dailyEntries = useMemo(() =>
-    calculateDailyEntries(initialEntries)
-      .sort((a, b) => -compareDates(a.date, b.date))
-    , [initialEntries])
+export function CalorieList({ initialData }: CalorieListProps) {
+  const { entries, overallAverage } = initialData
 
-  // Calculate overall average
-  const average = calculateDailyAverage(dailyEntries)
+  const dailyEntries = useMemo(() =>
+    calculateDailyEntries(entries)
+      .sort((a, b) => -compareDates(a.date, b.date))
+    , [entries])
+
+  // Check if today's entry exists
+  const today = getToday()
+  const todayEntry = dailyEntries.some(entry => entry.date === today)
 
   // Calculate 7-day rolling average
-  const sevenDayEntries = useMemo(() => {
-    return dailyEntries.slice(0, 7)
-  }, [dailyEntries])
-
-  const sevenDayAvg = calculateDailyAverage(sevenDayEntries)
+  const sevenDayAvg = calculateDailyAverage(dailyEntries)
 
   // Calculate trend (percentage difference from overall average)
-  const trendPercent = average ? ((sevenDayAvg - average) / average) * 100 : 0
+  const trendPercent = overallAverage ? ((sevenDayAvg - overallAverage) / overallAverage) * 100 : 0
   const formatPercent = (num: number) => {
     const rounded = Math.round(num * 10) / 10
     return `${rounded >= 0 ? '+' : ''}${rounded}%`
@@ -50,54 +49,57 @@ export function CalorieList({ initialEntries }: CalorieListProps) {
     return 'text-green-600 dark:text-green-400'
   }
 
-  const today = getToday() // Get today's date on client side
-  const todayEntry = dailyEntries.find(day => day.date === today)
-
   return (
-    <>
-      <PageHeader todayEntry={!!todayEntry} />
+    <div className="space-y-6">
+      <PageHeader todayEntry={todayEntry} />
 
       <Card variant="stats" className="p-3 sm:p-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <StatDisplay
-            label="Target"
-            value={`${TARGET_CALORIES} calories`}
-          />
-          <StatDisplay
-            label="7-Day Avg"
+            label="7 Day Avg"
             value={`${Math.round(sevenDayAvg)} cal`}
             valueColor={getCalorieColorClass(sevenDayAvg)}
           />
           <StatDisplay
-            label="vs Overall"
+            label="Overall Avg"
+            value={`${Math.round(overallAverage)} cal`}
+            valueColor={getCalorieColorClass(overallAverage)}
+          />
+          <StatDisplay
+            label="7-Day Trend"
             value={formatPercent(trendPercent)}
             valueColor={getColorClass(trendPercent)}
+          />
+          <StatDisplay
+            label="Target"
+            value={`${TARGET_CALORIES} cal`}
           />
         </div>
       </Card>
 
-      <Card variant="outline" className="p-4">
-        <h2 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">
-          Calorie Intake Trends
-        </h2>
-        <CalorieTrendChart
-          entries={dailyEntries}
-          targetCalories={TARGET_CALORIES}
-          maxCalories={MAX_TDEE_CALORIES}
-        />
-      </Card>
-
-      <ul className="space-y-4">
-        {dailyEntries.map((day) => (
-          <CalorieListItem
-            key={day.date}
-            date={day.date}
-            entries={day.entries}
-            totalCalories={day.totalCalories}
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Calorie Trends</h2>
+        <Card className="p-6">
+          <CalorieTrendChart
+            entries={dailyEntries}
             targetCalories={TARGET_CALORIES}
+            maxCalories={MAX_TDEE_CALORIES}
           />
-        ))}
-      </ul>
-    </>
+        </Card>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Last 7 Days</h2>
+        <ul className="space-y-4 list-none">
+          {dailyEntries.map(entry => (
+            <CalorieListItem
+              key={entry.date}
+              {...entry}
+              targetCalories={TARGET_CALORIES}
+            />
+          ))}
+        </ul>
+      </div>
+    </div>
   )
 }

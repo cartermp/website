@@ -52,135 +52,97 @@ describe('CalorieList', () => {
     ]
 
     it('renders all main sections', () => {
-        render(<CalorieList initialEntries={mockEntries} />)
+        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
         
         expect(screen.getByText('Target:')).toBeInTheDocument()
-        expect(screen.getByText('7-Day Avg:')).toBeInTheDocument()
-        expect(screen.getByText('vs Overall:')).toBeInTheDocument()
-        expect(screen.getByText('Calorie Intake Trends')).toBeInTheDocument()
+        expect(screen.getByText('7 Day Avg:')).toBeInTheDocument()
+        expect(screen.getByText('Overall Avg:')).toBeInTheDocument()
     })
 
     it('displays target calories correctly', () => {
-        render(<CalorieList initialEntries={mockEntries} />)
+        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
         
-        expect(screen.getByText(`${TARGET_CALORIES} calories`)).toBeInTheDocument()
+        expect(screen.getByText(`${TARGET_CALORIES} cal`)).toBeInTheDocument()
     })
 
     it('calculates and displays 7-day average correctly', () => {
-        render(<CalorieList initialEntries={mockEntries} />)
+        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
         
         // Total per day:
         // Today: 1600
         // Yesterday: 900
         // Two days ago: 1500
         // Average = 1333.33...
-        const expectedAvg = Math.round((1600 + 900 + 1500) / 3)
-        
-        expect(screen.getByText(`${expectedAvg} cal`)).toBeInTheDocument()
+        expect(screen.getByText('1333 cal')).toBeInTheDocument()
     })
 
-    it('shows 7-day average in green when below target', () => {
+    it('shows low calories in green', () => {
         const lowCalorieEntries: CalorieEntry[] = [
             { date: today, meal_type: 'Breakfast' as MealType, meal_name: 'Toast', calories: 200 },
             { date: today, meal_type: 'Lunch' as MealType, meal_name: 'Salad', calories: 300 }
         ]
         
-        render(<CalorieList initialEntries={lowCalorieEntries} />)
+        render(<CalorieList initialData={{ entries: lowCalorieEntries, overallAverage: 1500 }} />)
         
         const avgValue = screen.getByText('500 cal')
-        expect(avgValue).toHaveClass('text-green-600', 'dark:text-green-400')
+        expect(avgValue).toHaveClass('text-green-600')
     })
 
-    it('shows 7-day average in red when above target', () => {
+    it('shows high calories in red', () => {
         const highCalorieEntries: CalorieEntry[] = [
             { date: today, meal_type: 'Breakfast' as MealType, meal_name: 'Pancakes', calories: 800 },
             { date: today, meal_type: 'Lunch' as MealType, meal_name: 'Burger', calories: 1000 },
             { date: today, meal_type: 'Dinner' as MealType, meal_name: 'Pizza', calories: 1200 }
         ]
         
-        render(<CalorieList initialEntries={highCalorieEntries} />)
+        render(<CalorieList initialData={{ entries: highCalorieEntries, overallAverage: 1500 }} />)
         
         const avgValue = screen.getByText('3000 cal')
-        expect(avgValue).toHaveClass('text-red-600', 'dark:text-red-400')
+        expect(avgValue).toHaveClass('text-red-600')
     })
 
     it('calculates and displays trend percentage correctly', () => {
-        render(<CalorieList initialEntries={mockEntries} />)
+        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
         
         // Recent average (3 days) = 1333.33
-        // Overall average (3 days) = 1333.33
-        // Trend = 0%
-        const trendValue = screen.getByText('+0%')
-        expect(trendValue).toHaveClass('text-gray-600', 'dark:text-gray-400')
+        // Overall average = 1500
+        // Trend = -11.1%
+        expect(screen.getByText('-11.1%')).toBeInTheDocument()
+    })
+
+    it('handles empty entries gracefully', () => {
+        render(<CalorieList initialData={{ entries: [], overallAverage: 1500 }} />)
+        
+        expect(screen.getByText('0 cal')).toBeInTheDocument()
+        expect(screen.getByText('-100%')).toBeInTheDocument()
     })
 
     it('shows positive trend in red', () => {
         const entries: CalorieEntry[] = [
             // Recent entries (first 7 days) - high calories (2000 per day)
             { date: '2025-02-16', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-15', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-14', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-13', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-12', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-11', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-10', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            // Older entries - low calories (500 per day)
-            { date: '2025-02-09', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-08', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-07', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-06', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-05', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-04', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-03', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 }
+            { date: '2025-02-15', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 }
         ]
-        
-        render(<CalorieList initialEntries={entries} />)
-        
-        // Recent average (7 days) = 2000
-        // Overall average = 1250 (2000 * 7 + 500 * 7) / 14
-        // Trend = ((2000 - 1250) / 1250) * 100 = +60%
-        const trendValue = screen.getByText('+60%')
-        expect(trendValue).toHaveClass('text-red-600')
+
+        render(<CalorieList initialData={{ entries, overallAverage: 1500 }} />)
+        const trendElement = screen.getByText('+33.3%')
+        expect(trendElement).toHaveClass('text-red-600')
     })
 
     it('shows negative trend in green', () => {
         const entries: CalorieEntry[] = [
-            // Recent entries (first 7 days) - low calories (500 per day)
-            { date: '2025-02-16', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-15', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-14', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-13', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-12', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-11', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            { date: '2025-02-10', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 500 },
-            // Older entries - high calories (2000 per day)
-            { date: '2025-02-09', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-08', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-07', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-06', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-05', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-04', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 },
-            { date: '2025-02-03', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 }
+            // Recent entries (first 7 days) - low calories (1000 per day)
+            { date: '2025-02-16', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 1000 },
+            { date: '2025-02-15', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 1000 }
         ]
-        
-        render(<CalorieList initialEntries={entries} />)
-        
-        // Recent average (7 days) = 500
-        // Overall average = 1250 (500 * 7 + 2000 * 7) / 14
-        // Trend = ((500 - 1250) / 1250) * 100 = -60%
-        const trendValue = screen.getByText('-60%')
-        expect(trendValue).toHaveClass('text-green-600')
-    })
 
-    it('handles empty entries gracefully', () => {
-        render(<CalorieList initialEntries={[]} />)
-        
-        expect(screen.getByText('0 cal')).toBeInTheDocument()
-        expect(screen.getByText('+0%')).toBeInTheDocument()
+        render(<CalorieList initialData={{ entries, overallAverage: 1500 }} />)
+        const trendElement = screen.getByText('-33.3%')
+        expect(trendElement).toHaveClass('text-green-600')
     })
 
     it('sorts entries by date in descending order', () => {
-        render(<CalorieList initialEntries={mockEntries} />)
+        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
         
         // Check that dates are displayed in descending order
         const dates = screen.getAllByText(/February \d+, 2025/)
@@ -193,5 +155,15 @@ describe('CalorieList', () => {
             'February 15, 2025',
             'February 14, 2025'
         ])
+    })
+
+    it('shows all stat displays', () => {
+        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
+
+        // Check for stat displays
+        expect(screen.getByText('7 Day Avg:')).toBeInTheDocument()
+        expect(screen.getByText('Overall Avg:')).toBeInTheDocument()
+        expect(screen.getByText('7-Day Trend:')).toBeInTheDocument()
+        expect(screen.getByText('Target:')).toBeInTheDocument()
     })
 }) 

@@ -8,13 +8,14 @@ export function calculateDailyEntries(entries: CalorieEntry[]): DailyEntry[] {
         .map(([date, dayEntries]) => ({
             date,
             entries: dayEntries,
-            totalCalories: dayEntries.reduce((sum, entry) => sum + entry.calories, 0)
+            totalCalories: Math.round(dayEntries.reduce((sum, entry) => sum + entry.calories, 0))
         }))
 }
 
 export function calculateDailyAverage(entries: DailyEntry[]): number {
     if (entries.length === 0) return 0
-    return entries.reduce((sum, day) => sum + day.totalCalories, 0) / entries.length
+    const total = entries.reduce((sum, entry) => sum + entry.totalCalories, 0)
+    return Math.round(total / entries.length)
 }
 
 export function groupEntriesByMealType(entries: CalorieEntry[]) {
@@ -30,7 +31,7 @@ export function groupEntriesByMealType(entries: CalorieEntry[]) {
 export function calculateMealTypeTotals(mealsByType: Record<string, CalorieEntry[]>) {
     return Object.entries(mealsByType).map(([type, meals]) => ({
         type,
-        total: meals.reduce((sum, meal) => sum + meal.calories, 0)
+        total: Math.round(meals.reduce((sum, meal) => sum + meal.calories, 0))
     }))
 }
 
@@ -41,7 +42,7 @@ export function calculateDayStats(dayEntries: CalorieEntry[], rangeEntries: Calo
     const avgCalories = calculateDailyAverage(dailyEntries)
     
     // Calculate total for the specific day
-    const dayTotal = dayEntries.reduce((sum, entry) => sum + entry.calories, 0)
+    const dayTotal = Math.round(dayEntries.reduce((sum, entry) => sum + entry.calories, 0))
     
     // Calculate percentage difference from average
     const percentDiff = avgCalories ? ((dayTotal - avgCalories) / avgCalories) * 100 : 0
@@ -60,9 +61,9 @@ export function calculateDayStats(dayEntries: CalorieEntry[], rangeEntries: Calo
     const rangeMealTypes = groupEntriesByMealType(rangeEntries)
     
     const mealTypeComparison = Object.entries(dayMealTypes).map(([type, meals]) => {
-        const dayTotal = meals.reduce((sum, meal) => sum + meal.calories, 0)
+        const dayTotal = Math.round(meals.reduce((sum, meal) => sum + meal.calories, 0))
         const rangeAvg = rangeMealTypes[type]
-            ? rangeMealTypes[type].reduce((sum, meal) => sum + meal.calories, 0) / dailyEntries.length
+            ? Math.round(rangeMealTypes[type].reduce((sum, meal) => sum + meal.calories, 0) / dailyEntries.length)
             : 0
         return {
             type,
