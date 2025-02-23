@@ -4,10 +4,6 @@ import { updateDailyStats } from "../helpers";
 // Mock the sql tagged template literal
 jest.mock("@/lib/db", () => ({
     sql: jest.fn().mockImplementation((strings: TemplateStringsArray, ...values: any[]) => {
-        // Join the strings with the values to create a complete query string
-        const query = strings.reduce((acc, str, i) => {
-            return acc + str + (values[i] !== undefined ? values[i] : '');
-        }, '');
         return Promise.resolve({ rowCount: 1 });
     })
 }));

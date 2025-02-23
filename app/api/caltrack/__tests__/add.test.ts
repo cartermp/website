@@ -4,7 +4,6 @@
 import { POST } from "../add/route";
 import { sql } from "@/lib/db";
 import { updateDailyStats } from "../helpers";
-import { NextResponse } from "next/server";
 
 // Mock dependencies
 jest.mock("@/lib/db", () => ({
