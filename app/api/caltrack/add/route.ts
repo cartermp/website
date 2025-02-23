@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server'
 import { sql } from '@/lib/db'
+import { updateDailyStats } from '../helpers'
+
+type CalorieEntry = {
+  date: string
+  meal_type: string
+  meal_name: string
+  calories: number
+}
 
 export async function POST(request: Request) {
   try {
@@ -14,6 +22,11 @@ export async function POST(request: Request) {
         (value->>'calories')::integer
       FROM json_array_elements(${JSON.stringify(entries)}::json) as value
     `
+
+    // Get unique dates from entries and update stats for each
+    const uniqueDates = new Set<string>(entries.map((entry: CalorieEntry) => entry.date))
+    const dates = Array.from<string>(uniqueDates)
+    await Promise.all(dates.map(updateDailyStats))
     
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { sql } from '@/lib/db'
+import { updateDailyStats } from '../../helpers'
 
 export async function DELETE(
   request: Request,
@@ -10,6 +11,9 @@ export async function DELETE(
       DELETE FROM calorie_entries 
       WHERE date = ${params.date}::date
     `
+    
+    // Update stats for the deleted date
+    await updateDailyStats(params.date)
     
     return NextResponse.json({ success: true })
   } catch (error) {
