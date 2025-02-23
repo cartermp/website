@@ -11,7 +11,17 @@ type CalorieEntry = {
 
 export async function POST(request: Request) {
   try {
-    const { entries } = await request.json()
+    let body;
+    try {
+      body = await request.json();
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Invalid request body' },
+        { status: 500 }
+      );
+    }
+
+    const { entries } = body;
     
     await sql`
       INSERT INTO calorie_entries (date, meal_type, meal_name, calories)
@@ -26,7 +36,7 @@ export async function POST(request: Request) {
     // Get unique dates from entries and update stats for each
     const uniqueDates = new Set<string>(entries.map((entry: CalorieEntry) => entry.date))
     const dates = Array.from<string>(uniqueDates)
-    await Promise.all(dates.map(updateDailyStats))
+    await Promise.all(dates.map(date => updateDailyStats(date)))
     
     return NextResponse.json({ success: true })
   } catch (error) {
