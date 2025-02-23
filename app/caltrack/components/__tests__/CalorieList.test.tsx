@@ -52,7 +52,11 @@ describe('CalorieList', () => {
     ]
 
     it('renders all main sections', () => {
-        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ 
+            entries: mockEntries, 
+            overallAverage: 1500,
+            stats: null 
+        }} />)
         
         expect(screen.getByText('Target:')).toBeInTheDocument()
         expect(screen.getByText('7 Day Avg:')).toBeInTheDocument()
@@ -60,13 +64,21 @@ describe('CalorieList', () => {
     })
 
     it('displays target calories correctly', () => {
-        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ 
+            entries: mockEntries, 
+            overallAverage: 1500,
+            stats: null 
+        }} />)
         
         expect(screen.getByText(`${TARGET_CALORIES} cal`)).toBeInTheDocument()
     })
 
     it('calculates and displays 7-day average correctly', () => {
-        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ 
+            entries: mockEntries, 
+            overallAverage: 1500,
+            stats: null 
+        }} />)
         
         // Total per day:
         // Today: 1600
@@ -82,7 +94,7 @@ describe('CalorieList', () => {
             { date: today, meal_type: 'Lunch' as MealType, meal_name: 'Salad', calories: 300 }
         ]
         
-        render(<CalorieList initialData={{ entries: lowCalorieEntries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ entries: lowCalorieEntries, overallAverage: 1500, stats: null }} />)
         
         const avgValue = screen.getByText('500 cal')
         expect(avgValue).toHaveClass('text-green-600')
@@ -95,14 +107,18 @@ describe('CalorieList', () => {
             { date: today, meal_type: 'Dinner' as MealType, meal_name: 'Pizza', calories: 1200 }
         ]
         
-        render(<CalorieList initialData={{ entries: highCalorieEntries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ entries: highCalorieEntries, overallAverage: 1500, stats: null }} />)
         
         const avgValue = screen.getByText('3000 cal')
         expect(avgValue).toHaveClass('text-red-600')
     })
 
     it('calculates and displays trend percentage correctly', () => {
-        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ 
+            entries: mockEntries, 
+            overallAverage: 1500,
+            stats: null 
+        }} />)
         
         // Recent average (3 days) = 1333.33
         // Overall average = 1500
@@ -111,7 +127,7 @@ describe('CalorieList', () => {
     })
 
     it('handles empty entries gracefully', () => {
-        render(<CalorieList initialData={{ entries: [], overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ entries: [], overallAverage: 1500, stats: null }} />)
         
         expect(screen.getByText('0 cal')).toBeInTheDocument()
         expect(screen.getByText('-100%')).toBeInTheDocument()
@@ -124,7 +140,7 @@ describe('CalorieList', () => {
             { date: '2025-02-15', meal_type: 'Breakfast' as MealType, meal_name: 'Feast', calories: 2000 }
         ]
 
-        render(<CalorieList initialData={{ entries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ entries, overallAverage: 1500, stats: null }} />)
         const trendElement = screen.getByText('+33.3%')
         expect(trendElement).toHaveClass('text-red-600')
     })
@@ -136,13 +152,17 @@ describe('CalorieList', () => {
             { date: '2025-02-15', meal_type: 'Breakfast' as MealType, meal_name: 'Light', calories: 1000 }
         ]
 
-        render(<CalorieList initialData={{ entries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ entries, overallAverage: 1500, stats: null }} />)
         const trendElement = screen.getByText('-33.3%')
         expect(trendElement).toHaveClass('text-green-600')
     })
 
     it('sorts entries by date in descending order', () => {
-        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ 
+            entries: mockEntries, 
+            overallAverage: 1500,
+            stats: null 
+        }} />)
         
         // Check that dates are displayed in descending order
         const dates = screen.getAllByText(/February \d+, 2025/)
@@ -158,7 +178,11 @@ describe('CalorieList', () => {
     })
 
     it('shows all stat displays', () => {
-        render(<CalorieList initialData={{ entries: mockEntries, overallAverage: 1500 }} />)
+        render(<CalorieList initialData={{ 
+            entries: mockEntries, 
+            overallAverage: 1500,
+            stats: null 
+        }} />)
 
         // Check for stat displays
         expect(screen.getByText('7 Day Avg:')).toBeInTheDocument()
