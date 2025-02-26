@@ -84,5 +84,6 @@ export function calculateDayStats(dayEntries: CalorieEntry[], rangeEntries: Calo
     }
 }
 
-export const TARGET_CALORIES = 2400
-export const MAX_TDEE_CALORIES = 3500
+export const LOWER_TARGET = 2300
+export const UPPER_TARGET = 2600
+export const MAINTAIN_TARGET = 2900

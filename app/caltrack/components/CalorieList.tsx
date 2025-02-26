@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import { compareDates, getToday } from '@/lib/dateUtils'
-import { calculateDailyEntries, calculateDailyAverage, TARGET_CALORIES, MAX_TDEE_CALORIES } from '@/lib/calorieUtils'
+import { calculateDailyEntries, calculateDailyAverage, MAINTAIN_TARGET, LOWER_TARGET, UPPER_TARGET } from '@/lib/calorieUtils'
 import { Card } from './ui/card'
 import { StatDisplay } from './ui/stat-display'
 import { CalorieListItem } from './CalorieListItem'
@@ -44,9 +44,10 @@ export function CalorieList({ initialData }: CalorieListProps) {
   }
 
   const getCalorieColorClass = (calories: number) => {
-    if (calories > MAX_TDEE_CALORIES) return 'text-red-600 dark:text-red-400'
-    if (calories > TARGET_CALORIES) return 'text-red-600 dark:text-red-400'
-    return 'text-green-600 dark:text-green-400'
+    if (calories > MAINTAIN_TARGET) return 'text-red-600 dark:text-red-400'
+    if (calories > UPPER_TARGET) return 'text-orange-600 dark:text-orange-400'
+    if (calories < LOWER_TARGET) return 'text-green-600 dark:text-green-400'
+    return 'text-gray-600 dark:text-gray-400'
   }
 
   return (
@@ -72,7 +73,7 @@ export function CalorieList({ initialData }: CalorieListProps) {
           />
           <StatDisplay
             label="Target"
-            value={`${TARGET_CALORIES} cal`}
+            value={`${UPPER_TARGET} cal`}
           />
         </div>
       </Card>
@@ -82,8 +83,9 @@ export function CalorieList({ initialData }: CalorieListProps) {
         <Card className="p-6">
           <CalorieTrendChart
             entries={dailyEntries}
-            targetCalories={TARGET_CALORIES}
-            maxCalories={MAX_TDEE_CALORIES}
+            lowerTarget={LOWER_TARGET}
+            upperTarget={UPPER_TARGET}
+            maintainCalories={MAINTAIN_TARGET}
           />
         </Card>
       </div>
@@ -95,7 +97,7 @@ export function CalorieList({ initialData }: CalorieListProps) {
             <CalorieListItem
               key={entry.date}
               {...entry}
-              targetCalories={TARGET_CALORIES}
+              targetCalories={UPPER_TARGET}
             />
           ))}
         </ul>

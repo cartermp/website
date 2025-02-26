@@ -9,25 +9,28 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
+    ReferenceArea,
 } from 'recharts';
 import { formatDate } from '@/lib/dateUtils';
 import type { DailyEntry } from '@/lib/types';
 
 interface CalorieTrendChartProps {
     entries: DailyEntry[];
-    targetCalories: number;
-    maxCalories: number;
+    lowerTarget: number;
+    upperTarget: number;
+    maintainCalories: number;
 }
 
-export function CalorieTrendChart({ entries, targetCalories, maxCalories }: CalorieTrendChartProps) {
+export function CalorieTrendChart({ entries, lowerTarget, upperTarget, maintainCalories }: CalorieTrendChartProps) {
     const chartData = useMemo(() => {
         return entries.slice().reverse().map(entry => ({
             date: formatDate(entry.date),
             calories: entry.totalCalories,
-            target: targetCalories,
-            max: maxCalories,
-        }));
-    }, [entries, targetCalories, maxCalories]);
+            lowerTarget: lowerTarget,
+            upperTarget: upperTarget,
+            maintainCalories: maintainCalories,
+        })); 
+    }, [entries, lowerTarget, upperTarget, maintainCalories]);
 
     return (
         <div className="w-full h-64">
@@ -43,6 +46,24 @@ export function CalorieTrendChart({ entries, targetCalories, maxCalories }: Calo
                         </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
+                    <ReferenceArea
+                        y1={lowerTarget}
+                        y2={upperTarget}
+                        fill="#22c55e"
+                        fillOpacity={0.1}
+                    />
+                    <ReferenceArea
+                        y1={upperTarget}
+                        y2={maintainCalories}
+                        fill="#f97316"
+                        fillOpacity={0.1}
+                    />
+                    <ReferenceArea
+                        y1={maintainCalories}
+                        y2={maintainCalories * 1.5} // Extend a bit above maintain line
+                        fill="#ef4444"
+                        fillOpacity={0.1}
+                    />
                     <XAxis
                         dataKey="date"
                         stroke="#6b7280"
@@ -65,7 +86,8 @@ export function CalorieTrendChart({ entries, targetCalories, maxCalories }: Calo
                     />
                     <Line
                         type="monotone"
-                        dataKey="max"
+                        label="Maintain"
+                        dataKey="maintainCalories"
                         stroke="#4b5563"
                         strokeDasharray="5 5"
                         dot={false}
@@ -73,7 +95,16 @@ export function CalorieTrendChart({ entries, targetCalories, maxCalories }: Calo
                     />
                     <Line
                         type="monotone"
-                        dataKey="target"
+                        label="upper target"
+                        dataKey="upperTarget"
+                        stroke="#4b5563"
+                        strokeDasharray="5 5"
+                        dot={false}
+                        strokeWidth={2}
+                    />
+                    <Line
+                        label="lower target"
+                        dataKey="lowerTarget"
                         stroke="#4b5563"
                         strokeDasharray="5 5"
                         dot={false}
