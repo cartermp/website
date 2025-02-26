@@ -4,7 +4,9 @@ import {
     groupEntriesByMealType,
     calculateMealTypeTotals,
     calculateDayStats,
-    TARGET_CALORIES
+    LOWER_TARGET,
+    UPPER_TARGET,
+    MAINTAIN_TARGET
 } from "@/lib/calorieUtils"
 import type { CalorieEntry } from "@/lib/types"
 import { Card } from "../../components/ui/card"
@@ -64,9 +66,14 @@ export default async function SharedCaloriePage({ params: { date } }: Props) {
     const stats = calculateDayStats(entries, rangeEntries)
 
     // Determine color for total calories
-    const calorieColor = totalCalories > TARGET_CALORIES
-        ? 'text-red-600 dark:text-red-400'
-        : 'text-green-600 dark:text-green-400'
+    let calorieColor = 'text-gray-600 dark:text-gray-400'
+    if (totalCalories > MAINTAIN_TARGET) {
+        calorieColor = 'text-red-600 dark:text-red-400'
+    } else if (totalCalories > UPPER_TARGET) {
+        calorieColor = 'text-orange-600 dark:text-orange-400'
+    } else if (totalCalories < LOWER_TARGET) {
+        calorieColor = 'text-green-600 dark:text-green-400'
+    }
 
     return (
         <div className="max-w-2xl mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
@@ -83,7 +90,7 @@ export default async function SharedCaloriePage({ params: { date } }: Props) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <StatDisplay
                         label="Target"
-                        value={`${TARGET_CALORIES} calories`}
+                        value={`${UPPER_TARGET} calories`}
                     />
                     <StatDisplay
                         label="Actual"

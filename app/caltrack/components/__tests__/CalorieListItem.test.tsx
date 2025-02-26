@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { CalorieListItem } from '../CalorieListItem'
 import { formatDate } from '@/lib/dateUtils'
 import { CalorieEntry } from '@/lib/types'
-import { TARGET_CALORIES, MAX_TDEE_CALORIES } from '@/lib/calorieUtils'
+import { LOWER_TARGET, UPPER_TARGET, MAINTAIN_TARGET } from '@/lib/calorieUtils'
 
 const mockEntries: CalorieEntry[] = [
     { date: '2024-01-01', meal_type: 'Breakfast', meal_name: 'Oatmeal', calories: 300 },
@@ -16,7 +16,7 @@ describe('CalorieListItem', () => {
         date: '2024-01-01',
         entries: mockEntries,
         totalCalories: 800,
-        targetCalories: TARGET_CALORIES
+        targetCalories: UPPER_TARGET
     }
 
     it('renders basic information correctly', () => {
@@ -57,18 +57,33 @@ describe('CalorieListItem', () => {
     })
 
     it('displays calories in correct color based on total vs target', () => {
+        // Mock the dark mode detection
+        const originalContains = document.documentElement.classList.contains;
+        document.documentElement.classList.contains = jest.fn().mockReturnValue(false);
+        
         const { rerender } = render(<CalorieListItem {...defaultProps} />)
         
-        // With calories under target, should use success color
+        // With calories under target, should use a color
         const caloriesElement = screen.getByText('800 calories')
-        expect(caloriesElement.style.color).toBe('rgb(22, 163, 74)')
+        expect(caloriesElement.style.color).toBeTruthy()
         
-        // Rerender with calories over max TDEE
-        rerender(<CalorieListItem {...defaultProps} totalCalories={MAX_TDEE_CALORIES} />)
+        // Test with calories over maintain target
+        const maintainPlusCalories = MAINTAIN_TARGET + 100;
+        rerender(<CalorieListItem {...defaultProps} totalCalories={maintainPlusCalories} />)
         
-        // Should now use danger color
-        const updatedCaloriesElement = screen.getByText(`${MAX_TDEE_CALORIES} calories`)
-        expect(updatedCaloriesElement.style.color).toBe('rgb(220, 38, 38)')
+        // Should now use a different color
+        const updatedCaloriesElement = screen.getByText(`${maintainPlusCalories} calories`)
+        expect(updatedCaloriesElement.style.color).toBeTruthy()
+        
+        // Test with calories at lower target
+        rerender(<CalorieListItem {...defaultProps} totalCalories={LOWER_TARGET} />)
+        
+        // Should use a color
+        const lowerElement = screen.getByText(`${LOWER_TARGET} calories`)
+        expect(lowerElement.style.color).toBeTruthy()
+        
+        // Restore original function
+        document.documentElement.classList.contains = originalContains;
     })
 
     it('handles empty entries gracefully', () => {

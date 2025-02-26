@@ -1,6 +1,6 @@
 import { Card } from './card'
 import { StatDisplay } from './stat-display'
-import { TARGET_CALORIES, MAX_TDEE_CALORIES } from '@/lib/calorieUtils'
+import { LOWER_TARGET, UPPER_TARGET, MAINTAIN_TARGET } from '@/lib/calorieUtils'
 
 interface StatsSummaryProps {
     dayTotal: number
@@ -36,9 +36,10 @@ export function StatsSummary({
     }
 
     const getCalorieColorClass = (calories: number) => {
-        if (calories > MAX_TDEE_CALORIES) return 'text-red-600 dark:text-red-400'
-        if (calories > TARGET_CALORIES) return 'text-red-600 dark:text-red-400'
-        return 'text-green-600 dark:text-green-400'
+        if (calories > MAINTAIN_TARGET) return 'text-red-600 dark:text-red-400'
+        if (calories > UPPER_TARGET) return 'text-orange-600 dark:text-orange-400'
+        if (calories < LOWER_TARGET) return 'text-green-600 dark:text-green-400'
+        return 'text-gray-600 dark:text-gray-400'
     }
 
     return (

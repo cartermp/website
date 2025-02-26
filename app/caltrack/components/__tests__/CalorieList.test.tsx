@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { CalorieList } from '../CalorieList'
-import { TARGET_CALORIES, MAX_TDEE_CALORIES } from '@/lib/calorieUtils'
+import { LOWER_TARGET, UPPER_TARGET, MAINTAIN_TARGET } from '@/lib/calorieUtils'
 import type { CalorieEntry, MealType } from '@/lib/types'
 
 // Mock Next.js router
@@ -70,7 +70,7 @@ describe('CalorieList', () => {
             stats: null 
         }} />)
         
-        expect(screen.getByText(`${TARGET_CALORIES} cal`)).toBeInTheDocument()
+        expect(screen.getByText(`${UPPER_TARGET} cal`)).toBeInTheDocument()
     })
 
     it('calculates and displays 7-day average correctly', () => {

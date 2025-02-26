@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { StatsSummary } from '../ui/stats-summary'
-import { TARGET_CALORIES, MAX_TDEE_CALORIES } from '@/lib/calorieUtils'
+import { LOWER_TARGET, UPPER_TARGET, MAINTAIN_TARGET } from '@/lib/calorieUtils'
 
 describe('StatsSummary', () => {
     const defaultProps = {
@@ -29,10 +29,10 @@ describe('StatsSummary', () => {
         expect(screen.getByText('Meal Type Analysis')).toBeInTheDocument()
     })
 
-    it('displays 7-day average with correct color when below target', () => {
+    it('displays 7-day average with correct color when below lower target', () => {
         const props = {
             ...defaultProps,
-            avgCalories: TARGET_CALORIES - 200
+            avgCalories: LOWER_TARGET - 200
         }
         render(<StatsSummary {...props} />)
         
@@ -40,21 +40,21 @@ describe('StatsSummary', () => {
         expect(avgValue).toHaveClass('font-medium', 'text-green-600')
     })
 
-    it('displays 7-day average with correct color when above target', () => {
+    it('displays 7-day average with correct color when above upper target', () => {
         const props = {
             ...defaultProps,
-            avgCalories: TARGET_CALORIES + 200
+            avgCalories: UPPER_TARGET + 100
         }
         render(<StatsSummary {...props} />)
         
         const avgValue = screen.getByText(`${Math.round(props.avgCalories)} cal`)
-        expect(avgValue).toHaveClass('font-medium', 'text-red-600')
+        expect(avgValue).toHaveClass('font-medium', 'text-orange-600')
     })
 
-    it('displays 7-day average with correct color when above max TDEE', () => {
+    it('displays 7-day average with correct color when above maintain target', () => {
         const props = {
             ...defaultProps,
-            avgCalories: MAX_TDEE_CALORIES + 100
+            avgCalories: MAINTAIN_TARGET + 100
         }
         render(<StatsSummary {...props} />)
         

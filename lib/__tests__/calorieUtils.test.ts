@@ -3,8 +3,9 @@ import {
     calculateDailyAverage,
     groupEntriesByMealType,
     calculateMealTypeTotals,
-    TARGET_CALORIES,
-    MAX_TDEE_CALORIES
+    LOWER_TARGET,
+    UPPER_TARGET,
+    MAINTAIN_TARGET
 } from '../calorieUtils'
 import type { CalorieEntry } from '../types'
 
@@ -104,10 +105,12 @@ describe('calorieUtils', () => {
     })
 
     describe('calorie constants', () => {
-        it('defines target and max TDEE calories', () => {
-            expect(TARGET_CALORIES).toBe(2400)
-            expect(MAX_TDEE_CALORIES).toBe(3500)
-            expect(MAX_TDEE_CALORIES).toBeGreaterThan(TARGET_CALORIES)
+        it('defines target calorie ranges', () => {
+            expect(LOWER_TARGET).toBe(2300)
+            expect(UPPER_TARGET).toBe(2600)
+            expect(MAINTAIN_TARGET).toBe(2900)
+            expect(UPPER_TARGET).toBeGreaterThan(LOWER_TARGET)
+            expect(MAINTAIN_TARGET).toBeGreaterThan(UPPER_TARGET)
         })
     })
 }) 
