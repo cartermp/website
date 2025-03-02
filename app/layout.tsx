@@ -91,11 +91,23 @@ function SocialLinks() {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function() {
+            try {
+              const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+              const theme = localStorage.getItem('theme') || systemTheme;
+              document.documentElement.classList.add(theme);
+              document.documentElement.style.colorScheme = theme;
+            } catch (e) {}
+          })()
+        `}} />
+      </head>
       <body
         className={`antialiased min-h-screen bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-50 ${inter.className} ${codeFont.variable}`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="max-w-4xl mx-auto py-10 px-4">
             <div className="rounded-lg bg-white dark:bg-slate-950 shadow-sm">
               <div className="p-8">

@@ -3,27 +3,28 @@ import { Metadata } from "next"
 import { allPages } from "contentlayer/generated"
 
 import { Mdx } from "@/components/mdx-components"
+import { processMdx } from "@/lib/mdx-utils"
 
-interface PageProps {
-  params: {
-    slug: string[]
-  }
-}
+// Define the params type for Next.js 15
+type PageParams = Promise<{ slug: string[] }>
 
-async function getPageFromParams(params: PageProps["params"]) {
+// Function to get the page from params
+async function getPageFromParams(params: Awaited<PageParams>) {
   const slug = params?.slug?.join("/")
   const page = allPages.find((page) => page.slugAsParams === slug)
 
   if (!page) {
-    null
+    return null
   }
 
   return page
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+// Generate metadata for the page
+export async function generateMetadata(props: {
+  params: PageParams
+}): Promise<Metadata> {
+  const params = await props.params
   const page = await getPageFromParams(params)
 
   if (!page) {
@@ -36,24 +37,32 @@ export async function generateMetadata({
   }
 }
 
-export async function generateStaticParams(): Promise<PageProps["params"][]> {
+// Generate static params for all pages
+export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
   return allPages.map((page) => ({
     slug: page.slugAsParams.split("/"),
   }))
 }
 
-export default async function PagePage({ params }: PageProps) {
+// Page component
+export default async function PagePage(props: {
+  params: PageParams
+}) {
+  const params = await props.params
   const page = await getPageFromParams(params)
 
   if (!page) {
     notFound()
   }
+  
+  // Process the MDX content
+  const mdxSource = await processMdx(page.body.raw)
 
   return (
     <article className="py-6 prose dark:prose-invert">
       <h1 className="mb-2 text-purple-700 dark:text-purple-300">{page.title}</h1>
       {page.description && <p className="text-xl">{page.description}</p>}
-      <Mdx code={page.body.code} />
+      <Mdx code={mdxSource} />
     </article>
   )
 }

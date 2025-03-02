@@ -17,7 +17,6 @@ export default function CalTrackPage() {
   return (
     <div className="space-y-6">
       <Suspense fallback={<Loading />}>
-        {/* @ts-expect-error Async Server Component */}
         <CalorieListWrapper />
       </Suspense>
     </div>

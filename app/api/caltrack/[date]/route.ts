@@ -3,11 +3,18 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic"
 
-export async function GET(request: Request, { params }: { params: { date: string } }) {
+// Define params type for Next.js 15
+type RouteParams = Promise<{ date: string }>;
+
+export async function GET(
+  request: Request, 
+  { params }: { params: RouteParams }
+) {
+    const resolvedParams = await params;
     const data = await sql`
       SELECT date::text, meal_type, meal_name, calories 
       FROM calorie_entries 
-      WHERE date = ${params.date}::date
+      WHERE date = ${resolvedParams.date}::date
     `;
     return NextResponse.json(data);
 }

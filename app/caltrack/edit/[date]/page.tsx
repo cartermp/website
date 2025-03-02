@@ -6,11 +6,13 @@ import { formatDate } from '@/lib/dateUtils'
 export const revalidate = 0
 export const dynamic = "force-dynamic"
 
-export default async function EditCaloriesPage({
-  params
-}: {
-  params: { date: string }
+// Define params type for Next.js 15
+type PageParams = Promise<{ date: string }>;
+
+export default async function EditCaloriesPage(props: {
+  params: PageParams
 }) {
+  const params = await props.params;
   const entries = await getEntriesForDate(params.date) as CalorieEntry[]
   const mode = entries.length === 0 ? 'add' : 'edit'
 

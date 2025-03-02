@@ -11,8 +11,8 @@ interface FoodAutocompleteProps {
     onCaloriesChange: (value: string) => void
     onKeyDown?: (e: React.KeyboardEvent) => void
     disabled?: boolean
-    nameRef?: React.RefObject<HTMLInputElement>
-    caloriesRef?: React.RefObject<HTMLInputElement>
+    nameRef?: { current: HTMLInputElement | null }
+    caloriesRef?: { current: HTMLInputElement | null }
 }
 
 const PLACEHOLDER = {
@@ -182,4 +182,4 @@ export function FoodAutocomplete({
             {suggestionsList}
         </div>
     )
-} 
+}

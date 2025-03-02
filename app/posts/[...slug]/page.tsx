@@ -4,12 +4,10 @@ import { Metadata } from "next"
 import { Mdx } from "@/components/mdx-components"
 import Link from "next/link"
 import { TagList } from "@/components/TagList"
+import { processMdx } from "@/lib/mdx-utils"
 
-interface PostProps {
-  params: {
-    slug: string[]
-  }
-}
+// Define the params type for Next.js 15
+type PostParams = Promise<{ slug: string[] }>
 
 function getReadingTime(text: string): string {
   const WORDS_PER_MINUTE = 225;
@@ -26,7 +24,7 @@ function formatDate(date: string): string {
   });
 }
 
-async function getPostFromParams(params: PostProps["params"]) {
+async function getPostFromParams(params: Awaited<PostParams>) {
   const slug = params?.slug?.join("/")
   const post = allPosts.find((post) => post.slugAsParams === slug)
 
@@ -37,9 +35,10 @@ async function getPostFromParams(params: PostProps["params"]) {
   return post
 }
 
-export async function generateMetadata({
-  params,
-}: PostProps): Promise<Metadata> {
+export async function generateMetadata(props: {
+  params: PostParams
+}): Promise<Metadata> {
+  const params = await props.params
   const post = await getPostFromParams(params)
 
   if (!post) {
@@ -52,13 +51,16 @@ export async function generateMetadata({
   }
 }
 
-export async function generateStaticParams(): Promise<PostProps["params"][]> {
+export async function generateStaticParams(): Promise<{ slug: string[] }[]> {
   return allPosts.map((post) => ({
     slug: post.slugAsParams.split("/"),
   }))
 }
 
-export default async function PostPage({ params }: PostProps) {
+export default async function PostPage(props: {
+  params: PostParams
+}) {
+  const params = await props.params
   const post = await getPostFromParams(params)
 
   if (!post) {
@@ -66,7 +68,10 @@ export default async function PostPage({ params }: PostProps) {
   }
 
   const date = formatDate(post.date)
-  const readingTime = getReadingTime(post.body.code)
+  const readingTime = getReadingTime(post.body.raw)
+  
+  // Process the MDX content
+  const mdxSource = await processMdx(post.body.raw)
 
   return (
     <article className="prose dark:prose-invert max-w-none pb-6">
@@ -86,7 +91,7 @@ export default async function PostPage({ params }: PostProps) {
         </div>
       </div>
       <hr className="my-4" />
-      <Mdx code={post.body.code} />
+      <Mdx code={mdxSource} />
 
       <footer className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-800">
         <div className="not-prose mb-4 space-y-2">

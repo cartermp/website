@@ -2,14 +2,12 @@ import { allPosts } from 'contentlayer/generated'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { TagList } from '@/components/TagList'
+import { use } from 'react'
 
-interface TagPageProps {
-  params: {
-    tag: string[]
-  }
-}
+// Define params type for Next.js 15
+type TagPageParams = Promise<{ tag: string[] }>;
 
-export async function generateStaticParams(): Promise<TagPageProps["params"][]> {
+export async function generateStaticParams(): Promise<{ tag: string[] }[]> {
   const tags = new Set(allPosts.flatMap(post => 
     post.tags?.split(',').map(tag => tag.trim()) ?? []
   ))
@@ -19,7 +17,8 @@ export async function generateStaticParams(): Promise<TagPageProps["params"][]> 
   }))
 }
 
-export default function TagPage({ params }: TagPageProps) {
+export default function TagPage(props: { params: TagPageParams }) {
+  const params = use(props.params);
   const tag = params.tag[0]
   
   const posts = allPosts

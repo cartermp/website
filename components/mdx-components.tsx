@@ -1,154 +1,140 @@
-import { Components } from "react-markdown";
-import { Code } from "bright"
-import { useMDXComponent } from "next-contentlayer/hooks"
-import { Suspense } from "react";
+'use client';
 
-const LinkableHeading = ({ level, children, className }: {
-  level: 'h2' | 'h3' | 'h4' | 'h5' | 'h6',
-  children: React.ReactNode,
-  className?: string
-}) => {
-  const slug = typeof children === 'string'
-    ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-    : '';
+import React from 'react';
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 
-  const Tag = level;
-  const textSize =
-    level === 'h2' ? 'text-2xl' :
-    level === 'h3' ? 'text-xl' :
-    level === 'h4' ? 'text-lg' :
-    level === 'h5' ? 'text-base' :
-    'text-xs';
-
-  const theClass = `mt-8 mb-4 font-semibold text-purple-700 dark:text-purple-300 group ${textSize}`;
-
-  return (
-    <Tag
-      id={slug}
-      className={theClass}
-    >
-      <a href={`#${slug}`} className="no-underline text-inherit">
+// Define MDX components
+const components = {
+  p: ({ children, ...props }: any) => (
+    <p className="leading-7 [&:not(:first-child)]:mt-6" {...props}>
+      {children}
+    </p>
+  ),
+  h1: ({ children }: any) => (
+    <h1 className="mt-8 mb-4 text-2xl font-bold text-purple-700 dark:text-purple-300">
+      {children}
+    </h1>
+  ),
+  h2: ({ children }: any) => (
+    <h2 className="mt-8 mb-4 text-xl font-semibold text-purple-700 dark:text-purple-300 group">
+      <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
         <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
           #
         </span>
       </a>
-    </Tag>
-  );
-};
-
-const CODE_THEME_CONFIG = {
-  dark: "dark-plus",
-  light: "light-plus",
-  lightSelector: 'html[class="light"]',
-} as const;
-
-Code.theme = CODE_THEME_CONFIG;
-
-type CodeProps = {
-  lang: string;
-  children: React.ReactNode;
-  className?: string;
-  [key: string]: any;
-};
-
-async function BrightCode(props: CodeProps) {
-  const rendered = await Code({
-    lang: props.lang,
-    children: String(props.children).replace(/\n$/, ""),
-    className: props.className
-  });
-
-  
-  return rendered;
-}
-
-const MARKDOWN_COMPONENTS: Components = {
-  code: ({ className, children, ...props }) => {
-    const match = /language-(\w+)/.exec(className || "");
-
-    if (match) {
-      return (
-        <Suspense fallback={<div className="animate-pulse h-32 bg-gray-100 dark:bg-gray-800 rounded-lg" />}>
-          {/* @ts-expect-error - Known issue with async components */}
-          <BrightCode
-            lang={match[1]}
-            {...props}
-            className="mt-6 rounded-lg border border-purple-200 dark:border-purple-800
-                             hover:border-purple-300 dark:hover:border-purple-700
-                             transition-colors duration-200"
-          >
-            {children}
-          </BrightCode>
-        </Suspense>
-      );
-    }
-
-    return (
+    </h2>
+  ),
+  h3: ({ children }: any) => (
+    <h3 className="mt-8 mb-4 text-lg font-semibold text-purple-700 dark:text-purple-300 group">
+      <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
+        {children}
+        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          #
+        </span>
+      </a>
+    </h3>
+  ),
+  h4: ({ children }: any) => (
+    <h4 className="mt-8 mb-4 text-base font-semibold text-purple-700 dark:text-purple-300 group">
+      <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
+        {children}
+        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          #
+        </span>
+      </a>
+    </h4>
+  ),
+  h5: ({ children }: any) => (
+    <h5 className="mt-8 mb-4 text-sm font-semibold text-purple-700 dark:text-purple-300 group">
+      <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
+        {children}
+        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          #
+        </span>
+      </a>
+    </h5>
+  ),
+  h6: ({ children }: any) => (
+    <h6 className="mt-8 mb-4 text-xs font-semibold text-purple-700 dark:text-purple-300 group">
+      <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
+        {children}
+        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          #
+        </span>
+      </a>
+    </h6>
+  ),
+  a: ({ children, ...props }: any) => (
+    <a
+      className="font-medium text-purple-600 dark:text-purple-400 underline underline-offset-4 hover:text-purple-800 dark:hover:text-purple-300"
+      {...props}
+    >
+      {children}
+    </a>
+  ),
+  code: ({ className, children, ...props }: any) => {
+    const match = /language-(\w+)/.exec(className || '');
+    return match ? (
+      <pre className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto">
+        <code className={className} {...props}>
+          {children}
+        </code>
+      </pre>
+    ) : (
       <code
-        className="bg-purple-50 dark:bg-purple-900/20
-                       hover:bg-purple-100 dark:hover:bg-purple-900/30
-                       px-1.5 py-0.5 rounded text-purple-700 dark:text-purple-300
-                       transition-colors duration-200"
+        className="px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono text-sm"
         {...props}
       >
         {children}
       </code>
     );
   },
-  p: ({ children, ...props }) => (
-    <p className="leading-7 [&:not(:first-child)]:mt-6" {...props}>
-      {children}
-    </p>
-  ),
-  h1: ({ children }) => (
-    <h1 className="mt-8 mb-4 text-2xl font-bold text-purple-700 dark:text-purple-300">
-      {children}
-    </h1>
-  ),
-  h2: ({ children }) => (
-    <LinkableHeading level="h2">
-      {children}
-    </LinkableHeading>
-  ),
-  h3: ({ children }) => (
-    <LinkableHeading level="h3">
-      {children}
-    </LinkableHeading>
-  ),
-  h4: ({ children }) => (
-    <LinkableHeading level="h4">
-      {children}
-    </LinkableHeading>
-  ),
-  h5: ({ children }) => (
-    <LinkableHeading level="h5">
-      {children}
-    </LinkableHeading>
-  ),
-  h6: ({ children }) => (
-    <LinkableHeading level="h6">
-      {children}
-    </LinkableHeading>
-  ),
-  a: ({ children, ...props }) => (
-    <a
-      {...props}
-      className="text-purple-700 dark:text-purple-300 
-                 hover:text-purple-500 dark:hover:text-purple-400
-                 transition-colors duration-200"
-    >
-      {children}
-    </a>
-  ),
-}
+};
+
+// Create a loading component
+const LoadingComponent = () => (
+  <div className="animate-pulse">
+    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2.5"></div>
+    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2.5"></div>
+    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6 mb-2.5"></div>
+    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-2.5"></div>
+  </div>
+);
 
 interface MdxProps {
-  code: string
+  code: MDXRemoteSerializeResult;
 }
 
 export function Mdx({ code }: MdxProps) {
-  const Component = useMDXComponent(code)
-
-  return <Component components={MARKDOWN_COMPONENTS} />
+  const [isMounted, setIsMounted] = React.useState(false);
+  
+  // Set isMounted to true when the component mounts (client-side only)
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  // Show a loading skeleton until the component is mounted
+  if (!isMounted) {
+    return <LoadingComponent />;
+  }
+  
+  try {
+    // Render the MDX content
+    return (
+      <div className="mdx-content">
+        <MDXRemote {...code} components={components} />
+      </div>
+    );
+  } catch (error) {
+    console.error('Error rendering MDX:', error);
+    return (
+      <div className="p-4 border border-red-300 bg-red-50 dark:bg-red-900/10 dark:border-red-800 rounded-lg">
+        <h3 className="text-red-700 dark:text-red-300 font-semibold">Error rendering content</h3>
+        <p className="text-red-600 dark:text-red-400 mt-2">
+          {error instanceof Error ? error.message : 'An unknown error occurred'}
+        </p>
+      </div>
+    );
+  }
 }

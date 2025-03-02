@@ -15,9 +15,8 @@ import { StatsSummary } from "../../components/ui/stats-summary"
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
-interface Props {
-    params: { date: string }
-}
+// Define params type for Next.js 15
+type PageParams = Promise<{ date: string }>;
 
 // Tell Next.js this is a static page that revalidates every hour
 export const dynamic = "force-static"
@@ -32,7 +31,8 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for the page
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: { params: PageParams }): Promise<Metadata> {
+    const params = await props.params;
     const formattedDate = formatDate(params.date)
     return {
         title: `Daily Food Journal - ${formattedDate}`,
@@ -40,7 +40,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 }
 
-export default async function SharedCaloriePage({ params: { date } }: Props) {
+export default async function SharedCaloriePage(props: { params: PageParams }) {
+    const params = await props.params;
+    const date = params.date;
+    
     const entries = await getStaticEntries(date) as CalorieEntry[]
     
     // If no entries found for this date, return 404

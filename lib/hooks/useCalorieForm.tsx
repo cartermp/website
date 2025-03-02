@@ -39,10 +39,17 @@ export function useCalorieForm({ date, initialEntries = [], mode }: UseCalorieFo
     const [meals, setMeals] = useState<MealGroup[]>(initialMealsByType)
     const [error, setError] = useState<FormError | null>(null)
 
-    const currentFieldRefs = useRef(MEAL_TYPES.map(() => ({
-        nameRef: { current: null } as React.RefObject<HTMLInputElement>,
-        caloriesRef: { current: null } as React.RefObject<HTMLInputElement>
-    })))
+    // Create a single ref to store all field refs
+    const currentFieldRefs = useRef<Array<{
+        nameRef: { current: HTMLInputElement | null };
+        caloriesRef: { current: HTMLInputElement | null };
+    }>>(
+        // Initialize with empty refs for each meal type
+        MEAL_TYPES.map(() => ({
+            nameRef: { current: null },
+            caloriesRef: { current: null }
+        }))
+    );
 
     const addItem = useCallback((mealTypeIndex: number) => {
         setMeals(prev => {

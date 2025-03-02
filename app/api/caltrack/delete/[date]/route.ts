@@ -2,18 +2,23 @@ import { NextResponse } from 'next/server'
 import { sql } from '@/lib/db'
 import { updateDailyStats } from '../../helpers'
 
+// Define params type for Next.js 15
+type RouteParams = Promise<{ date: string }>;
+
 export async function DELETE(
   request: Request,
-  { params }: { params: { date: string } }
+  { params }: { params: RouteParams }
 ) {
   try {
+    const resolvedParams = await params;
+    
     await sql`
       DELETE FROM calorie_entries 
-      WHERE date = ${params.date}::date
+      WHERE date = ${resolvedParams.date}::date
     `
     
     // Update stats for the deleted date
-    await updateDailyStats(params.date)
+    await updateDailyStats(resolvedParams.date)
     
     return NextResponse.json({ success: true })
   } catch (error) {

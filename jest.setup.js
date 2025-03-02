@@ -9,4 +9,11 @@ global.IntersectionObserver = class IntersectionObserver {
     root = null
     rootMargin = ''
     thresholds = []
-} 
+}
+
+// Mock for React 19 compatibility
+global.React = {
+    ...global.React,
+    useTransition: () => [false, jest.fn()],
+    useDeferredValue: (value) => value,
+}
