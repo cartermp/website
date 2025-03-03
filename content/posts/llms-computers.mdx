@@ -1,0 +1,143 @@
+---
+title: LLMs Are Weird Computers
+description: A perspective on AI models as an inverted computing paradigm
+date: "2025-03-02"
+tags: llms, data
+---
+
+I've increasingly changed my perspective on LLMs and modern AI systems over the past few years:
+
+- They're kinda like a weird database you can query
+- No, more like a weird database that can also call functions now
+- Wait, maybe Karpathy's thing about ["LLMs as OS"](https://x.com/karpathy/status/1707437820045062561) isn't bullshit after all
+- They're kinda like computers. Shit, they're computers, aren't they?
+
+![Hayao Miyazaki exasperation meme](/img/llms-computers.png)
+
+So let me elaborate on why I believe this now.
+
+## What makes a computer?
+
+The common definition of a computer is a programmable machine that stores, retrieves, and processes data. I would argue that ChatGPT already fits this definition, as you can control how it responds with prompts (programs), it can store data you pass it (memory), it can search that data to generate a response (RAG), and it can process inputs to produce a response (inference).
+
+But that can't be it, right? Surely there's more to this, because computers and computing systems do so much more:
+
+- Have applications that run on them
+- Run on specialized hardware depending on their purpose
+- Are programmable with diffrent kinds of instructions
+- Are general purpose (but also can be a specialized variant)
+- Can interact with and control other systems as tools for a job
+
+ChatGPT also fits this criteria. Custom GPTs are already applications, and the models that power ChatGPT have APIs that are in use by countless companies and their applications. ChatGPT runs on specialized hardware. It's programmable via all kinds of fascinating prompt engineering techniques. It's general purpose, meaning I can use it to ask about the meaning of a piece of prose as equally as I can ask it to turn a set of instructions and some data into a JSON object. And with tools like internet search, calculators, the ability to execute python code, and the [general-purpose actions capability](https://platform.openai.com/docs/actions/introduction), it can interact with and control other systems.
+
+### This definition feels weird
+
+The reason why I'm still uncomfortable with this definition is that I grew up with the idea that computers are really just machines that do binary math on these things we call CPUs. And somehow there's a big tower of abstraction that leads to things like a smartphone or laptop that can run a thing called a web browser, video games, and ... it's all just comfortable for me to think of _those things_ being computers.
+
+I've since taken to calling what I grew up with "traditional" computers and LLMs as "weird" or "inverted" computers.
+
+## An inverted computer
+
+If traditional computers are precision machines that struggle with fuzziness, LLMs are the inverse: fuzzy machines that struggle with precision (unless calling out to a traditional computer to do a precision task).
+
+Imagine two tasks:
+
+1. Successively multiplying larger and larger numbers together
+2. Calculating the meaning of a phrase
+
+Traditional computer:
+
+```text
+> python run mul.py
+12324842551279 (calculated instantly and perfectly)
+
+> python run meaning.py
+The meaning of the phrase "Explain what makes the sunset beautiful?" is:
+"TODO implement something, idk, this is impossible without machine learning"
+```
+
+LLM computer, lacking any external tools calls like a calculator:
+
+```text
+> 1247853 * 9876543
+Let me calculate that: 1247853 * 9876543 is 132842551279. (completely wrong, nonsense)
+
+> Explain what makes a sunset beautiful?
+A sunset's beauty comes from a mix of science and the emotional response it inspires.
+Here’s why sunsets captivate us:
+
+### 1. **Science of Light Scattering**
+Sunsets are beautiful because of a phenomenon called *Rayleigh scattering*.
+During sunset, sunlight travels through a greater thickness of Earth's atmosphere compared to midday.
+Shorter blue and violet wavelengths scatter away, leaving behind the longer red, orange, and pink wavelengths.
+Dust, moisture, and pollutants in the air can enhance this effect, making colors even more vibrant.
+
+### 2. **Color Contrast and Gradients**
+The gradual shift from warm reds and oranges near the horizon to cooler blues and purples higher in the sky creates a stunning gradient.
+These contrasting hues catch our eyes and evoke a sense of warmth and calm.
+
+### 3. **Clouds as a Canvas**
+Clouds can dramatically enhance a sunset by reflecting and scattering light.
+High-altitude clouds like cirrus catch the sun’s rays first, glowing in shades of pink and gold, while lower clouds can add depth and complexity with shadows and darker tones.
+
+### 4. **Psychological and Emotional Impact**
+Warm colors like red and orange are linked to feelings of happiness, warmth, and energy.
+The transition to cooler tones invokes calmness and reflection.
+This combination can trigger a powerful emotional response, making sunsets feel peaceful and inspiring.
+
+### 5. **Ephemeral Beauty**
+The fleeting nature of a sunset makes it precious.
+Knowing it will only last a few minutes encourages mindfulness and appreciation of the moment, enhancing its beauty.
+
+In essence, a sunset's beauty lies in both the physics of light and our emotional connection to the experience. 🌅
+```
+
+This inversion is really weird. We've spent decades working with computers that are incredible at precision tasks but need to be painstakingly programmed for anything remotely fuzzy. Now we have computers that are adept at fuzzy tasks but need special handling for precision work.
+
+## LLMs aren't just about text anymore
+
+In 2024, not only did [LLMs get much faster to run](./llm-training-efficiency.mdx), but multi-modality went mainstream. Now you can do things like:
+
+- Upload a picture of food and ask ChatGPT to give you a range of calories as an estimate
+- Use a coding assistant, paste in a picture of the UI doing something weird, and ask it to fix it in a particular way
+- Ask ChatGPT to generate a picture in a particular art style
+- Talk to ChatGPT or other assistants that support voice inputs and outputs
+- Combine real-time video and audio feeds
+- Combine text, 
+
+In a sense, LLM meaning Large Language Model is a bit of a misnomer, because the computer systems we interact with do more than just process language. But the name has stuck, so it's the term we use.
+
+## Why I think this matters
+
+I hate to be that hype guy, but uhh, can you think of something as impactful to the world as computers and information technology have been since the introduction of personal computers in the 1970s? Well, if LLMs/AI are a new kind of computer, it's not the biggest leap to think that they could also have an enormous impact on the world.
+
+I should be clear on my stance here. I'm with Bill Gates when he says that people tend to overestimate what's possible in the short-term and underestimate what's possible in ten years.
+
+I do not believe in the short-term that LLMs and AI will be:
+
+- An effective replacement for knowledge workers in the next few years
+- The end of SaaS businesses
+- Capable of generating media that people like
+- Able to intrinsically overcome laws of physics and constraints of human systems and preferences
+
+As a daily user of this tech for real work tasks, I can tell you with confidence that it's powerful, but very hard to use effectively and we're in the very early days of this stuff. We're living in the equivalent of the 1970s for PCs.
+
+There's even some signs that another large step change like what ChatGPT brought us in 2023 is going to be [a big challenge](https://observer.com/2024/12/openai-cofounder-ilya-sutskever-ai-data-peak/). We don't really know where the upper limit is, nor what it means to take a meaningful enough next step up. I believe there will be more step changes, but that's ultimatley just a belief.
+
+That said, I do think that a few decades from now, several things will be radically different:
+
+- Knowledge work will be fundamentally different with many things we consider "cognitive work" offloaded to our computers, shifting where we spend our time to completely different tools and problems
+- The nature of software itself will be fundamentally different, and SaaS may not go away, but it won't be the default
+- Much of the digital infrastructure we use today will be radically different, from search engines and browsers to how networked systems operate
+- Many physical limitations, like lack of hardware to process work efficienctly, will go away as we embark on a new phase of computing
+- Many human systems will allow for significant decision-making to be done using AI
+
+Whether this involves something called AGI or not is irrelevant to me. I think that just like the computers that came before LLMs, we'll build successively on this stuff over the years.
+
+## A note about workforce reductions
+
+A lot of dumbasses in company leadership see AI and salivate at the idea of reducing headcount so "AI can do the work". This is clearly a fear that a lot of people who earn paychecks for a living have. I have two thoughts on this topic:
+
+Firstly, if you're a company leader who sees a wave as large as _the introduction of the computer_ coming and your thought is to "use less resources to do the same work", you're an uncreative hack and it's you who deserves to be fired. The goal should be how you can accomplish more when you have cognitive co-processors at your disposal.
+
+Secondly, it is undeniable that a shift will occur and with that there will be damage done. A lot of people are uninterested in learning new skills for work because work is just ... work. It's their means to earn a paycheck so they can do what they actually care about. I won't judge that behavior because it's not inherently right or wrong. But I will say that if you don't want to be caught with your pants down when your workplace _does_ expect you to do more and different things with this technology, there's no better time than now to start learning how to use it.

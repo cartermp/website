@@ -2,14 +2,53 @@
 
 import React from 'react';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
+import Image from 'next/image';
+
+// Define interface for image props
+interface ImgProps {
+  src: string;
+  alt?: string;
+  [key: string]: any;
+}
 
 // Define MDX components
 const components = {
-  p: ({ children, ...props }: any) => (
-    <p className="leading-7 [&:not(:first-child)]:mt-6" {...props}>
-      {children}
-    </p>
-  ),
+  p: ({ children, ...props }: any) => {
+    // Check if the only child is an img element
+    const hasOnlyImgChild = 
+      React.Children.count(children) === 1 && 
+      React.isValidElement(children) && 
+      children.type === 'img';
+    
+    // If it's just an image, don't wrap it in a <p>
+    if (hasOnlyImgChild) {
+      const imgChild = children as React.ReactElement;
+      const imgProps = imgChild.props as ImgProps;
+      const { src, alt, ...restImgProps } = imgProps;
+      const imageSrc = src.startsWith('/') ? src : `/${src}`;
+      
+      return (
+        <div className="my-6 overflow-hidden rounded-lg">
+          <Image
+            src={imageSrc}
+            alt={alt || ""}
+            width={800}
+            height={500}
+            className="w-full h-auto"
+            style={{ maxWidth: '100%', height: 'auto' }}
+            {...restImgProps}
+          />
+        </div>
+      );
+    }
+    
+    // Otherwise, render as normal paragraph
+    return (
+      <p className="leading-7 [&:not(:first-child)]:mt-6" {...props}>
+        {children}
+      </p>
+    );
+  },
   h1: ({ children }: any) => (
     <h1 className="mt-8 mb-4 text-2xl font-bold text-purple-700 dark:text-purple-300">
       {children}
@@ -73,6 +112,21 @@ const components = {
       {children}
     </a>
   ),
+  img: ({ src, alt, ...props }: ImgProps) => {
+    // Handle both absolute and relative paths
+    const imageSrc = src.startsWith('/') ? src : `/${src}`;
+    return (
+      <Image
+        src={imageSrc}
+        alt={alt || ""}
+        width={800}
+        height={500}
+        className="w-full h-auto my-6 rounded-lg"
+        style={{ maxWidth: '100%', height: 'auto' }}
+        {...props}
+      />
+    );
+  },
   code: ({ className, children, ...props }: any) => {
     const match = /language-(\w+)/.exec(className || '');
     return match ? (
