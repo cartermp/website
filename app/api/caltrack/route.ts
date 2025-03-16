@@ -4,11 +4,11 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic"
 
 export async function GET() {
-    // Get the last 7 days of detailed entries
+    // Get the last 6 months of entries for overall stats
     const entries = await sql`
         SELECT date, meal_type, meal_name, calories 
         FROM calorie_entries 
-        WHERE date >= CURRENT_DATE - INTERVAL '7 days'
+        WHERE date >= CURRENT_DATE - INTERVAL '6 months'
         ORDER BY date DESC, meal_type`;
 
     // Get the overall average calories per day
