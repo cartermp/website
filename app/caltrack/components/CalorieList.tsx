@@ -26,8 +26,10 @@ export function CalorieList({ initialData }: CalorieListProps) {
   const today = getToday()
   const todayEntry = dailyEntries.some(entry => entry.date === today)
 
+  const sevenDays = dailyEntries.slice(0, 7)
+
   // Calculate 7-day rolling average
-  const sevenDayAvg = calculateDailyAverage(dailyEntries)
+  const sevenDayAvg = calculateDailyAverage(sevenDays)
 
   // Calculate trend (percentage difference from overall average)
   const trendPercent = overallAverage ? ((sevenDayAvg - overallAverage) / overallAverage) * 100 : 0
