@@ -1,0 +1,67 @@
+
+---
+title: When the readability of Go falls off a cliff
+description: My take on how "Go is readable" doesn't mean much to me.
+date: "2021-06-07"
+tags: golang, devex
+---
+
+Well, I’m leaving Microsoft after nearly 6 years. I’ll take a short bit of time off before my next job. I’m going to be joining the fine folks at [Honeycomb](https://www.honeycomb.io/) to help contribute towards building an even better developer experience (and perhaps a bunch of other stuff too).
+
+
+Since I’ve been heavily involved in the F# and .NET community for several years, I wanted to write a little bit about why, and about my deep commitment and belief in the open source technologies and communities I am involved in, even as my workplace role changes. I also want to encourage those relying on .NET, C#, and F# to have deep trust in Microsoft’s commitment and contribution to these technologies; and the rock-solid processes involved in maintaining, packaging, evolving, and delivering these incredible programming technologies. I’ve contributed a lot towards putting these processes in place, and they will continue to deliver for a long time.
+
+## Microsoft was an incredible place to work
+
+Firstly, I want to emphasize just how great it has been working on the .NET team at Microsoft. I genuinely loved my job and I would absolutely consider working there again in the future. It’s where I learned how to be a product manager, not just through the great systems Microsoft has in place for PMs, but also from extended, multi-year mentorship opportunties and collaboration with literal world experts at the top of their field.
+
+The .NET team has a solid reputation of being a low-bullshit, low-overhead place. Everyone is humble and constantly learning, and everyone engages with users and customers. People know what the right thing to build is and how to build it through their constant desire to learn more and do better. .NET PMs are encouraged to try different processes to help build and evolve a product, but never have I been told to follow a particular process because “it’s how we do things”. There is no “how we do things” because nearly every project or circumstance is different, and the .NET leadership team recognizes that. Kudos. And on the engineering side, oh holy shit is it good. I had the pleasure of contributing to the unfucking of the F# infrastructure early on, and it deeply impacted my view of software engineering systems. A constant theme in my tenure was that .NET engineers want to improve their systems so that they can deliver for our users. Not once have I struggled to deliver for my users because engineering systems or processes were holding us back. The engineers are incredible, they build amazing engineering systems, and the engineers will challenge product managers (in a good way) every step of the way to make sure that we’re always doing the right thing. It’s been a great environment to learn and grow in.
+
+During my time with the .NET team, C#, F#, and .NET have largely succeeded in shifting to be fundamentally cross-platform, open source, and vendor neutral. We were successful in accomplishing our goals that were set out years ago. .NET, C#, and F# are being taken seriously by people and initiatives that would have laughed at the idea of using them just a few years ago. I had the pleasure of helping us succeed here from relatively early stages. And so, a part of me feels like my core goals at Microsoft have been achieved. It feels like a natural bookend, and with that, I was open to pursuing something else.
+
+## Why Honeycomb?
+
+I was pretty picky with where to look next. After all, the .NET team is a great team to work with. I didn’t talk to a single recruiter, and I wasn’t interested in another big tech company either (if I work for big tech again, it’s probably going be Microsoft - no adtech for me). I decided that I crave a startup environment.
+
+Honeycomb was my choice for a few reasons:
+
+1. The role is centered around developers as the user, but in a completely different way than my role at Microsoft.
+2. They’re strongly attaching their product to [OpenTelemetry](https://opentelemetry.io/) , a vendor-netrual, open source initiative. I care a lot about this kind of stuff.
+3. Lots of opportunities to define new strategies for the company to pursue while being expected to do some technical work.
+4. Very strong values alignment.
+5. Compensation that’s generous enough such that all I had to think about was 1-4.
+
+I’ll be honest, I’m a little terrified as well. I don’t really understand the space very well yet, but I’m excited to learn. Some of the people at Honeycomb are also world experts, so I’ll have the pleasure of being able to learn from the best. There’s whole other communities that intersect with this problem space, and it’s both scary and exciting thinking about how I could get involved with them. In a way, this is kind of replicating some of the environment I had at Microsoft, where I also got to work with world experts on a topic and embed myself in some developer communities. It’s important to me!
+
+Just about every tech company claims that they care about DEI, but few actually put their money where their mouth is. Honeycomb does , and I’m excited to work in a much more diverse environment than I’ve ever been in. I’m also excited about this because I feel like I’m dealing with honest people who take action based on stated values. I think that most tech companies don’t actually do that for DEI.
+
+Finally, the overwhelming sense that I got from people I talked to was that they’re not just trying to build a good product, they’re trying to teach developers a better way to develop and own their systems. I’ve seen many times in my career (and I never even worked in services before) that lots of developers are afraid to publish their changes to a live site. They batch big changes together because code keeps getting written, don’t really know how to track service heath, if they even have dashboards, they are confusing and don’t actually tell them what’s really going on, and if they’re lucky, they throw code at a grumpy DevOps engineer to deal with stuff. My sense of this space is that the current suite of encumbant tools don’t help developers get that confidence. This feels like a big challenge, and I’d love to contribute to overcoming it.
+
+## About C#, F# and .NET at Microsoft
+
+I also have some broader thoughts on the technologies I had the pleasure of helping advance, and how Microsoft plays a critical role in them.
+
+The health and longevity of C#, F#, and .NET rests on three pillars:
+
+1. Quality open source and open engineering processes
+2. Contributions, packaging, and delivery from Microsoft and other companies
+3. A large, vibrant, networked, creative, and active community with leadership from both the .NET Foundation and F# Software Foundation
+
+Under the second pillar, Microsoft’s commitment and contribution to C#, F#, and .NET runs very deep, including an entire support network behind the more public roles you see in talks or social media.
+
+Among other things, F# alone has:
+
+1. A team of talented engineers who implement damn near everything, guide substantial community contributions, establish other channels of communication with F# users, and maintain a large piece of software for a platform that’s always changing
+2. An engineering system that lets F# participate in continuous integration and delivery through various Visual Studio and .NET SDK release channels
+3. A network of engineering leads who care about growing the careers of these F# engineers, ensure that F# the product is respnsive to SLAs (yes, F# has ’em), and make sure that product updates are actually making it out to users
+4. A product management organization that constantly asks questions like, “what is the F# story for this?” even if they don’t deeply understand F# themselves
+5. A group of people spanning marketing, devrel, and docs who care that when there are F# updates, those updates are communicated to the world
+6. Internal customers making use of it at the core of high-value Azure services and research efforts
+
+This support network is in a much better place than when I started on F# 5 years ago, and it was my intention over the years to help build it up so that it can sustain itself like it does today.
+
+Being the F# PM at Microsoft required an eagerness to understand all levels of the stack, and thus also develop a deep understanding of how .NET “works” and how that affects the user experience at every layer. I was able to take that knowledge and also work on lots of other things, having a broad view of .NET tooling and finding ways to deliver for all .NET customers. I think this is essential for the next person who will fill my role. Critically, the .NET team offers an environment for someone with that eagerness to succeed.
+
+Today, communities drive programming technologies. One of the incredible things about working on open source technologies is the continuity they offer. Although my day-to-day employment is changing, I will continue to be involved with the F# Community. I intend on running again for the F# Software Foundation board again, although with an obviously different context than in previous years! I may also ramp up some of my OSS activity to contribute to some more community projects, and maybe I’ll be clever enough to create my own OSS project some day. F#, .NET, and Fable remain my preferred programming tools. I am deeply optimistic about the continuing success of the magic combination of openness and enterprise quality that F# and .NET are achieving today.
+
+Finally, I encourage any F# or F#-curious developer to attend the next .NET Conf: Focus on F# event . I’ve been helping put it together with several other folks, and we’re looking to have a great lineup! I’ll be speaking, although in a community capacity instead of a Microsoft one. I look forward to seeing folks there!
