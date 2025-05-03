@@ -1,0 +1,68 @@
+---
+title: Using LLMs as a search engine
+description: A quick framing on how LLMs are search engines
+date: "2025-05-03"
+tags: llms, data, search
+---
+
+I recently wrote that [LLMs are weird computers](./llms-computers) and I think that's a useful way to think about them. Computers can also be made into computing _systems_, and search engines are a type of computing system.
+
+Recently, there's been [discourse](https://bsky.app/profile/annleckie.com/post/3lo2xddgo3k2i) [about this topic](https://bsky.app/profile/caseynewton.bsky.social/post/3lo4tdybmgk2v) and it hasn't been very productive. Rather than distill thoughts into a small post form, I thought I'd briefly elaborate on my own position here.
+
+## Social context first
+
+The first post I linked is from a professional author, not a computer programmer. She quickly got dunked on by computer dorks like me who love to be _technically correct_ about everything, often to the detriment of the actual point being made.
+
+My best interpretation of the point the OP was making is:
+
+- Search engines have been around for a long time, you can use them today already
+- People are using LLMs to replacement for searching content and synthesizing results _themselves_, robbing themselves and everyone else of the benefit of critical thinking
+- This is a bad phenomenon
+
+This is a very important nuance to understand here! The OP's profession is that of an author, and the authorship of written content is being upended in many ways by LLMs, often for the worse. You don't have to search that hard to find examples of students foregoing actually researching topics and writing essays, salespeople copy-pasting whatever ChatGPT says as a part of a prospecting email, and infinitely more problematic use cases.
+
+Moreover, I doubt that the OP -- a writer -- is intentionally trying to keep up with all the technical capabilities that LLMs have today, which is itself a target that moves so fast that most computer programmers aren't even up to speed with the latest capabilities. Yes, she is incorrect in making the claim that systems like ChatGPT "[cannot] scan the web for information". But that's not the point she's making!
+
+Additionally, a lot of computer dorks (like me) tend to be very literal-minded, and we're not always great at understanding the social context of someone's bluesky post that they spent all of a minute writing. And so a horde of people decided to rush in and correct her false statements about searching capabilitites without actually understanding the point she was trying to make in the first place.
+
+Turns out people are complicated.
+
+## Undertanding how LLMs contain data
+
+It's important to first understand what LLMs, at a high level, actually are. ChatGPT is not just an LLM, it's a suite of capabilities with an LLM at the center.
+
+In [Andrej Karpathy's excellent talk from 2024](https://www.youtube.com/watch?v=zjkBMFhNj_g), he describes an LLM as a kind of "zip file of the internet" at some point in time. However, it is also a kind of lossy compression that is performed, and so the underlying data is more of a _gestalt_ of the text that it was trained on. The parameters of an LLM do not contain the literal data.
+
+This is a crucial point to understand, because it means that, categorically, an LLM by itself may not necessarily provide a correct answer, even if the data it was trained on does have the data that would answer your question.
+
+In practice, modern LLMs often _do_ provide a correct answer and represent the source material quite well. But the devil lies in the details here. I was taught in school to not just trust anything on the internet or Wikipedia, and always investigate a source for myself, often using offline material. This same principle must also apply whenever you're using an LLM to answer a question or perform research.
+
+## ChatGPT is more than just an LLM
+
+The problem I describe above is precisely the sort of pitfall that OpenAI faced in the early days of ChatGPT. Indeed, that system was "offline" in the sense that it did not have access to the internet, and because it was trained on a dataset that had a cutoff date, any question you asked it that required knowledge after that cutoff date would either be refused or yield a hallucinated response.
+
+To address this, OpenAI has added [search](https://openai.com/index/introducing-chatgpt-search/) to their platform. The way this works is that you can tell it to perform a web search before answering a question, or if you're using it as a replacement for your "new tab search" in a web browser, it will pre-select this option.
+
+Additionally, recent [advanced models](https://openai.com/index/introducing-o3-and-o4-mini/) will perform web searched in their "thinking steps" as they churn through how to respond to a query before giving an answer. This capability is currently on the bleeding edge of research, and I've found that it works well when it works well, but sometimes it goes off rails a bit.
+
+Finally, ChatGPT also supports [deep research](https://openai.com/index/introducing-deep-research/), which sends an AI agent off on a comprehensive search of the web, where it will search and scan hundreds (or potentially thousands) of sources on the web prior to giving an answer.
+
+**What this means in practice is that ChatGPT is an advanced computing system**, and arguably very much a search engine.
+
+## Why ChatGPT as a search engine is useful
+
+Search is a hard, hard, hard problem. There's a reason why Google has been trying to improve search systems since their inception. I would argue it's even inherently unsolvable, insofar as there's no generic way to always provide the most relevant results for any arbitrary query.
+
+But the superpower that LLMs provide -- and why Google created them in the first place -- is that they do a phenomenal job of estimating the _intent_ behind an arbitarily complex query. This has always been a problem with Google in the past, and why "googling as a skill" is a thing, because some folks have learned very particular tricks to get better results, but most of these tricks aren't known by the average person. **LLMs solve this problem for the average person**.
+
+This, alone, is an extremely powerful capability and a legitimate advancement in computing, and it doesn't even begin to touch on the capabilitites of how LLMs can be tuned towards responding in specific ways.
+
+## Why ChatGPT as a search engine is risky
+
+As I mentioned earlier, a lot of people are using ChatGPT as full-on replacements for many kinds of cognitive work. Perhaps in the long run, these computing systems will be reliable cognitive coprocessors for humans, but we're not there yet.
+
+I have not, in practice, seen ChatGPT hallucinate a _source_ for a response. In fact, I can click on the sidebar and see the actual top-ranked sources to scan them myself. However, I have noticed a subtler and more challenging problem: **ChatGPT can emphasize bad sources**.
+
+Consider the earlier problem of how LLMs have a training cutoff date. That means to be useful for recent events, they need access to data sources that they weren't trained on. Modern LLMs are trained to respect data that they recieve, often "grounding" a response in that data. However, they also assume that the data they recieve is correct. As many know, not everything written on the web is correct, and it may even be intentionally misleading!
+
+If an end-user of ChatGPT using its search capabilities doesn't think to inspect the underlying sources themselves, then they too will be misled. This may be fine for low stakes use cases, but people don't just use ChatGPT when the stakes are low, and this is a real problem.
