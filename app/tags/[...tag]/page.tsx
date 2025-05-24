@@ -1,5 +1,5 @@
 import { allPosts } from 'contentlayer/generated'
-import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation';
 import Link from 'next/link'
 import { TagList } from '@/components/TagList'
 import { use } from 'react'
@@ -33,7 +33,7 @@ export default function TagPage(props: { params: TagPageParams }) {
     <div className="space-y-8">
       <div className="space-y-2">
         <h1 className="mb-2 text-2xl text-purple-700 dark:text-purple-300">
-          Posts tagged with "{tag}"
+          Posts tagged with &quot;{tag}&quot;
         </h1>
         <p className="text-gray-600 dark:text-gray-400">
           {posts.length} {posts.length === 1 ? 'post' : 'posts'}
