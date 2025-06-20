@@ -84,6 +84,6 @@ export function calculateDayStats(dayEntries: CalorieEntry[], rangeEntries: Calo
     }
 }
 
-export const LOWER_TARGET = 2300
-export const UPPER_TARGET = 2600
-export const MAINTAIN_TARGET = 2900
+export const LOWER_TARGET = 2400
+export const UPPER_TARGET = 2700
+export const MAINTAIN_TARGET = 2800
