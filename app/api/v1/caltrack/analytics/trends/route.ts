@@ -119,27 +119,60 @@ export async function GET(request: NextRequest) {
 
         // Calculate moving averages (7-day for daily, 4-period for weekly/monthly)
         const movingAvgPeriod = interval === 'daily' ? 7 : 4
-        const trendsWithMovingAvg = trendsData.map((trend, index) => {
-            const lookbackData = trendsData.slice(index, index + movingAvgPeriod)
-            const movingAvg = lookbackData.length > 0 ? 
-                Math.round(lookbackData.reduce((sum, item) => sum + Number(item.avg_calories), 0) / lookbackData.length * 100) / 100 : null
+        interface TrendData {
+            period: string;
+            interval_type: string;
+            avg_calories: number | string;
+            max_calories: number | string;
+            min_calories: number | string;
+            days_count: number | string;
+            avg_breakfast: number | string;
+            avg_lunch: number | string;
+            avg_dinner: number | string;
+            avg_snacks: number | string;
+        }
+
+        interface MealBreakdown {
+            breakfast: number;
+            lunch: number;
+            dinner: number;
+            snacks: number;
+        }
+
+        interface TrendWithMovingAvg {
+            period: string;
+            interval_type: string;
+            avg_calories: number;
+            max_calories: number;
+            min_calories: number;
+            days_count: number;
+            moving_average: number | null;
+            meal_breakdown: MealBreakdown;
+        }
+
+        const trendsWithMovingAvg: TrendWithMovingAvg[] = (trendsData as TrendData[]).map((trend: TrendData, index: number) => {
+            const lookbackData = (trendsData as TrendData[]).slice(index, index + movingAvgPeriod);
+            const movingAvg = lookbackData.length > 0 ?
+            Math.round(
+                lookbackData.reduce((sum, item) => sum + Number(item.avg_calories), 0) / lookbackData.length * 100
+            ) / 100 : null;
 
             return {
-                period: trend.period,
-                interval_type: trend.interval_type,
-                avg_calories: Number(trend.avg_calories),
-                max_calories: Number(trend.max_calories),
-                min_calories: Number(trend.min_calories),
-                days_count: Number(trend.days_count),
-                moving_average: movingAvg,
-                meal_breakdown: {
-                    breakfast: Number(trend.avg_breakfast),
-                    lunch: Number(trend.avg_lunch),
-                    dinner: Number(trend.avg_dinner),
-                    snacks: Number(trend.avg_snacks)
-                }
+            period: trend.period,
+            interval_type: trend.interval_type,
+            avg_calories: Number(trend.avg_calories),
+            max_calories: Number(trend.max_calories),
+            min_calories: Number(trend.min_calories),
+            days_count: Number(trend.days_count),
+            moving_average: movingAvg,
+            meal_breakdown: {
+                breakfast: Number(trend.avg_breakfast),
+                lunch: Number(trend.avg_lunch),
+                dinner: Number(trend.avg_dinner),
+                snacks: Number(trend.avg_snacks)
             }
-        })
+            };
+        });
 
         // Calculate trend direction (simple linear regression slope)
         if (trendsWithMovingAvg.length >= 2) {

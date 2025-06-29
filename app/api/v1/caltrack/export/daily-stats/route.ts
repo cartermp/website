@@ -66,7 +66,33 @@ export async function GET(request: NextRequest) {
             `
         }
 
-        const dailyStats = queryResult.map(row => ({
+        interface DailyStatsRow {
+            date: string;
+            total_calories: number;
+            breakfast_calories: number;
+            lunch_calories: number;
+            dinner_calories: number;
+            snacks_calories: number;
+            updated_at: string;
+            timestamp: number;
+        }
+
+        interface DailyStatsBreakdown {
+            breakfast: number;
+            lunch: number;
+            dinner: number;
+            snacks: number;
+        }
+
+        interface DailyStats {
+            date: string;
+            total_calories: number;
+            breakdown: DailyStatsBreakdown;
+            updated_at: string;
+            timestamp: number;
+        }
+
+        const dailyStats: DailyStats[] = (queryResult as DailyStatsRow[]).map((row: DailyStatsRow): DailyStats => ({
             date: row.date,
             total_calories: row.total_calories,
             breakdown: {
@@ -77,7 +103,7 @@ export async function GET(request: NextRequest) {
             },
             updated_at: row.updated_at,
             timestamp: row.timestamp
-        }))
+        }));
 
         if (format === 'csv') {
             const csvHeaders = 'date,total_calories,breakfast_calories,lunch_calories,dinner_calories,snacks_calories,updated_at,timestamp\n'

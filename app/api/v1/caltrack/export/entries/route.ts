@@ -17,68 +17,84 @@ export async function GET(request: NextRequest) {
     const mealType = searchParams.get('meal_type')
 
     try {
-        let queryResult
-        
+        let query = "";
+        let params: any[] = [];
+
         if (startDate && endDate) {
             // Date range query
-            let query = `
+            query = `
                 SELECT date::text, meal_type, meal_name, calories, 
                        EXTRACT(epoch FROM date) as timestamp
                 FROM calorie_entries 
                 WHERE date BETWEEN $1::date AND $2::date
-            `
-            const params = [startDate, endDate]
+            `;
+            params = [startDate, endDate];
             
             if (mealType) {
-                query += ` AND meal_type = $3`
-                params.push(mealType)
+                query += ` AND meal_type = $3`;
+                params.push(mealType);
             }
             
-            query += ` ORDER BY date DESC, meal_type`
-            queryResult = await sql(query, params)
+            query += ` ORDER BY date DESC, meal_type`;
         } else if (startDate) {
             // Start date only
-            let query = `
+            query = `
                 SELECT date::text, meal_type, meal_name, calories,
                        EXTRACT(epoch FROM date) as timestamp
                 FROM calorie_entries 
                 WHERE date >= $1::date
-            `
-            const params = [startDate]
+            `;
+            params = [startDate];
             
             if (mealType) {
-                query += ` AND meal_type = $2`
-                params.push(mealType)
+                query += ` AND meal_type = $2`;
+                params.push(mealType);
             }
             
-            query += ` ORDER BY date DESC, meal_type`
-            queryResult = await sql(query, params)
+            query += ` ORDER BY date DESC, meal_type`;
         } else {
             // All entries (default to last 6 months for performance)
-            let query = `
+            query = `
                 SELECT date::text, meal_type, meal_name, calories,
                        EXTRACT(epoch FROM date) as timestamp
                 FROM calorie_entries 
                 WHERE date >= CURRENT_DATE - INTERVAL '6 months'
-            `
-            const params = []
+            `;
+            params = [];
             
             if (mealType) {
-                query += ` AND meal_type = $1`
-                params.push(mealType)
+                query += ` AND meal_type = $1`;
+                params.push(mealType);
             }
             
-            query += ` ORDER BY date DESC, meal_type`
-            queryResult = await sql(query, params)
+            query += ` ORDER BY date DESC, meal_type`;
         }
 
-        const entries = queryResult.map(row => ({
+        interface CalorieEntryRow {
+            date: string;
+            meal_type: string;
+            meal_name: string;
+            calories: number;
+            timestamp: number;
+        }
+
+        interface CalorieEntry {
+            date: string;
+            meal_type: string;
+            meal_name: string;
+            calories: number;
+            timestamp: number;
+        }
+
+        const queryResult: CalorieEntryRow[] = await sql(query, params);
+
+        const entries: CalorieEntry[] = queryResult.map((row: CalorieEntryRow): CalorieEntry => ({
             date: row.date,
             meal_type: row.meal_type,
             meal_name: row.meal_name,
             calories: row.calories,
             timestamp: row.timestamp
-        }))
+        }));
 
         if (format === 'csv') {
             const csvHeaders = 'date,meal_type,meal_name,calories,timestamp\n'

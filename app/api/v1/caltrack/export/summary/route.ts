@@ -116,7 +116,52 @@ export async function GET(request: NextRequest) {
             LIMIT 12
         `, dateParams)
 
-        const summary = {
+        interface OverallStats {
+            total_days: number;
+            avg_daily_calories: number;
+            max_daily_calories: number;
+            min_daily_calories: number;
+            stddev_daily_calories: number;
+        }
+
+        interface MealTypeStat {
+            meal_type: string;
+            entry_count: number;
+            avg_calories: number;
+            total_calories: number;
+            max_calories: number;
+            min_calories: number;
+        }
+
+        interface TopFood {
+            meal_name: string;
+            frequency: number;
+            avg_calories: number;
+            total_calories: number;
+        }
+
+        interface WeeklyTrend {
+            week_start: string;
+            avg_weekly_calories: number;
+            days_in_week: number;
+        }
+
+        interface MonthlyBreakdown {
+            month: string;
+            avg_monthly_calories: number;
+            days_with_entries: number;
+            total_monthly_calories: number;
+        }
+
+        interface Summary {
+            overall: OverallStats;
+            meal_types: MealTypeStat[];
+            top_foods: TopFood[];
+            weekly_trends: WeeklyTrend[];
+            monthly_breakdown: MonthlyBreakdown[];
+        }
+
+        const summary: Summary = {
             overall: {
                 total_days: overallStats[0]?.total_days || 0,
                 avg_daily_calories: overallStats[0]?.avg_daily_calories || 0,
@@ -124,7 +169,7 @@ export async function GET(request: NextRequest) {
                 min_daily_calories: overallStats[0]?.min_daily_calories || 0,
                 stddev_daily_calories: overallStats[0]?.stddev_daily_calories || 0
             },
-            meal_types: mealTypeStats.map(row => ({
+            meal_types: mealTypeStats.map((row: any): MealTypeStat => ({
                 meal_type: row.meal_type,
                 entry_count: row.entry_count,
                 avg_calories: row.avg_calories,
@@ -132,18 +177,18 @@ export async function GET(request: NextRequest) {
                 max_calories: row.max_calories,
                 min_calories: row.min_calories
             })),
-            top_foods: topFoods.map(row => ({
+            top_foods: topFoods.map((row: any): TopFood => ({
                 meal_name: row.meal_name,
                 frequency: row.frequency,
                 avg_calories: row.avg_calories,
                 total_calories: row.total_calories
             })),
-            weekly_trends: weeklyTrends.map(row => ({
+            weekly_trends: weeklyTrends.map((row: any): WeeklyTrend => ({
                 week_start: row.week_start,
                 avg_weekly_calories: row.avg_weekly_calories,
                 days_in_week: row.days_in_week
             })),
-            monthly_breakdown: monthlyStats.map(row => ({
+            monthly_breakdown: monthlyStats.map((row: any): MonthlyBreakdown => ({
                 month: row.month,
                 avg_monthly_calories: row.avg_monthly_calories,
                 days_with_entries: row.days_with_entries,

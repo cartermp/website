@@ -164,8 +164,63 @@ export async function GET(request: NextRequest) {
             ORDER BY day_type
         `, dateParams)
 
-        const patterns = {
-            day_of_week: dayOfWeekPatterns.map(row => ({
+        interface DayOfWeekPattern {
+            day_of_week: number;
+            day_name: string;
+            total_days: number;
+            avg_daily_calories: number;
+            meal_breakdown: {
+                breakfast: number;
+                lunch: number;
+                dinner: number;
+                snacks: number;
+            };
+        }
+
+        interface MealTimingPattern {
+            meal_type: string;
+            total_entries: number;
+            avg_calories_per_entry: number;
+            days_with_meal: number;
+            frequency_percentage: number;
+        }
+
+        interface CalorieDistributionPattern {
+            calorie_range: string;
+            days_count: number;
+            percentage: number;
+        }
+
+        interface EatingConsistencyPattern {
+            meals_per_day: number;
+            days_count: number;
+            percentage: number;
+            avg_calories: number;
+        }
+
+        interface WeekendVsWeekdayPattern {
+            day_type: string;
+            total_days: number;
+            avg_daily_calories: number;
+            avg_meals_per_day: number;
+            meal_breakdown: {
+                breakfast: number;
+                lunch: number;
+                dinner: number;
+                snacks: number;
+            };
+        }
+
+        interface Patterns {
+            day_of_week: DayOfWeekPattern[];
+            meal_timing: MealTimingPattern[];
+            calorie_distribution: CalorieDistributionPattern[];
+            eating_consistency: EatingConsistencyPattern[];
+            weekend_vs_weekday: WeekendVsWeekdayPattern[];
+        }
+
+        const patterns: Patterns = {
+            day_of_week: dayOfWeekPatterns.map((row: any): DayOfWeekPattern => ({
                 day_of_week: Number(row.day_of_week),
                 day_name: row.day_name,
                 total_days: Number(row.total_days),
@@ -177,25 +232,25 @@ export async function GET(request: NextRequest) {
                     snacks: Number(row.avg_snacks)
                 }
             })),
-            meal_timing: mealTimingPatterns.map(row => ({
+            meal_timing: mealTimingPatterns.map((row: any): MealTimingPattern => ({
                 meal_type: row.meal_type,
                 total_entries: Number(row.total_entries),
                 avg_calories_per_entry: Number(row.avg_calories_per_entry),
                 days_with_meal: Number(row.days_with_meal),
                 frequency_percentage: Number(row.meal_frequency_percentage)
             })),
-            calorie_distribution: calorieDistribution.map(row => ({
+            calorie_distribution: calorieDistribution.map((row: any): CalorieDistributionPattern => ({
                 calorie_range: row.calorie_range,
                 days_count: Number(row.days_count),
                 percentage: Number(row.percentage)
             })),
-            eating_consistency: eatingConsistency.map(row => ({
+            eating_consistency: eatingConsistency.map((row: any): EatingConsistencyPattern => ({
                 meals_per_day: Number(row.meals_per_day),
                 days_count: Number(row.days_count),
                 percentage: Number(row.percentage),
                 avg_calories: Number(row.avg_calories_on_these_days)
             })),
-            weekend_vs_weekday: weekendVsWeekday.map(row => ({
+            weekend_vs_weekday: weekendVsWeekday.map((row: any): WeekendVsWeekdayPattern => ({
                 day_type: row.day_type,
                 total_days: Number(row.total_days),
                 avg_daily_calories: Number(row.avg_daily_calories),
@@ -213,12 +268,12 @@ export async function GET(request: NextRequest) {
             let csvContent = 'Pattern Type,Metric,Value,Additional Info\n'
             
             // Day of week patterns
-            patterns.day_of_week.forEach(day => {
+            patterns.day_of_week.forEach((day: DayOfWeekPattern) => {
                 csvContent += `Day of Week,${day.day_name} Avg Calories,${day.avg_daily_calories},${day.total_days} days\n`
             })
             
             // Meal timing patterns
-            patterns.meal_timing.forEach(meal => {
+            patterns.meal_timing.forEach((meal: MealTimingPattern) => {
                 csvContent += `Meal Timing,${meal.meal_type} Frequency,${meal.frequency_percentage}%,${meal.total_entries} entries\n`
             })
             

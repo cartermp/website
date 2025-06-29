@@ -148,8 +148,82 @@ export async function GET(request: NextRequest) {
             LIMIT 20
         `, dateParams)
 
-        const foodAnalytics = {
-            top_foods_by_frequency: topFoodsByFrequency.map(row => ({
+        interface FoodFrequency {
+            meal_name: string;
+            frequency: number;
+            avg_calories: number;
+            min_calories: number;
+            max_calories: number;
+            total_calories: number;
+            days_consumed: number;
+            meal_types: string[];
+        }
+
+        interface FoodCalories {
+            meal_name: string;
+            max_calories: number;
+            avg_calories: number;
+            frequency: number;
+            total_calories: number;
+            days_consumed: number;
+            meal_types: string[];
+        }
+
+        interface FoodTotalCalories {
+            meal_name: string;
+            total_calories: number;
+            frequency: number;
+            avg_calories: number;
+            min_calories: number;
+            max_calories: number;
+            days_consumed: number;
+            meal_types: string[];
+        }
+
+        interface FoodDiversity {
+            unique_foods: number;
+            total_entries: number;
+            diversity_ratio: number;
+        }
+
+        interface FoodsByMealType {
+            meal_type: string;
+            unique_foods: number;
+            total_entries: number;
+            avg_calories: number;
+            total_calories: number;
+        }
+
+        interface CalorieEfficiency {
+            meal_name: string;
+            avg_calories: number;
+            frequency: number;
+            efficiency_score: number;
+            days_consumed: number;
+            meal_types: string[];
+        }
+
+        interface RecentFood {
+            meal_name: string;
+            first_consumed: string;
+            last_consumed: string;
+            frequency: number;
+            avg_calories: number;
+            meal_types: string[];
+        }
+
+        interface FoodAnalytics {
+            top_foods_by_frequency: FoodFrequency[];
+            top_foods_by_calories: FoodCalories[];
+            top_foods_by_total_calories: FoodTotalCalories[];
+            food_diversity: FoodDiversity;
+            foods_by_meal_type: FoodsByMealType[];
+            calorie_efficiency: CalorieEfficiency[];
+            recent_foods: RecentFood[];
+        }
+
+        const foodAnalytics: FoodAnalytics = {
+            top_foods_by_frequency: topFoodsByFrequency.map((row: any): FoodFrequency => ({
                 meal_name: row.meal_name,
                 frequency: Number(row.frequency),
                 avg_calories: Number(row.avg_calories),
@@ -159,7 +233,7 @@ export async function GET(request: NextRequest) {
                 days_consumed: Number(row.days_consumed),
                 meal_types: row.meal_types
             })),
-            top_foods_by_calories: topFoodsByCalories.map(row => ({
+            top_foods_by_calories: topFoodsByCalories.map((row: any): FoodCalories => ({
                 meal_name: row.meal_name,
                 max_calories: Number(row.max_calories),
                 avg_calories: Number(row.avg_calories),
@@ -168,7 +242,7 @@ export async function GET(request: NextRequest) {
                 days_consumed: Number(row.days_consumed),
                 meal_types: row.meal_types
             })),
-            top_foods_by_total_calories: topFoodsByTotalCalories.map(row => ({
+            top_foods_by_total_calories: topFoodsByTotalCalories.map((row: any): FoodTotalCalories => ({
                 meal_name: row.meal_name,
                 total_calories: Number(row.total_calories),
                 frequency: Number(row.frequency),
@@ -183,14 +257,14 @@ export async function GET(request: NextRequest) {
                 total_entries: Number(foodDiversity[0]?.total_entries || 0),
                 diversity_ratio: Number(foodDiversity[0]?.diversity_ratio || 0)
             },
-            foods_by_meal_type: foodsByMealType.map(row => ({
+            foods_by_meal_type: foodsByMealType.map((row: any): FoodsByMealType => ({
                 meal_type: row.meal_type,
                 unique_foods: Number(row.unique_foods),
                 total_entries: Number(row.total_entries),
                 avg_calories: Number(row.avg_calories),
                 total_calories: Number(row.total_calories)
             })),
-            calorie_efficiency: calorieEfficiencyAnalysis.map(row => ({
+            calorie_efficiency: calorieEfficiencyAnalysis.map((row: any): CalorieEfficiency => ({
                 meal_name: row.meal_name,
                 avg_calories: Number(row.avg_calories),
                 frequency: Number(row.frequency),
@@ -198,7 +272,7 @@ export async function GET(request: NextRequest) {
                 days_consumed: Number(row.days_consumed),
                 meal_types: row.meal_types
             })),
-            recent_foods: recentFoodTrends.map(row => ({
+            recent_foods: recentFoodTrends.map((row: any): RecentFood => ({
                 meal_name: row.meal_name,
                 first_consumed: row.first_consumed,
                 last_consumed: row.last_consumed,
