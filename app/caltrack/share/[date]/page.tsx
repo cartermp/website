@@ -24,10 +24,21 @@ export const revalidate = 3600 // 1 hour
 
 // Generate all possible date paths at build time
 export async function generateStaticParams() {
-    const dates = await getStaticDates()
-    return dates.map((date) => ({
-        date,
-    }))
+    // Skip static generation if no database URL is available (during build)
+    if (!process.env.DATABASE_URL) {
+        return []
+    }
+    
+    try {
+        const dates = await getStaticDates()
+        return dates.map((date) => ({
+            date,
+        }))
+    } catch (error) {
+        // If database connection fails during build, return empty array
+        console.warn('Could not generate static params for share pages, database not available')
+        return []
+    }
 }
 
 // Generate metadata for the page
