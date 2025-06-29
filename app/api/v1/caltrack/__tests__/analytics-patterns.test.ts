@@ -12,6 +12,17 @@ jest.mock('@/lib/db', () => ({
   sql: jest.fn()
 }))
 
+// Mock NextResponse
+jest.mock('next/server', () => ({
+  NextResponse: {
+    json: jest.fn((data, init = {}) => ({
+      status: init?.status || 200,
+      json: () => Promise.resolve(data),
+      headers: new Map(Object.entries(init?.headers || {}))
+    }))
+  }
+}))
+
 describe('GET /api/v1/caltrack/analytics/patterns', () => {
   mockEnvVars({
     API_KEY: 'test-api-key',

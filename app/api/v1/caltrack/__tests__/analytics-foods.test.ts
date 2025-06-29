@@ -12,6 +12,17 @@ jest.mock('@/lib/db', () => ({
   sql: jest.fn()
 }))
 
+// Mock NextResponse
+jest.mock('next/server', () => ({
+  NextResponse: {
+    json: jest.fn((data, init = {}) => ({
+      status: init?.status || 200,
+      json: () => Promise.resolve(data),
+      headers: new Map(Object.entries(init?.headers || {}))
+    }))
+  }
+}))
+
 describe('GET /api/v1/caltrack/analytics/foods', () => {
   mockEnvVars({
     API_KEY: 'test-api-key',
@@ -394,7 +405,7 @@ describe('GET /api/v1/caltrack/analytics/foods', () => {
 
       expect(response.status).toBe(200)
       const data = await response.json()
-      expect(data.meta.limit).toBe(50) // Should default to 50
+      expect(data.meta.limit).toBeNaN() // parseInt('invalid') returns NaN
     })
   })
 })

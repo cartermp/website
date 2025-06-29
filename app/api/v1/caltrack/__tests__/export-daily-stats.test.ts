@@ -12,6 +12,17 @@ jest.mock('@/lib/db', () => ({
   sql: jest.fn()
 }))
 
+// Mock NextResponse
+jest.mock('next/server', () => ({
+  NextResponse: {
+    json: jest.fn((data, init = {}) => ({
+      status: init?.status || 200,
+      json: () => Promise.resolve(data),
+      headers: new Map(Object.entries(init?.headers || {}))
+    }))
+  }
+}))
+
 describe('GET /api/v1/caltrack/export/daily-stats', () => {
   mockEnvVars({
     API_KEY: 'test-api-key',
@@ -79,11 +90,14 @@ describe('GET /api/v1/caltrack/export/daily-stats', () => {
       )
       await GET(request)
 
-      expect(sql).toHaveBeenCalledWith(expect.arrayContaining([
-        expect.stringContaining('WHERE date BETWEEN'),
+      // Check that sql was called with template literal format: ([sql_parts], param1, param2)
+      expect(sql).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.stringContaining('WHERE date BETWEEN')
+        ]),
         '2024-01-01',
         '2024-01-31'
-      ]))
+      )
     })
 
     it('should filter by start date only', async () => {
@@ -95,10 +109,12 @@ describe('GET /api/v1/caltrack/export/daily-stats', () => {
       )
       await GET(request)
 
-      expect(sql).toHaveBeenCalledWith(expect.arrayContaining([
-        expect.stringContaining('WHERE date >='),
+      expect(sql).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.stringContaining('WHERE date >=')
+        ]),
         '2024-01-01'
-      ]))
+      )
     })
 
     it('should use default 6 months range when no dates provided', async () => {

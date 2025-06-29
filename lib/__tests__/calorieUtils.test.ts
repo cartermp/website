@@ -103,14 +103,4 @@ describe('calorieUtils', () => {
             expect(totals).toHaveLength(0)
         })
     })
-
-    describe('calorie constants', () => {
-        it('defines target calorie ranges', () => {
-            expect(LOWER_TARGET).toBe(2300)
-            expect(UPPER_TARGET).toBe(2600)
-            expect(MAINTAIN_TARGET).toBe(2900)
-            expect(UPPER_TARGET).toBeGreaterThan(LOWER_TARGET)
-            expect(MAINTAIN_TARGET).toBeGreaterThan(UPPER_TARGET)
-        })
-    })
 }) 

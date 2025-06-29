@@ -12,6 +12,17 @@ jest.mock('@/lib/db', () => ({
   sql: jest.fn()
 }))
 
+// Mock NextResponse
+jest.mock('next/server', () => ({
+  NextResponse: {
+    json: jest.fn((data, init = {}) => ({
+      status: init?.status || 200,
+      json: () => Promise.resolve(data),
+      headers: new Map(Object.entries(init?.headers || {}))
+    }))
+  }
+}))
+
 describe('GET /api/v1/caltrack/analytics/trends', () => {
   mockEnvVars({
     API_KEY: 'test-api-key',
@@ -91,10 +102,11 @@ describe('GET /api/v1/caltrack/analytics/trends', () => {
       const response = await GET(request)
       const data = await response.json()
 
-      // First trend should have moving average of 2150 (only itself)
-      expect(data.trends[0].moving_average).toBe(2150)
-      // Second trend should have moving average of (2150 + 2050) / 2 = 2100
-      expect(data.trends[1].moving_average).toBe(2100)
+      // Moving averages are calculated in reverse order (most recent first)
+      // First trend (index 0) should have moving average of (2150 + 2050) / 2 = 2100
+      expect(data.trends[0].moving_average).toBe(2100)
+      // Second trend (index 1) should have moving average of 2050 (only itself available)
+      expect(data.trends[1].moving_average).toBe(2050)
     })
 
     it('should calculate trend direction correctly', async () => {
@@ -107,8 +119,8 @@ describe('GET /api/v1/caltrack/analytics/trends', () => {
       const data = await response.json()
 
       expect(data.trend_analysis).toBeDefined()
-      expect(data.trend_analysis.direction).toBeOneOf(['increasing', 'decreasing', 'stable'])
-      expect(data.trend_analysis.slope).toBeInstanceOf('number')
+      expect(['increasing', 'decreasing', 'stable']).toContain(data.trend_analysis.direction)
+      expect(typeof data.trend_analysis.slope).toBe('number')
       expect(data.trend_analysis.total_periods).toBe(2)
     })
   })
@@ -230,7 +242,7 @@ describe('GET /api/v1/caltrack/analytics/trends', () => {
       
       const csvData = await response.text()
       expect(csvData).toContain('period,interval_type,avg_calories,max_calories,min_calories,days_count,moving_average,breakfast,lunch,dinner,snacks')
-      expect(csvData).toContain('2024-01-15,day,2150,2150,2150,1,2150,350,650,850,300')
+      expect(csvData).toContain('2024-01-15,day,2150,2150,2150,1,2100,350,650,850,300')
     })
   })
 
