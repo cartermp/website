@@ -86,7 +86,15 @@ export async function GET(request: NextRequest) {
             timestamp: number;
         }
 
-        const queryResult: CalorieEntryRow[] = await sql(query, params);
+        const rawResult: Record<string, any>[] = await sql(query, params);
+
+        const queryResult: CalorieEntryRow[] = rawResult.map((row: Record<string, any>) => ({
+            date: row.date as string,
+            meal_type: row.meal_type as string,
+            meal_name: row.meal_name as string,
+            calories: Number(row.calories),
+            timestamp: Number(row.timestamp)
+        }));
 
         const entries: CalorieEntry[] = queryResult.map((row: CalorieEntryRow): CalorieEntry => ({
             date: row.date,
