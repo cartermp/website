@@ -211,7 +211,7 @@ export function ApiKeysContent() {
         </p>
         <pre className="bg-gray-100 dark:bg-gray-900 p-3 rounded text-sm overflow-x-auto">
 {`curl -H "x-api-key: YOUR_API_KEY" \\
-     https://yoursite.com/api/v1/caltrack/export/entries`}
+     https://www.phillipcarter.dev/api/v1/caltrack/export/entries`}
         </pre>
         <div className="mt-3">
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">
