@@ -87,6 +87,6 @@ export async function revokeApiKey(userEmail: string, keyId: number): Promise<bo
     WHERE id = ${keyId} AND user_email = ${userEmail} AND is_active = TRUE
   `
   
-  console.log('Revoke result:', result) // Debug log
-  return result.count > 0
+  // For UPDATE operations, Neon returns a result object with rowCount
+  return (result as any).rowCount > 0
 }

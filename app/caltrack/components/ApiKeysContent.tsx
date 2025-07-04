@@ -88,7 +88,6 @@ export function ApiKeysContent() {
       })
 
       const data = await response.json()
-      console.log('Revoke response:', data) // Debug log
       
       if (data.success) {
         setError('') // Clear any previous errors
