@@ -84,8 +84,9 @@ export async function revokeApiKey(userEmail: string, keyId: number): Promise<bo
   const result = await sql`
     UPDATE api_keys
     SET is_active = FALSE
-    WHERE id = ${keyId} AND user_email = ${userEmail}
+    WHERE id = ${keyId} AND user_email = ${userEmail} AND is_active = TRUE
   `
   
+  console.log('Revoke result:', result) // Debug log
   return result.count > 0
 }

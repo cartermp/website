@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+import Link from 'next/link'
 import { compareDates, getToday } from '@/lib/dateUtils'
 import { calculateDailyEntries, calculateDailyAverage, MAINTAIN_TARGET, LOWER_TARGET, UPPER_TARGET } from '@/lib/calorieUtils'
 import { Card } from './ui/card'
@@ -55,7 +56,15 @@ export function StatsContent({ initialData }: StatsContentProps) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Calorie Statistics</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">Calorie Statistics</h1>
+        <Link
+          href="/caltrack/api-keys"
+          className="w-full sm:w-auto text-center px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+        >
+          API Keys
+        </Link>
+      </div>
 
       <Card variant="stats" className="p-3 sm:p-4">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
