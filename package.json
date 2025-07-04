@@ -15,6 +15,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/bcryptjs": "^2.4.6",
     "@types/chroma-js": "^3.1.1",
     "@types/node": "22.13.8",
     "@types/papaparse": "^5.3.16",
@@ -23,6 +24,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "autoprefixer": "10.4.14",
+    "bcryptjs": "^3.0.2",
     "bright": "^1.0.0",
     "chroma-js": "^3.1.2",
     "class-variance-authority": "^0.7.1",

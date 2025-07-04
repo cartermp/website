@@ -16,6 +16,23 @@ export async function POST() {
             )
         `;
 
+        // Create the api_keys table if it doesn't exist
+        await sql`
+            CREATE TABLE IF NOT EXISTS api_keys (
+                id SERIAL PRIMARY KEY,
+                user_email VARCHAR(255) NOT NULL,
+                key_hash VARCHAR(255) NOT NULL UNIQUE,
+                name VARCHAR(100) NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                last_used_at TIMESTAMP WITH TIME ZONE,
+                is_active BOOLEAN DEFAULT TRUE
+            )
+        `;
+
+        // Create indexes
+        await sql`CREATE INDEX IF NOT EXISTS idx_api_keys_user_email ON api_keys (user_email)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_api_keys_key_hash ON api_keys (key_hash)`;
+
         // Populate the daily_stats table with existing data
         await sql`
             INSERT INTO daily_stats (
