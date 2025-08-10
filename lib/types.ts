@@ -19,6 +19,7 @@ export interface DailyEntry {
     date: string
     entries: CalorieEntry[]
     totalCalories: number
+    isExcluded?: boolean
 }
 
 export interface FoodItem {
@@ -36,6 +37,7 @@ export interface DailyStats {
     lunch_calories: number;
     dinner_calories: number;
     snacks_calories: number;
+    is_excluded?: boolean;
 }
 
 export interface CalorieData {

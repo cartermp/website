@@ -1,12 +1,12 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCalorieForm } from '@/lib/hooks/useCalorieForm'
 import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { StatDisplay } from './ui/stat-display'
-import type { CalorieEntry } from '@/lib/types'
+import type { CalorieEntry, DailyStats } from '@/lib/types'
 import { getToday } from '@/lib/dateUtils'
 import { FoodAutocomplete } from './FoodAutocomplete'
 import { getCalorieColor } from '@/lib/colorUtils'
@@ -15,9 +15,11 @@ interface CalorieFormSharedProps {
   date?: string
   initialEntries?: CalorieEntry[]
   mode: 'add' | 'edit'
+  dailyStats?: DailyStats | null
 }
 
-export function CalorieFormShared({ date = getToday(), initialEntries = [], mode }: CalorieFormSharedProps) {
+export function CalorieFormShared({ date = getToday(), initialEntries = [], mode, dailyStats }: CalorieFormSharedProps) {
+  const [isExcluded, setIsExcluded] = useState(dailyStats?.is_excluded || false)
   const router = useRouter()
   const {
     meals,
@@ -57,6 +59,27 @@ export function CalorieFormShared({ date = getToday(), initialEntries = [], mode
           }
         }, 0)
       }
+    }
+  }
+
+  const handleToggleExcluded = async () => {
+    try {
+      const response = await fetch(`/api/caltrack/exclude/${date}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ is_excluded: !isExcluded }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update excluded status')
+      }
+
+      setIsExcluded(!isExcluded)
+    } catch (error) {
+      console.error('Error toggling excluded status:', error)
+      // You could add a toast notification here
     }
   }
 
@@ -142,6 +165,32 @@ export function CalorieFormShared({ date = getToday(), initialEntries = [], mode
           valueColor={getCalorieColor(getTotalCalories())}
           className="text-base sm:text-lg"
         />
+      </Card>
+
+      {/* Exclusion Toggle */}
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-base sm:text-lg font-medium text-gray-700 dark:text-gray-300">
+              Include in Statistics
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {isExcluded 
+                ? "This day is excluded from averages and trends" 
+                : "This day is included in averages and trends"
+              }
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant={isExcluded ? "secondary" : "primary"}
+            onClick={handleToggleExcluded}
+            disabled={isSubmitting}
+            className="ml-4"
+          >
+            {isExcluded ? "Include Day" : "Exclude Day"}
+          </Button>
+        </div>
       </Card>
 
       {(error || submitError) && (

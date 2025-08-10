@@ -12,10 +12,14 @@ export function calculateDailyEntries(entries: CalorieEntry[]): DailyEntry[] {
         }))
 }
 
-export function calculateDailyAverage(entries: DailyEntry[]): number {
-    if (entries.length === 0) return 0
-    const total = entries.reduce((sum, entry) => sum + entry.totalCalories, 0)
-    return Math.round(total / entries.length)
+export function calculateDailyAverage(entries: DailyEntry[], excludeDays?: Set<string>): number {
+    const filteredEntries = excludeDays 
+        ? entries.filter(entry => !excludeDays.has(entry.date))
+        : entries
+    
+    if (filteredEntries.length === 0) return 0
+    const total = filteredEntries.reduce((sum, entry) => sum + entry.totalCalories, 0)
+    return Math.round(total / filteredEntries.length)
 }
 
 export function groupEntriesByMealType(entries: CalorieEntry[]) {

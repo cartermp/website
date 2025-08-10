@@ -48,6 +48,23 @@ describe('calorieUtils', () => {
             expect(average).toBe(850)
         })
 
+        it('calculates average excluding specified days', () => {
+            const dailyEntries = calculateDailyEntries(mockEntries)
+            const excludeDays = new Set(['2024-02-16'])
+            const average = calculateDailyAverage(dailyEntries, excludeDays)
+            
+            // Only 2024-02-15 counted: 1200 / 1 = 1200
+            expect(average).toBe(1200)
+        })
+
+        it('returns 0 when all days are excluded', () => {
+            const dailyEntries = calculateDailyEntries(mockEntries)
+            const excludeDays = new Set(['2024-02-15', '2024-02-16'])
+            const average = calculateDailyAverage(dailyEntries, excludeDays)
+            
+            expect(average).toBe(0)
+        })
+
         it('returns 0 for empty array', () => {
             expect(calculateDailyAverage([])).toBe(0)
         })

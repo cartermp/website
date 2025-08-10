@@ -11,16 +11,18 @@ export async function GET() {
         WHERE date >= CURRENT_DATE - INTERVAL '6 months'
         ORDER BY date DESC, meal_type`;
 
-    // Get the overall average calories per day
+    // Get the overall average calories per day (excluding days marked as excluded)
     const overallStats = await sql`
         SELECT 
             ROUND(AVG(daily_total)::numeric, 0) as overall_average
         FROM (
             SELECT 
-                date,
-                SUM(calories) as daily_total
-            FROM calorie_entries
-            GROUP BY date
+                ce.date,
+                SUM(ce.calories) as daily_total
+            FROM calorie_entries ce
+            LEFT JOIN daily_stats ds ON ce.date = ds.date
+            WHERE COALESCE(ds.is_excluded, false) = false
+            GROUP BY ce.date
         ) daily_totals`;
 
     // Get today's summary stats
@@ -31,7 +33,8 @@ export async function GET() {
             breakfast_calories,
             lunch_calories,
             dinner_calories,
-            snacks_calories
+            snacks_calories,
+            is_excluded
         FROM daily_stats
         WHERE date = CURRENT_DATE`;
 

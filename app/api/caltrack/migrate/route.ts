@@ -12,6 +12,7 @@ export async function POST() {
                 lunch_calories INTEGER,
                 dinner_calories INTEGER,
                 snacks_calories INTEGER,
+                is_excluded BOOLEAN DEFAULT FALSE,
                 updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             )
         `;
@@ -32,6 +33,12 @@ export async function POST() {
         // Create indexes
         await sql`CREATE INDEX IF NOT EXISTS idx_api_keys_user_email ON api_keys (user_email)`;
         await sql`CREATE INDEX IF NOT EXISTS idx_api_keys_key_hash ON api_keys (key_hash)`;
+
+        // Add is_excluded column to existing daily_stats table if it doesn't exist
+        await sql`
+            ALTER TABLE daily_stats 
+            ADD COLUMN IF NOT EXISTS is_excluded BOOLEAN DEFAULT FALSE
+        `;
 
         // Populate the daily_stats table with existing data
         await sql`

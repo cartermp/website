@@ -1,5 +1,5 @@
 import { EditCalorieForm } from '../../components/EditCalorieForm'
-import { getEntriesForDate } from '@/lib/getData'
+import { getStaticEntriesWithStats } from '@/lib/getData'
 import { CalorieEntry } from '@/lib/types'
 import { formatDate } from '@/lib/dateUtils'
 
@@ -13,7 +13,9 @@ export default async function EditCaloriesPage(props: {
   params: PageParams
 }) {
   const params = await props.params;
-  const entries = await getEntriesForDate(params.date) as CalorieEntry[]
+  const data = await getStaticEntriesWithStats(params.date)
+  const entries = data.entries || []
+  const dailyStats = data.dailyStats
   const mode = entries.length === 0 ? 'add' : 'edit'
 
   return (
@@ -22,7 +24,12 @@ export default async function EditCaloriesPage(props: {
         {entries.length === 0 ? "Add Today's Calories" : `Edit Calories for ${formatDate(params.date)}`}
       </h1>
 
-      <EditCalorieForm date={params.date} initialEntries={entries} mode={mode} />
+      <EditCalorieForm 
+        date={params.date} 
+        initialEntries={entries} 
+        mode={mode} 
+        dailyStats={dailyStats}
+      />
     </div>
   )
 }

@@ -11,10 +11,24 @@ export async function GET(
   { params }: { params: RouteParams }
 ) {
     const resolvedParams = await params;
-    const data = await sql`
+    
+    // Get entries for the date
+    const entries = await sql`
       SELECT date::text, meal_type, meal_name, calories 
       FROM calorie_entries 
       WHERE date = ${resolvedParams.date}::date
     `;
-    return NextResponse.json(data);
+    
+    // Get daily stats including excluded status
+    const dailyStats = await sql`
+      SELECT date, total_calories, breakfast_calories, lunch_calories, 
+             dinner_calories, snacks_calories, is_excluded
+      FROM daily_stats 
+      WHERE date = ${resolvedParams.date}::date
+    `;
+    
+    return NextResponse.json({
+        entries,
+        dailyStats: dailyStats[0] || null
+    });
 }
