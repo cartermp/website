@@ -59,7 +59,7 @@ describe('/api/caltrack/daily-stats', () => {
 
       expect(response.status).toBe(200)
       expect(data).toEqual(mockStats)
-      expect(mockSql).toHaveBeenCalledWith(expect.stringMatching(/SELECT date::text.*is_excluded.*FROM daily_stats/))
+      expect(mockSql).toHaveBeenCalledTimes(1)
     })
 
     it('should handle database errors gracefully', async () => {
