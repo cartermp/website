@@ -13,6 +13,7 @@ interface FoodAutocompleteProps {
     disabled?: boolean
     nameRef?: { current: HTMLInputElement | null }
     caloriesRef?: { current: HTMLInputElement | null }
+    refreshTrigger?: number
 }
 
 const PLACEHOLDER = {
@@ -28,7 +29,8 @@ export function FoodAutocomplete({
     onKeyDown,
     disabled,
     nameRef,
-    caloriesRef
+    caloriesRef,
+    refreshTrigger
 }: FoodAutocompleteProps) {
     // State
     const [suggestions, setSuggestions] = useState<FoodItem[]>([])
@@ -50,7 +52,7 @@ export function FoodAutocomplete({
             : allFoodItems
     }, [allFoodItems])
 
-    // Load food items on mount
+    // Load food items on mount and when refreshTrigger changes
     useEffect(() => {
         let mounted = true
 
@@ -71,7 +73,7 @@ export function FoodAutocomplete({
 
         loadFoodItems()
         return () => { mounted = false }
-    }, [])
+    }, [refreshTrigger])
 
     // Handle clicks outside
     useEffect(() => {

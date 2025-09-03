@@ -21,6 +21,12 @@ export function PageHeader({ todayEntry }: PageHeaderProps) {
                 >
                     View Stats
                 </Link>
+                <Link
+                    href="/caltrack/admin"
+                    className="w-full sm:w-auto text-center px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+                >
+                    Admin
+                </Link>
                 <ShareButton date={today} />
                 <Link
                     href={`/caltrack/edit/${today}`}
