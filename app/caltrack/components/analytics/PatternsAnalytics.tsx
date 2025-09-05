@@ -114,11 +114,11 @@ export function PatternsAnalytics({ entries }: PatternsAnalyticsProps) {
     if (totalDays === 0) return []
 
     const ranges = [
-      { label: 'Very Low (<1400)', min: 0, max: 1399 },
-      { label: 'Low (1400-1799)', min: 1400, max: 1799 },
-      { label: 'Moderate (1800-2199)', min: 1800, max: 2199 },
-      { label: 'High (2200-2799)', min: 2200, max: 2799 },
-      { label: 'Very High (2800+)', min: 2800, max: Infinity }
+      { label: 'Very Low (<2000)', min: 0, max: 1999 },
+      { label: 'Low (2000-2399)', min: 2000, max: 2399 },
+      { label: 'Moderate (2400-2799)', min: 2400, max: 2799 },
+      { label: 'High (2800-3199)', min: 2800, max: 3199 },
+      { label: 'Very High (3200+)', min: 3200, max: Infinity }
     ]
 
     return ranges.map(range => {
