@@ -1,0 +1,27 @@
+---
+title: "The exhaustion of keeping up with AI models"
+description: "AI models keep improving, but in uneven ways and with benchmarks that don't mean much. It can be tiring."
+date: "2025-11-23"
+tags: ai, llms
+---
+
+It can be exhuasting keeping up with AI improvements. Really it comes down to two reasons:
+
+1. Models are materially improving month over month across several domains and for many different tasks
+2. Industry standard benchmarks are usually meaningless
+
+I was amongst the earlier folks adopting LLMs towards some productive end since I got a private early access key for GitHub Copilot in 2021. Back then it was simpler to measure improvements because AI coding was the only "real" application you could rely on, and it had one modality with tab completions. Pick a language, pick a codebase, and hit the tab button as you code and you could tell pretty quickly if an update delivered something useful or not.
+
+In 2023 I was able to compare Claude 1.x with GPT 3.5 and GPT 4 for Observability query generation and that was pretty difficult, but doable. Later that year I had Bard (now Gemini) to compare with, in addition to some fine-tuned OSS models, and a bunch of production data to form the basis of what you could argue are evals.
+
+Now in late 2025 it's a complete mess! It's not just that there's a lot of models -- there are tools to automate model selection with evals -- it's that each time there's a new release, you just can't tell if that newer model is going to meaningfully improve things or not.
+
+Evals are great, but they're fundamentally limited by past observations and your predictions of "realistic use" that you haven't observed yet. For example, chances are that your evals aren't good enough to measure if Gemini 3 is a noticable improvement over GPT 5.1 for your use case. Consider a well-formed eval where you pass ~75-80% of your test cases, and Gemini 3 bumps that up to 80-85%, or even 85-90%. Is that significantly better such that your users, or even yourself, will notice that your tool is just better now? **My guess is you can't tell, and that's because your evals don't accurately capture all of the other ways your tool will get used**.
+
+And so you might have the bright idea of running an A/B test. What if that test shows Gemini 3 as better (and outside the margin of error for measurement), but not _that_ much better? Did the new model actually improve things? I bet your users couldn't tell the difference.
+
+But then here's the kicker: every time there's a new model release, someone eventually notices that the new model just does some stuff way better than anything else. In this case with Gemini, "reasoning about a codebase", image generation, and object recognition in images seem to all of have undergone a noticable leap. Back when Claude Sonnet 3.5 came out, developers all noticed that it was the first LLM that could actually generate code well enough to generate whole files at a time without "losing the plot". It's not like improvements didn't happen  -- previous AI models in the past could generate whole fiels or interpret images -- but with each release comes some uneven improvement that nobody can predict.
+
+What's annoying with this is each model release comes with a nice model card showing modest improvements on some industry benchmark and the occaisional leap on one or two benchmarks. This is, for all intents and purposes, benchmark slop that means very little. **Claude Sonnet 3.5 knocked it out of the park on coding benchmarks, but that meant nothing until we all got our hands on it.**
+
+And so what we're left with, for now, is having to creatively evaluate each new major model release. Most of the time, industry benchmarks don't represent our use cases, but our existing evals or ad-hoc test cases _also_ tend not to catch when a model is a lot better. It can be exhausting!
