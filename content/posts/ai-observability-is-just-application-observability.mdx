@@ -20,7 +20,9 @@ At the end of the day, this is all just basic stuff you can represent in applica
 
 That said, it _can_ get more complicated over time:
 
-- Don't just throw 100k tokens on a span attribute and expect things to make sense
+- If you truly have a high volume of users and log every interaction, your telemetry pipeline will get costly
+- Consider using a backend or tool that can shunt off all traces and/or logs to cold storage, easily sample useful ones for hot storage alongside tracing, and be merry
+- Don't just throw 100k tokens on a span attribute or log line and expect things to make sense. "Context Engineer" your data!
 - Consider not logging the text of every document you yeet into context uncritically (this is really a sign of poor context engineering)
 - [Error analysis](https://hamel.dev/blog/posts/evals-faq/why-is-error-analysis-so-important-in-llm-evals-and-how-is-it-performed.html) inevitably involves pulling data into a file that you can annotate to create evals with
 - SLOs, if you can do them, are ultimatley how you should quantify effectiveness of a solution in production
