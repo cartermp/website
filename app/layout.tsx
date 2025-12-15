@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import "./globals.css"
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -17,9 +18,15 @@ const codeFont = JetBrains_Mono({
   variable: '--font-mono'
 })
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Phillip Carter",
   description: "Phillip Carter's spot on the web.",
+  metadataBase: new URL("https://phillipcarter.dev"),
+  alternates: {
+    types: {
+      "application/rss+xml": "/rss.xml",
+    },
+  },
 }
 
 interface RootLayoutProps {
