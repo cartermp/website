@@ -48,7 +48,15 @@ export async function GET() {
       <link>${SITE_URL}</link>
       <description><![CDATA[Phillip Carter's spot on the web.]]></description>
       <language>en-us</language>
-      <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+      <lastBuildDate>${
+        allPosts.length > 0
+          ? new Date(
+              allPosts
+                .map((post) => post.date)
+                .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]
+            ).toUTCString()
+          : new Date().toUTCString()
+      }</lastBuildDate>
       ${items}
     </channel>
   </rss>`
