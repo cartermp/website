@@ -29,7 +29,8 @@ function buildRssItem({
 
 export async function GET() {
   const items = allPosts
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .map(post => ({ ...post, _timestamp: new Date(post.date).getTime() }))
+    .sort((a, b) => b._timestamp - a._timestamp)
     .map((post) =>
       buildRssItem({
         title: post.title,
