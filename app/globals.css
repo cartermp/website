@@ -3,6 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --font-sans: "Inter", "Space Grotesk", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-display: "Inter", "Space Grotesk", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+
   body.theme-canvas {
     background-color: #04060f;
     background-image:
@@ -105,7 +111,7 @@
     background-color: rgba(255, 255, 255, 0.7);
     padding: 1.5rem;
     box-shadow: 0 20px 80px -40px rgba(0, 0, 0, 0.6);
-    @apply backdrop-blur-lg transition duration-300 hover:-translate-y-1 hover:border-purple-400/60 hover:shadow-purple-500/15 dark:border-white/10 dark:bg-white/[0.04];
+    @apply backdrop-blur-lg transition duration-300 hover:-translate-y-1 hover:border-purple-400/60 hover:shadow-[0_24px_90px_-50px_rgba(168,85,247,0.35)] dark:border-white/10 dark:bg-white/[0.04];
   }
 
   .glow-card::before {

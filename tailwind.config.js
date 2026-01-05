@@ -9,7 +9,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        mono: ['var(--font-mono)'],
+        sans: ['var(--font-sans)', 'Inter', 'Space Grotesk', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'Inter', 'Space Grotesk', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       },
       animation: {
         'cursor-blink': 'blink 1s step-start infinite',

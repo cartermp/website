@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import "./globals.css"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@/components/analytics"
 import { ModeToggle } from "@/components/mode-toggle"
@@ -10,18 +9,6 @@ import {
   siBluesky as BlueskyIcon,
   siGithub as GithubIcon,
 } from "simple-icons";
-
-const inter = Inter({ subsets: ["latin"] })
-
-const codeFont = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono'
-})
-
-const displayFont = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-display",
-})
 
 export const metadata: Metadata = {
   title: "Phillip Carter",
@@ -118,7 +105,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         `}} />
       </head>
       <body
-        className={`antialiased min-h-screen theme-canvas text-slate-900 dark:text-slate-50 ${inter.className} ${displayFont.variable} ${codeFont.variable}`}
+        className="antialiased min-h-screen theme-canvas text-slate-900 dark:text-slate-50 font-sans"
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="absolute inset-0 overflow-hidden">
