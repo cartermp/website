@@ -59,10 +59,22 @@ export default async function PagePage(props: {
   const mdxSource = await processMdx(page.body.raw)
 
   return (
-    <article className="py-6 prose dark:prose-invert">
-      <h1 className="mb-2 text-purple-700 dark:text-purple-300">{page.title}</h1>
-      {page.description && <p className="text-xl">{page.description}</p>}
-      <Mdx code={mdxSource} />
-    </article>
+    <div className="space-y-8">
+      <div className="glow-card relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(circle_at_70%_30%,rgba(0,0,0,0.8),transparent_70%)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.25),transparent_35%),radial-gradient(circle_at_85%_15%,rgba(236,72,153,0.22),transparent_35%),radial-gradient(circle_at_45%_90%,rgba(16,185,129,0.2),transparent_35%)]" />
+        </div>
+        <div className="relative space-y-3">
+          <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-300">Article</p>
+          <h1 className="font-display text-3xl leading-tight text-slate-900 dark:text-white">
+            {page.title}
+          </h1>
+          {page.description && <p className="text-slate-700 dark:text-slate-300">{page.description}</p>}
+        </div>
+      </div>
+      <article className="glow-card prose prose-slate max-w-none dark:prose-invert">
+        <Mdx code={mdxSource} />
+      </article>
+    </div>
   )
 }

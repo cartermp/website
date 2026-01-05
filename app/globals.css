@@ -2,6 +2,126 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body.theme-canvas {
+    background-color: #04060f;
+    background-image:
+      radial-gradient(circle at 12% 20%, rgba(56, 189, 248, 0.13), transparent 28%),
+      radial-gradient(circle at 88% 12%, rgba(168, 85, 247, 0.16), transparent 26%),
+      radial-gradient(circle at 30% 80%, rgba(34, 211, 238, 0.12), transparent 30%),
+      linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
+    color: #e2e8f0;
+    overflow-x: hidden;
+  }
+
+  html.dark body.theme-canvas {
+    background-color: #02040b;
+    background-image:
+      radial-gradient(circle at 10% 18%, rgba(59, 130, 246, 0.16), transparent 30%),
+      radial-gradient(circle at 90% 18%, rgba(236, 72, 153, 0.16), transparent 26%),
+      radial-gradient(circle at 36% 80%, rgba(16, 185, 129, 0.16), transparent 32%),
+      linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+  }
+
+  ::selection {
+    background: rgba(168, 85, 247, 0.18);
+    color: #0b1120;
+  }
+}
+
+@layer components {
+  .nav-chip {
+    @apply rounded-full border border-slate-200/70 bg-white/70 px-4 py-2 text-[11px] text-slate-900 shadow-sm shadow-black/5 transition duration-200 hover:-translate-y-0.5 hover:border-purple-500/50 hover:text-purple-700 hover:shadow-lg hover:shadow-purple-500/10 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:hover:border-purple-400/60 dark:hover:text-purple-100 dark:hover:shadow-purple-500/20;
+  }
+
+  .icon-button {
+    @apply relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-slate-200/70 bg-white/80 shadow-sm shadow-black/5 transition duration-200 hover:-translate-y-0.5 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10 dark:border-white/10 dark:bg-white/10 dark:hover:border-purple-400/60 dark:hover:shadow-purple-500/20;
+  }
+
+  .icon-button::after {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-indigo-400/10 opacity-0 transition duration-200;
+  }
+
+  .icon-button:hover::after {
+    opacity: 1;
+  }
+
+  .chip-ghost {
+    @apply rounded-full border border-white/40 bg-white/60 px-4 py-2 text-[11px] text-slate-800 shadow-sm shadow-black/5 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200;
+  }
+
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 120px 120px;
+    mix-blend-mode: soft-light;
+    opacity: 0.3;
+  }
+
+  .orb {
+    position: fixed;
+    filter: blur(60px);
+    opacity: 0.55;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  .orb-1 {
+    width: 38rem;
+    height: 38rem;
+    top: -10rem;
+    left: -12rem;
+    background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.35), transparent 45%);
+  }
+
+  .orb-2 {
+    width: 28rem;
+    height: 28rem;
+    bottom: 2rem;
+    right: -6rem;
+    background: radial-gradient(circle at 70% 30%, rgba(236, 72, 153, 0.35), transparent 46%);
+  }
+
+  .orb-3 {
+    width: 24rem;
+    height: 24rem;
+    bottom: -8rem;
+    left: 20%;
+    background: radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.28), transparent 42%);
+  }
+}
+
+@layer utilities {
+  .glow-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 1.5rem;
+    box-shadow: 0 20px 80px -40px rgba(0, 0, 0, 0.6);
+    @apply backdrop-blur-lg transition duration-300 hover:-translate-y-1 hover:border-purple-400/60 hover:shadow-purple-500/15 dark:border-white/10 dark:bg-white/[0.04];
+  }
+
+  .glow-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.22), transparent 40%), radial-gradient(circle at 80% 0%, rgba(236, 72, 153, 0.2), transparent 35%);
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+
+  .glow-card:hover::before {
+    opacity: 1;
+  }
+}
+
 @keyframes blink {
 
   0%,
