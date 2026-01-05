@@ -2,9 +2,11 @@ name: CI and Deploy
 
 on:
   push:
-    branches: [main]
+    branches:
+      - "**"
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   test:
@@ -32,8 +34,57 @@ jobs:
       - name: Run tests
         run: pnpm test
 
-      - name: Deploy to Vercel
-        if: success()
+  deploy-preview:
+    needs: test
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' ||
+      (github.event_name == 'push' && github.ref != 'refs/heads/main')
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Deploy preview to Vercel
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          npm install -g vercel@latest
+          vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+          vercel build --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+
+  deploy-production:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Deploy production to Vercel
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
