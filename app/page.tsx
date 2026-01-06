@@ -25,14 +25,14 @@ export default function Home() {
         </div>
         <div className="relative grid gap-10 lg:grid-cols-[1.2fr,0.8fr] lg:items-center">
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-slate-700 shadow-sm shadow-black/5 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/70 px-3.5 py-1.5 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.26em] sm:tracking-[0.35em] text-slate-700 shadow-sm shadow-black/5 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-slate-200">
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_0_6px_rgba(52,211,153,0.25)]" />
               Recent writing
             </div>
-            <h2 className="font-display text-4xl leading-tight text-slate-900 drop-shadow-sm dark:text-white lg:text-5xl">
+            <h2 className="font-display text-3xl sm:text-4xl leading-tight text-slate-900 drop-shadow-sm dark:text-white lg:text-5xl">
               Notes on building systems, teams, and tools.
             </h2>
-            <p className="text-lg text-slate-700 dark:text-slate-200">
+            <p className="text-base sm:text-lg text-slate-700 dark:text-slate-200">
               Thinking out loud about engineering practice, product judgment, and the experiments that stick. No grand thesis—just the work in progress.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -44,9 +44,9 @@ export default function Home() {
           </div>
           <div className="grid gap-4">
             <div className="glow-card border-dashed border-white/50 bg-white/60 dark:border-white/10 dark:bg-white/5">
-              <p className="text-xs uppercase tracking-[0.25em] text-slate-600 dark:text-slate-300">Latest drop</p>
+              <p className="text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-slate-600 dark:text-slate-300">Latest drop</p>
               <div className="mt-3 space-y-2">
-                <Link href={posts[0].slug} className="font-display text-2xl leading-tight text-slate-900 transition hover:text-purple-600 dark:text-white dark:hover:text-purple-200">
+                <Link href={posts[0].slug} className="font-display text-xl sm:text-2xl leading-tight text-slate-900 transition hover:text-purple-600 dark:text-white dark:hover:text-purple-200">
                   {posts[0].title}
                 </Link>
                 <p className="text-sm text-slate-700 dark:text-slate-300">{posts[0].description}</p>
@@ -77,8 +77,8 @@ export default function Home() {
       <section className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-slate-500 dark:text-slate-400">Archive</p>
-            <h3 className="font-display text-3xl text-slate-900 dark:text-white">All posts</h3>
+            <p className="text-[11px] sm:text-xs uppercase tracking-[0.26em] sm:tracking-[0.35em] text-slate-500 dark:text-slate-400">Archive</p>
+            <h3 className="font-display text-2xl sm:text-3xl text-slate-900 dark:text-white">All posts</h3>
           </div>
           <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
             <span className="rounded-full bg-purple-500/20 px-3 py-1 font-semibold uppercase tracking-[0.22em] text-purple-900 dark:bg-purple-500/15 dark:text-purple-100">Scroll through</span>
@@ -96,12 +96,12 @@ export default function Home() {
               </div>
               <div className="relative space-y-4">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <span className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/60 bg-gradient-to-br from-purple-500/20 to-blue-500/20 font-mono text-xs font-bold text-slate-900 shadow-sm shadow-purple-500/20 dark:border-white/10 dark:text-white">
+                <div className="flex items-start gap-3">
+                    <span className="mt-1 inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-white/60 bg-gradient-to-br from-purple-500/20 to-blue-500/20 font-mono text-[11px] sm:text-xs font-bold text-slate-900 shadow-sm shadow-purple-500/20 dark:border-white/10 dark:text-white">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <div className="space-y-2">
-                      <Link href={post.slug} className="font-display text-xl leading-tight text-slate-900 transition hover:text-purple-600 dark:text-white dark:hover:text-purple-200">
+                      <Link href={post.slug} className="font-display text-lg sm:text-xl leading-tight text-slate-900 transition hover:text-purple-600 dark:text-white dark:hover:text-purple-200">
                         {post.title}
                       </Link>
                       {post.description && (

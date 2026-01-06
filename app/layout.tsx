@@ -27,7 +27,7 @@ interface RootLayoutProps {
 
 function NavLinks() {
   return (
-    <nav className="flex flex-wrap gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-slate-900 dark:text-slate-200">
+    <nav className="flex flex-wrap gap-2 text-[11px] sm:text-sm font-semibold uppercase tracking-[0.12em] sm:tracking-[0.16em] text-slate-900 dark:text-slate-200">
       <Link
         href="/"
         className="nav-chip"
@@ -114,27 +114,27 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <div className="orb orb-3" />
             <div className="grid-overlay" />
           </div>
-          <div className="relative z-10 mx-auto max-w-6xl px-6 py-12">
+          <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-12">
             <div className="relative overflow-hidden rounded-3xl border border-white/20 bg-white/60 text-slate-900 shadow-[0_24px_120px_-40px_rgba(0,0,0,0.65)] backdrop-blur-2xl dark:border-white/10 dark:bg-white/5 dark:text-white">
               <div className="absolute inset-0 opacity-70 [mask-image:radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.72),transparent_70%)]">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(59,130,246,0.45),transparent_40%),radial-gradient(circle_at_85%_10%,rgba(236,72,153,0.35),transparent_35%),radial-gradient(circle_at_30%_80%,rgba(16,185,129,0.4),transparent_45%)] dark:bg-[radial-gradient(circle_at_15%_20%,rgba(59,130,246,0.25),transparent_35%),radial-gradient(circle_at_85%_10%,rgba(236,72,153,0.2),transparent_35%),radial-gradient(circle_at_30%_80%,rgba(16,185,129,0.2),transparent_45%)]" />
                 <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.35),rgba(255,255,255,0)),linear-gradient(45deg,rgba(255,255,255,0.14),rgba(255,255,255,0))]" />
               </div>
-              <div className="relative p-8 lg:p-10 space-y-10">
-                <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-50/60 shadow-lg shadow-purple-500/10 ring-4 ring-purple-200/60 transition-all duration-500 hover:scale-105 dark:border-white/10 dark:bg-white/10 dark:ring-purple-500/30">
+              <div className="relative p-6 sm:p-8 lg:p-10 space-y-8 sm:space-y-10">
+                <header className="flex flex-col gap-5 sm:gap-6 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="relative h-14 w-14 sm:h-16 sm:w-16 overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-50/60 shadow-lg shadow-purple-500/10 ring-4 ring-purple-200/60 transition-all duration-500 hover:scale-105 dark:border-white/10 dark:bg-white/10 dark:ring-purple-500/30">
                       <div className="absolute inset-0 bg-[conic-gradient(from_90deg_at_50%_50%,rgba(99,102,241,0.35),rgba(236,72,153,0.45),rgba(14,165,233,0.35),rgba(99,102,241,0.35))]" />
                       <div className="absolute inset-[6px] rounded-xl bg-white/90 backdrop-blur dark:bg-slate-950/70" />
-                      <div className="relative flex h-full items-center justify-center font-mono text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                      <div className="relative flex h-full items-center justify-center font-mono text-base sm:text-lg font-black tracking-tight text-slate-900 dark:text-white">
                         PC&gt;
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-xs uppercase tracking-[0.28em] text-slate-700 dark:text-slate-300">
+                      <p className="text-[11px] sm:text-xs uppercase tracking-[0.22em] sm:tracking-[0.28em] text-slate-700 dark:text-slate-300">
                         Phillip Carter
                       </p>
-                      <h1 className="font-display text-3xl leading-tight text-slate-900 dark:text-white">
+                      <h1 className="font-display text-2xl sm:text-3xl leading-tight text-slate-900 dark:text-white">
                         Contrarian notes on building systems that feel hand-crafted
                       </h1>
                       <p className="text-sm text-slate-600 dark:text-slate-300">
