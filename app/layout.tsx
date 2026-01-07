@@ -125,23 +125,21 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   </Link>
 
                   <div className="space-y-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/70 px-5 py-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">About</span>
-                      <ModeToggle />
-                    </div>
+                    <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">About</div>
                     <div className="space-y-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
                       <p>In my day job, I’m a PM Director at Salesforce working on their Automations platform. I used to work at Honeycomb, where I led AI efforts. Prior to this, I worked on Honeycomb&apos;s telemetry pipeline, OpenTelemetry efforts, and API. I also worked on the .NET team at Microsoft for several years, including 5 years as the PM for the F# programming language and tools.</p>
                       <p>I’m also a maintainer in the OpenTelemetry project, primarily focusing on the website. I do occasionally send PRs to other parts of the project, though. I will occasionally release updates to some packages I still maintain.</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-3">
                     <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
                       <span className="h-3 w-3 rounded-sm bg-slate-300 dark:bg-slate-700" />
                       <span>links</span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <SocialLinks />
+                      <ModeToggle />
                     </div>
                   </div>
                 </aside>
