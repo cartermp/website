@@ -9,9 +9,10 @@ export function TagList({ tags }: { tags: string }) {
         <Link
           key={tag}
           href={`/tags/${encodeURIComponent(tag)}`}
-          className="text-sm px-3 py-1 bg-purple-100 dark:bg-purple-900/30 
-                     text-purple-700 dark:text-purple-300 rounded-full 
-                     hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+          className="text-xs px-3 py-1 rounded-full border border-slate-300/80 dark:border-slate-700/80
+                     bg-white/70 dark:bg-slate-900/60 text-slate-700 dark:text-slate-200
+                     tracking-[0.1em] uppercase hover:border-sky-400 dark:hover:border-sky-500
+                     transition-colors"
         >
           {tag}
         </Link>
