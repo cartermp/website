@@ -54,12 +54,7 @@ export default function Home() {
                   <time className="rounded-full border border-slate-300/80 dark:border-slate-700/80 px-4 py-2 text-xs uppercase tracking-[0.18em] text-slate-600 dark:text-slate-300 bg-slate-50/70 dark:bg-slate-900/60">
                     {new Date(post.date).toLocaleDateString()}
                   </time>
-                  <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                    <span className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
-                    <span className="text-lg text-sky-500 dark:text-sky-300 transition-transform duration-300 group-hover:translate-x-1.5">
-                      ↗
-                    </span>
-                  </div>
+                  <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
                 </div>
               </div>
             </Link>
