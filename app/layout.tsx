@@ -6,6 +6,7 @@ import { Inter, JetBrains_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@/components/analytics"
 import { ModeToggle } from "@/components/mode-toggle"
+import { ScrollToTop } from "@/components/ScrollToTop"
 import {
   siBluesky as BlueskyIcon,
   siGithub as GithubIcon,
@@ -99,6 +100,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={`antialiased min-h-screen text-slate-900 dark:text-slate-50 ${inter.className} ${codeFont.variable}`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ScrollToTop />
           <div className="relative isolate min-h-screen overflow-hidden lg:overflow-visible bg-slate-100 dark:bg-slate-950 selection:bg-lime-200 selection:text-slate-900 dark:selection:bg-emerald-400/30">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute inset-0 opacity-65 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.18),transparent_42%),radial-gradient(circle_at_82%_12%,rgba(16,185,129,0.18),transparent_34%),radial-gradient(circle_at_60%_82%,rgba(14,165,233,0.16),transparent_36%)]" />
