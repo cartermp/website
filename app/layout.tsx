@@ -33,29 +33,6 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
-function NavLinks() {
-  return (
-    <nav className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-300">
-      <Link
-        href="/"
-        className="rounded-full border border-slate-300/70 dark:border-slate-700/70 px-4 py-2
-                   hover:border-sky-400 dark:hover:border-sky-500 hover:text-slate-800
-                   dark:hover:text-slate-50 transition-colors"
-      >
-        Index
-      </Link>
-      <Link
-        href="/about"
-        className="rounded-full border border-slate-300/70 dark:border-slate-700/70 px-4 py-2
-                   hover:border-sky-400 dark:hover:border-sky-500 hover:text-slate-800
-                   dark:hover:text-slate-50 transition-colors"
-      >
-        About
-      </Link>
-    </nav>
-  );
-}
-
 function SocialLinks() {
   return (
     <>
@@ -147,24 +124,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     </div>
                   </Link>
 
-                  <div className="flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-                    <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-                    <span className="px-3 py-1 rounded-full border border-slate-200/80 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/60">
-                      Signal
-                    </span>
-                    <span className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
-                  </div>
-
-                  <NavLinks />
-
-                  <div className="flex items-center justify-between rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_0_6px_rgba(52,211,153,0.18)]" />
-                      <span className="text-xs uppercase tracking-[0.18em] text-slate-600 dark:text-slate-300">
-                        Live
-                      </span>
+                  <div className="space-y-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/70 px-5 py-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">About</span>
+                      <ModeToggle />
                     </div>
-                    <ModeToggle />
+                    <div className="space-y-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                      <p>In my day job, I’m a PM Director at Salesforce working on their Automations platform. I used to work at Honeycomb, where I led AI efforts. Prior to this, I worked on Honeycomb&apos;s telemetry pipeline, OpenTelemetry efforts, and API. I also worked on the .NET team at Microsoft for several years, including 5 years as the PM for the F# programming language and tools.</p>
+                      <p>I’m also a maintainer in the OpenTelemetry project, primarily focusing on the website. I do occasionally send PRs to other parts of the project, though. I will occasionally release updates to some packages I still maintain.</p>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between gap-3">
