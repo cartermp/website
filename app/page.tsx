@@ -56,9 +56,6 @@ export default function Home() {
                   </time>
                   <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                     <span className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
-                    <span className="text-lg text-sky-500 dark:text-sky-300 transition-transform duration-300 group-hover:translate-x-1.5">
-                      ↗
-                    </span>
                   </div>
                 </div>
               </div>
