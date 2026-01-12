@@ -3,9 +3,9 @@ import Link from "next/link"
 const games = [
   {
     title: "Shape Circuit",
-    description: "Rotate shapes and cycle colors until your board matches the target pattern.",
+    description: "A Tango-inspired shape logic puzzle with balanced rows and columns.",
     href: "/games/shape-puzzle",
-    detail: "Medium difficulty · 3×3 grid",
+    detail: "Medium difficulty · 4×4 grid",
   },
 ]
 

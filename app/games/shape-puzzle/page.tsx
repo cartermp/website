@@ -2,7 +2,7 @@ import ShapePuzzleGame from "./ShapePuzzleGame"
 
 export const metadata = {
   title: "Shape Circuit | Games",
-  description: "A medium difficulty shape-matching puzzle game.",
+  description: "A Tango-inspired shape logic puzzle with a fresh board every refresh.",
 }
 
 export default function ShapePuzzlePage() {
