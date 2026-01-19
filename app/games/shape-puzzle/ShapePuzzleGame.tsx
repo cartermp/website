@@ -19,62 +19,49 @@ const shapes: { id: ShapeId; label: string; color: string }[] = [
   { id: "spire", label: "Spire", color: "#f97316" },
 ]
 
-const gridSize = 8
+const gridSize = 6
 const halfRow = gridSize / 2
 
 const solutionGrid: ShapeId[][] = [
-  ["arc", "arc", "spire", "arc", "spire", "spire", "arc", "spire"],
-  ["spire", "spire", "arc", "spire", "arc", "arc", "spire", "arc"],
-  ["arc", "spire", "arc", "arc", "spire", "spire", "arc", "spire"],
-  ["spire", "arc", "spire", "spire", "arc", "arc", "spire", "arc"],
-  ["arc", "arc", "spire", "spire", "arc", "spire", "arc", "spire"],
-  ["spire", "spire", "arc", "arc", "spire", "arc", "spire", "arc"],
-  ["arc", "spire", "spire", "arc", "arc", "spire", "arc", "spire"],
-  ["spire", "arc", "arc", "spire", "spire", "arc", "spire", "arc"],
+  ["arc", "spire", "arc", "spire", "arc", "spire"],
+  ["spire", "arc", "spire", "arc", "spire", "arc"],
+  ["arc", "spire", "arc", "spire", "arc", "spire"],
+  ["spire", "arc", "spire", "arc", "spire", "arc"],
+  ["arc", "spire", "arc", "spire", "arc", "spire"],
+  ["spire", "arc", "spire", "arc", "spire", "arc"],
 ]
 
 const fixedCells = new Set(
   [
     [0, 0],
-    [0, 4],
-    [0, 7],
+    [0, 3],
+    [0, 5],
     [1, 1],
-    [1, 5],
+    [1, 4],
     [2, 2],
-    [2, 6],
+    [2, 5],
     [3, 0],
-    [3, 7],
-    [4, 3],
-    [4, 5],
+    [3, 3],
+    [4, 1],
+    [4, 4],
     [5, 2],
-    [5, 6],
-    [6, 1],
-    [6, 4],
-    [7, 3],
   ].map(([row, col]) => `${row}-${col}`)
 )
 
 const constraintSeeds: Array<{ row: number; col: number; direction: "right" | "down" }> = [
   { row: 0, col: 0, direction: "right" },
   { row: 0, col: 2, direction: "right" },
-  { row: 0, col: 5, direction: "right" },
+  { row: 0, col: 4, direction: "down" },
   { row: 1, col: 1, direction: "down" },
   { row: 1, col: 3, direction: "right" },
-  { row: 1, col: 4, direction: "down" },
   { row: 2, col: 0, direction: "down" },
-  { row: 2, col: 2, direction: "right" },
-  { row: 2, col: 5, direction: "down" },
+  { row: 2, col: 2, direction: "down" },
+  { row: 2, col: 4, direction: "right" },
   { row: 3, col: 1, direction: "right" },
-  { row: 3, col: 4, direction: "right" },
-  { row: 3, col: 6, direction: "down" },
+  { row: 3, col: 3, direction: "down" },
   { row: 4, col: 0, direction: "right" },
-  { row: 4, col: 2, direction: "down" },
-  { row: 4, col: 5, direction: "right" },
-  { row: 5, col: 1, direction: "down" },
-  { row: 5, col: 3, direction: "right" },
-  { row: 6, col: 0, direction: "right" },
-  { row: 6, col: 2, direction: "down" },
-  { row: 6, col: 5, direction: "right" },
+  { row: 4, col: 2, direction: "right" },
+  { row: 4, col: 4, direction: "right" },
 ]
 
 const constraints: Constraint[] = constraintSeeds.map((seed) => {
@@ -282,7 +269,7 @@ export default function ShapePuzzleGame() {
         <div className="space-y-2">
           <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-50">Arc &amp; Spire Tango</h1>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl">
-            Fill the 8 × 8 grid so each row and column holds four arcs and four spires. No three identical shapes may
+            Fill the 6 × 6 grid so each row and column holds three arcs and three spires. No three identical shapes may
             touch in a row or column. Match the equality and contrast clues to finish the tango.
           </p>
         </div>
