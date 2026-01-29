@@ -22,7 +22,7 @@ const shapes: { id: ShapeId; label: string; color: string }[] = [
 const gridSize = 6
 const halfRow = gridSize / 2
 
-const solutionGrid: ShapeId[][] = [
+const fallbackSolutionGrid: ShapeId[][] = [
   ["arc", "spire", "arc", "spire", "arc", "spire"],
   ["spire", "arc", "spire", "arc", "spire", "arc"],
   ["arc", "spire", "arc", "spire", "arc", "spire"],
@@ -64,19 +64,74 @@ const constraintSeeds: Array<{ row: number; col: number; direction: "right" | "d
   { row: 4, col: 4, direction: "right" },
 ]
 
-const constraints: Constraint[] = constraintSeeds.map((seed) => {
-  const { row, col, direction } = seed
-  const nextRow = direction === "down" ? row + 1 : row
-  const nextCol = direction === "right" ? col + 1 : col
-  const relation = solutionGrid[row][col] === solutionGrid[nextRow][nextCol] ? "same" : "different"
-  return { row, col, direction, relation }
-})
+const buildConstraints = (solution: ShapeId[][]): Constraint[] =>
+  constraintSeeds.map((seed) => {
+    const { row, col, direction } = seed
+    const nextRow = direction === "down" ? row + 1 : row
+    const nextCol = direction === "right" ? col + 1 : col
+    const relation = solution[row][col] === solution[nextRow][nextCol] ? "same" : "different"
+    return { row, col, direction, relation }
+  })
 
-const makeInitialBoard = (): CellValue[][] =>
+const generateSolutionGrid = (): ShapeId[][] => {
+  const attemptLimit = 40
+  const shapeIds: ShapeId[] = ["arc", "spire"]
+
+  for (let attempt = 0; attempt < attemptLimit; attempt += 1) {
+    const grid: ShapeId[][] = Array.from({ length: gridSize }, () => Array<ShapeId>(gridSize).fill("arc"))
+    const rowCounts = Array.from({ length: gridSize }, () => ({ arc: 0, spire: 0 }))
+    const colCounts = Array.from({ length: gridSize }, () => ({ arc: 0, spire: 0 }))
+
+    const canPlace = (row: number, col: number, shape: ShapeId) => {
+      if (rowCounts[row][shape] >= halfRow || colCounts[col][shape] >= halfRow) return false
+      if (col >= 2 && grid[row][col - 1] === shape && grid[row][col - 2] === shape) return false
+      if (row >= 2 && grid[row - 1][col] === shape && grid[row - 2][col] === shape) return false
+
+      const remainingRow = gridSize - col - 1
+      const nextRowCounts = { ...rowCounts[row], [shape]: rowCounts[row][shape] + 1 }
+      if (nextRowCounts.arc + remainingRow < halfRow || nextRowCounts.spire + remainingRow < halfRow) return false
+
+      const remainingCol = gridSize - row - 1
+      const nextColCounts = { ...colCounts[col], [shape]: colCounts[col][shape] + 1 }
+      if (nextColCounts.arc + remainingCol < halfRow || nextColCounts.spire + remainingCol < halfRow) return false
+
+      return true
+    }
+
+    const fill = (index: number): boolean => {
+      if (index === gridSize * gridSize) return true
+      const row = Math.floor(index / gridSize)
+      const col = index % gridSize
+      const shuffledShapes = [...shapeIds].sort(() => Math.random() - 0.5)
+
+      for (const shape of shuffledShapes) {
+        if (!canPlace(row, col, shape)) continue
+        grid[row][col] = shape
+        rowCounts[row][shape] += 1
+        colCounts[col][shape] += 1
+
+        if (fill(index + 1)) return true
+
+        rowCounts[row][shape] -= 1
+        colCounts[col][shape] -= 1
+      }
+
+      return false
+    }
+
+    if (fill(0)) {
+      return grid
+    }
+  }
+
+  return fallbackSolutionGrid
+}
+
+const makeInitialBoard = (solution: ShapeId[][]): CellValue[][] =>
   Array.from({ length: gridSize }, (_, row) =>
     Array.from({ length: gridSize }, (_, col) => {
       if (fixedCells.has(`${row}-${col}`)) {
-        return solutionGrid[row][col]
+        return solution[row][col]
       }
       return null
     })
@@ -106,13 +161,18 @@ const ShapeTile = ({
   isFixed,
   isSelected,
   isInvalid,
+  hintShape,
+  isHint,
 }: {
   value: CellValue
   isFixed: boolean
   isSelected: boolean
   isInvalid: boolean
+  hintShape: ShapeId | null
+  isHint: boolean
 }) => {
   const shape = shapes.find((item) => item.id === value)
+  const hint = shapes.find((item) => item.id === hintShape)
 
   return (
     <div
@@ -120,11 +180,17 @@ const ShapeTile = ({
         isFixed
           ? "border-slate-300/80 dark:border-slate-600/80 bg-slate-100/90 dark:bg-slate-800/70"
           : "border-slate-200/80 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/70"
-      } ${isSelected ? "ring-2 ring-teal-400/80" : ""} ${isInvalid ? "border-rose-400 ring-2 ring-rose-300/70" : ""}`}
+      } ${isSelected ? "ring-2 ring-teal-400/80" : ""} ${
+        isHint ? "ring-2 ring-sky-400/80" : ""
+      } ${isInvalid ? "border-rose-400 ring-2 ring-rose-300/70" : ""}`}
     >
       {shape ? (
         <svg viewBox="0 0 100 100" className="h-10 w-10 sm:h-11 sm:w-11">
           {renderShape(shape.id, shape.color)}
+        </svg>
+      ) : hint ? (
+        <svg viewBox="0 0 100 100" className="h-10 w-10 sm:h-11 sm:w-11 opacity-60">
+          {renderShape(hint.id, hint.color)}
         </svg>
       ) : (
         <span className="text-[10px] uppercase tracking-[0.3em] text-slate-300 dark:text-slate-600">•</span>
@@ -163,16 +229,26 @@ const getLineStatus = (line: CellValue[]) => {
 }
 
 export default function ShapePuzzleGame() {
-  const [board, setBoard] = useState<CellValue[][]>(() => makeInitialBoard())
+  const [puzzle] = useState(() => {
+    const solutionGrid = generateSolutionGrid()
+    return {
+      solutionGrid,
+      constraints: buildConstraints(solutionGrid),
+    }
+  })
+  const [board, setBoard] = useState<CellValue[][]>(() => makeInitialBoard(puzzle.solutionGrid))
   const [moves, setMoves] = useState(0)
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null)
+  const [hintCell, setHintCell] = useState<{ row: number; col: number } | null>(null)
+
+  const { solutionGrid, constraints } = puzzle
 
   const solved = useMemo(
     () =>
       board.every((row, rowIndex) =>
         row.every((cell, colIndex) => cell !== null && cell === solutionGrid[rowIndex][colIndex])
       ),
-    [board]
+    [board, solutionGrid]
   )
 
   const lineStatuses = useMemo(() => {
@@ -242,6 +318,7 @@ export default function ShapePuzzleGame() {
       return next
     })
     setMoves((prev) => prev + 1)
+    setHintCell(null)
   }
 
   const handleTileClick = (row: number, col: number, event: MouseEvent<HTMLButtonElement>) => {
@@ -250,13 +327,34 @@ export default function ShapePuzzleGame() {
   }
 
   const handleReset = () => {
-    setBoard(makeInitialBoard())
+    setBoard(makeInitialBoard(solutionGrid))
     setMoves(0)
     setSelectedCell(null)
+    setHintCell(null)
   }
 
   const selectedValue = selectedCell ? board[selectedCell.row][selectedCell.col] : null
   const selectedShape = shapes.find((shape) => shape.id === selectedValue) ?? null
+  const hintShape = hintCell ? solutionGrid[hintCell.row][hintCell.col] : null
+  const hasEmptyCells = board.some((row) => row.some((cell) => cell === null))
+
+  const handleHint = () => {
+    const emptyCells: Array<{ row: number; col: number }> = []
+
+    board.forEach((row, rowIndex) => {
+      row.forEach((cell, colIndex) => {
+        if (cell === null) {
+          emptyCells.push({ row: rowIndex, col: colIndex })
+        }
+      })
+    })
+
+    if (emptyCells.length === 0) return
+
+    const selection = emptyCells[Math.floor(Math.random() * emptyCells.length)]
+    setHintCell(selection)
+    setSelectedCell(selection)
+  }
 
   const cellSize = "clamp(44px, 7vw, 70px)"
   const cellGap = "clamp(6px, 1.2vw, 12px)"
@@ -292,13 +390,23 @@ export default function ShapePuzzleGame() {
                   Play again
                 </button>
               ) : (
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="rounded-full border border-slate-200/80 dark:border-slate-700/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 hover:border-teal-400 dark:hover:border-teal-500 transition"
-                >
-                  Reset
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={handleHint}
+                    disabled={!hasEmptyCells}
+                    className="rounded-full border border-slate-200/80 dark:border-slate-700/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 hover:border-sky-400 dark:hover:border-sky-500 transition disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Hint
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="rounded-full border border-slate-200/80 dark:border-slate-700/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300 hover:border-teal-400 dark:hover:border-teal-500 transition"
+                  >
+                    Reset
+                  </button>
+                </>
               )}
               {solved && (
                 <span className="rounded-full border border-emerald-200/80 bg-emerald-50/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300">
@@ -325,6 +433,8 @@ export default function ShapePuzzleGame() {
                   const isSelected =
                     selectedCell?.row === rowIndex && selectedCell?.col === colIndex
                   const isInvalid = invalidCells.has(getCellKey(rowIndex, colIndex))
+                  const isHint = hintCell?.row === rowIndex && hintCell?.col === colIndex
+                  const hintValue = isHint ? hintShape : null
                   return (
                     <button
                       key={`cell-${rowIndex}-${colIndex}`}
@@ -338,7 +448,14 @@ export default function ShapePuzzleGame() {
                         cell ? shapes.find((shape) => shape.id === cell)?.label : "empty"
                       }`}
                     >
-                      <ShapeTile value={cell} isFixed={isFixed} isSelected={isSelected} isInvalid={isInvalid} />
+                      <ShapeTile
+                        value={cell}
+                        isFixed={isFixed}
+                        isSelected={isSelected}
+                        isInvalid={isInvalid}
+                        hintShape={hintValue}
+                        isHint={isHint}
+                      />
                     </button>
                   )
                 })
