@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import type { MouseEvent } from "react"
 
 type ShapeId = "arc" | "spire"
@@ -237,6 +237,9 @@ export default function ShapePuzzleGame() {
     }
   })
   const [board, setBoard] = useState<CellValue[][]>(() => makeInitialBoard(puzzle.solutionGrid))
+  const [validationBoard, setValidationBoard] = useState<CellValue[][]>(() =>
+    makeInitialBoard(puzzle.solutionGrid)
+  )
   const [moves, setMoves] = useState(0)
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null)
   const [hintCell, setHintCell] = useState<{ row: number; col: number } | null>(null)
@@ -251,32 +254,42 @@ export default function ShapePuzzleGame() {
     [board, solutionGrid]
   )
 
-  const lineStatuses = useMemo(() => {
-    const rows = board.map((row) => getLineStatus(row))
-    const cols = Array.from({ length: gridSize }, (_, col) => getLineStatus(board.map((row) => row[col])))
-    return { rows, cols }
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setValidationBoard(board)
+    }, 250)
+
+    return () => clearTimeout(timeout)
   }, [board])
+
+  const lineStatuses = useMemo(() => {
+    const rows = validationBoard.map((row) => getLineStatus(row))
+    const cols = Array.from({ length: gridSize }, (_, col) =>
+      getLineStatus(validationBoard.map((row) => row[col]))
+    )
+    return { rows, cols }
+  }, [validationBoard])
 
   const invalidCells = useMemo(() => {
     const invalid = new Set<string>()
 
-    board.forEach((row, rowIndex) => {
+    validationBoard.forEach((row, rowIndex) => {
       if (hasTriple(row) || isLineOverfilled(row)) {
         row.forEach((_, colIndex) => invalid.add(getCellKey(rowIndex, colIndex)))
       }
     })
 
     for (let col = 0; col < gridSize; col += 1) {
-      const column = board.map((row) => row[col])
+      const column = validationBoard.map((row) => row[col])
       if (hasTriple(column) || isLineOverfilled(column)) {
         column.forEach((_, rowIndex) => invalid.add(getCellKey(rowIndex, col)))
       }
     }
 
     constraints.forEach((constraint) => {
-      const first = getCellValue(board, constraint.row, constraint.col)
+      const first = getCellValue(validationBoard, constraint.row, constraint.col)
       const second = getCellValue(
-        board,
+        validationBoard,
         constraint.direction === "down" ? constraint.row + 1 : constraint.row,
         constraint.direction === "right" ? constraint.col + 1 : constraint.col
       )
@@ -297,7 +310,7 @@ export default function ShapePuzzleGame() {
     })
 
     return invalid
-  }, [board])
+  }, [constraints, validationBoard])
 
   const updateCell = (row: number, col: number, steps = 1) => {
     if (fixedCells.has(getCellKey(row, col))) return
