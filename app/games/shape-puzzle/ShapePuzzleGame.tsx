@@ -163,6 +163,7 @@ const ShapeTile = ({
   isInvalid,
   hintShape,
   isHint,
+  isRelated,
 }: {
   value: CellValue
   isFixed: boolean
@@ -170,6 +171,7 @@ const ShapeTile = ({
   isInvalid: boolean
   hintShape: ShapeId | null
   isHint: boolean
+  isRelated: boolean
 }) => {
   const shape = shapes.find((item) => item.id === value)
   const hint = shapes.find((item) => item.id === hintShape)
@@ -182,7 +184,9 @@ const ShapeTile = ({
           : "border-slate-200/80 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/70"
       } ${isSelected ? "ring-2 ring-teal-400/80" : ""} ${
         isHint ? "ring-2 ring-sky-400/80" : ""
-      } ${isInvalid ? "border-rose-400 ring-2 ring-rose-300/70" : ""}`}
+      } ${isInvalid ? "border-rose-400 ring-2 ring-rose-300/70" : ""} ${
+        isRelated && !isSelected && !isInvalid && !isHint ? "ring-1 ring-slate-200/80 dark:ring-slate-700/80" : ""
+      }`}
     >
       {shape ? (
         <svg viewBox="0 0 100 100" className="h-10 w-10 sm:h-11 sm:w-11">
@@ -350,6 +354,21 @@ export default function ShapePuzzleGame() {
   const selectedShape = shapes.find((shape) => shape.id === selectedValue) ?? null
   const hintShape = hintCell ? solutionGrid[hintCell.row][hintCell.col] : null
   const hasEmptyCells = board.some((row) => row.some((cell) => cell === null))
+  const filledCells = board.flat().filter((cell) => cell !== null).length
+  const totalCells = gridSize * gridSize
+  const progressPercent = Math.round((filledCells / totalCells) * 100)
+  const balancedRows = lineStatuses.rows.filter((status) => status === "balanced").length
+  const balancedCols = lineStatuses.cols.filter((status) => status === "balanced").length
+  const progressLabel = solved
+    ? "Encore!"
+    : progressPercent < 25
+      ? "Warm-up"
+      : progressPercent < 50
+        ? "Finding rhythm"
+        : progressPercent < 75
+          ? "In the groove"
+          : "Finale stretch"
+  const conflictCount = invalidCells.size
 
   const handleHint = () => {
     const emptyCells: Array<{ row: number; col: number }> = []
@@ -381,7 +400,7 @@ export default function ShapePuzzleGame() {
           <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-50">Arc &amp; Spire Tango</h1>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl">
             Fill the 6 × 6 grid so each row and column holds three arcs and three spires. No three identical shapes may
-            touch in a row or column. Match the equality and contrast clues to finish the tango.
+            touch in a row or column. Match the equality and contrast clues to finish the tango, then take a bow.
           </p>
         </div>
       </header>
@@ -447,6 +466,8 @@ export default function ShapePuzzleGame() {
                     selectedCell?.row === rowIndex && selectedCell?.col === colIndex
                   const isInvalid = invalidCells.has(getCellKey(rowIndex, colIndex))
                   const isHint = hintCell?.row === rowIndex && hintCell?.col === colIndex
+                  const isRelated =
+                    selectedCell?.row === rowIndex || selectedCell?.col === colIndex
                   const hintValue = isHint ? hintShape : null
                   return (
                     <button
@@ -468,6 +489,7 @@ export default function ShapePuzzleGame() {
                         isInvalid={isInvalid}
                         hintShape={hintValue}
                         isHint={isHint}
+                        isRelated={isRelated}
                       />
                     </button>
                   )
@@ -504,6 +526,40 @@ export default function ShapePuzzleGame() {
         </section>
 
         <section className="space-y-4">
+          <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-gradient-to-br from-white/90 via-slate-50/90 to-slate-100/70 dark:from-slate-900/80 dark:via-slate-900/60 dark:to-slate-900/40 p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Progress</p>
+                <p className="text-lg font-semibold text-slate-900 dark:text-slate-50">{progressLabel}</p>
+              </div>
+              <div className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                {filledCells}/{totalCells} tiles
+              </div>
+            </div>
+            <div className="h-2 w-full rounded-full bg-slate-200/80 dark:bg-slate-800/80 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-teal-400 via-sky-400 to-orange-400 transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              <span className="rounded-full border border-slate-200/80 dark:border-slate-700/80 px-2 py-1">
+                Balanced rows: {balancedRows}/{gridSize}
+              </span>
+              <span className="rounded-full border border-slate-200/80 dark:border-slate-700/80 px-2 py-1">
+                Balanced cols: {balancedCols}/{gridSize}
+              </span>
+              <span
+                className={`rounded-full border px-2 py-1 ${
+                  conflictCount > 0
+                    ? "border-rose-200/80 text-rose-500 dark:border-rose-500/40 dark:text-rose-300"
+                    : "border-emerald-200/80 text-emerald-600 dark:border-emerald-500/40 dark:text-emerald-300"
+                }`}
+              >
+                {conflictCount > 0 ? `${conflictCount} conflict${conflictCount === 1 ? "" : "s"}` : "No conflicts"}
+              </span>
+            </div>
+          </div>
           <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/80 dark:bg-slate-900/70 p-4 space-y-3">
             <p className="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Selected tile</p>
             {selectedCell ? (
@@ -551,7 +607,7 @@ export default function ShapePuzzleGame() {
                           : "text-rose-500 dark:text-rose-300"
                     }`}
                   >
-                    {status === "balanced" ? "Balanced" : status === "progress" ? "Filling" : "Check"}
+                    {status === "balanced" ? "Balanced ✓" : status === "progress" ? "Filling" : "Check"}
                   </span>
                 </div>
               ))}
@@ -567,7 +623,7 @@ export default function ShapePuzzleGame() {
                           : "text-rose-500 dark:text-rose-300"
                     }`}
                   >
-                    {status === "balanced" ? "Balanced" : status === "progress" ? "Filling" : "Check"}
+                    {status === "balanced" ? "Balanced ✓" : status === "progress" ? "Filling" : "Check"}
                   </span>
                 </div>
               ))}
@@ -592,17 +648,30 @@ export default function ShapePuzzleGame() {
       </div>
 
       <section className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-900/70 p-4">
+        <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-900/70 p-4 space-y-3">
           <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100">How it works</h3>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Tap a tile to cycle between arc, spire, and empty. The equality symbol means the adjacent shapes match, while
             the contrast symbol means they differ.
           </p>
+          <div className="flex flex-wrap gap-2 text-xs text-slate-600 dark:text-slate-300">
+            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 dark:border-slate-700/80 px-2 py-1">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full border border-teal-200/80 text-teal-500">=</span>
+              Same
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 dark:border-slate-700/80 px-2 py-1">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full border border-orange-200/80 text-orange-500">×</span>
+              Different
+            </span>
+          </div>
         </div>
-        <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-900/70 p-4">
+        <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/70 bg-white/70 dark:bg-slate-900/70 p-4 space-y-3">
           <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Keyboard tip</h3>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          <p className="text-sm text-slate-600 dark:text-slate-300">
             Use Shift + click to advance two steps in the cycle for faster edits.
+          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Selecting a tile will softly highlight its row and column so you can spot patterns faster.
           </p>
         </div>
       </section>
