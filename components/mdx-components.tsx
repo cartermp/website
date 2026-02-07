@@ -28,13 +28,14 @@ const components = {
       const imageSrc = src.startsWith('/') ? src : `/${src}`;
       
       return (
-        <div className="my-6 overflow-hidden rounded-lg">
+        <div className="my-6 overflow-hidden rounded-lg max-w-full">
           <Image
             src={imageSrc}
             alt={alt || ""}
             width={800}
             height={500}
-            className="w-full h-auto"
+            sizes="(max-width: 768px) 100vw, 800px"
+            className="w-full h-auto max-w-full"
             style={{ maxWidth: '100%', height: 'auto' }}
             {...restImgProps}
           />
@@ -121,12 +122,23 @@ const components = {
         alt={alt || ""}
         width={800}
         height={500}
-        className="w-full h-auto my-6 rounded-lg"
+        sizes="(max-width: 768px) 100vw, 800px"
+        className="w-full h-auto max-w-full my-6 rounded-lg"
         style={{ maxWidth: '100%', height: 'auto' }}
         {...props}
       />
     );
   },
+  video: ({ children, ...props }: any) => (
+    <video className="w-full h-auto max-w-full my-6 rounded-lg" controls {...props}>
+      {children}
+    </video>
+  ),
+  iframe: ({ ...props }: any) => (
+    <div className="my-6 w-full max-w-full overflow-hidden rounded-lg">
+      <iframe className="w-full max-w-full aspect-video" {...props} />
+    </div>
+  ),
   code: ({ className, children, ...props }: any) => {
     const match = /language-(\w+)/.exec(className || '');
     return match ? (
@@ -176,7 +188,7 @@ export function Mdx({ code }: MdxProps) {
   try {
     // Render the MDX content
     return (
-      <div className="mdx-content">
+      <div className="mdx-content min-w-0 break-words">
         <MDXRemote {...code} components={components} />
       </div>
     );

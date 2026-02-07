@@ -122,7 +122,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ScrollToTop />
-          <div className="relative isolate min-h-screen overflow-hidden lg:overflow-visible bg-slate-100 dark:bg-slate-950 selection:bg-lime-200 selection:text-slate-900 dark:selection:bg-emerald-400/30">
+          <div className="relative isolate min-h-screen overflow-x-hidden lg:overflow-visible bg-slate-100 dark:bg-slate-950 selection:bg-lime-200 selection:text-slate-900 dark:selection:bg-emerald-400/30">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute inset-0 opacity-65 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.18),transparent_42%),radial-gradient(circle_at_82%_12%,rgba(16,185,129,0.18),transparent_34%),radial-gradient(circle_at_60%_82%,rgba(14,165,233,0.16),transparent_36%)]" />
               <div className="absolute inset-0 opacity-60 bg-[linear-gradient(rgba(148,163,184,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.16)_1px,transparent_1px)] bg-[size:160px_160px]" />
@@ -167,7 +167,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   </div>
                 </aside>
 
-                <div className="space-y-6">
+                <div className="space-y-6 min-w-0">
                   <div className="rounded-[28px] border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-[0_20px_90px_rgba(15,23,42,0.25)]">
                     <div className="relative overflow-hidden rounded-[28px] border border-slate-100/80 dark:border-slate-800/80">
                       <div className="absolute -inset-x-10 -top-10 h-40 bg-gradient-to-br from-sky-200/50 via-transparent to-purple-200/40 dark:from-sky-500/15 dark:via-transparent dark:to-purple-500/15 blur-3xl" />
