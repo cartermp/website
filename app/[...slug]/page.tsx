@@ -59,7 +59,7 @@ export default async function PagePage(props: {
   const mdxSource = await processMdx(page.body.raw)
 
   return (
-    <article className="py-6 prose dark:prose-invert">
+    <article className="py-6 prose prose-sm sm:prose-base dark:prose-invert break-words">
       <h1 className="mb-2 text-purple-700 dark:text-purple-300">{page.title}</h1>
       {page.description && <p className="text-xl">{page.description}</p>}
       <Mdx code={mdxSource} />

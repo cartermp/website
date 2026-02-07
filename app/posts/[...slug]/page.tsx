@@ -74,7 +74,7 @@ export default async function PostPage(props: {
   const mdxSource = await processMdx(post.body.raw)
 
   return (
-    <article className="prose dark:prose-invert max-w-none pb-6">
+    <article className="prose prose-sm sm:prose-base dark:prose-invert max-w-none pb-6 break-words">
       <h1 className="mb-2 text-purple-700 dark:text-purple-300">{post.title}</h1>
       {post.description && (
         <p className="text-xl mt-0 text-slate-700 dark:text-slate-200">
