@@ -82,11 +82,11 @@ export default async function PostPage(props: {
         </p>
       )}
       <div className="flex flex-col gap-4 mb-8">
-        <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
           <time>{date}</time>
-          <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
+          <div className="hidden sm:block w-px h-4 bg-gray-200 dark:bg-gray-700" />
           <span>{readingTime}</span>
-          <div className="w-px h-4 bg-gray-200 dark:bg-gray-700" />
+          <div className="hidden sm:block w-px h-4 bg-gray-200 dark:bg-gray-700" />
           {post.tags && <TagList tags={post.tags} />}
         </div>
       </div>
