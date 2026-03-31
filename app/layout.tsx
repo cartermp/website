@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import "./globals.css"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Inter, JetBrains_Mono } from "next/font/google"
+import { JetBrains_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@/components/analytics"
 import { ModeToggle } from "@/components/mode-toggle"
@@ -12,8 +12,6 @@ import {
   siBluesky as BlueskyIcon,
   siGithub as GithubIcon,
 } from "simple-icons";
-
-const inter = Inter({ subsets: ["latin"] })
 
 const codeFont = JetBrains_Mono({
   subsets: ['latin'],
@@ -42,18 +40,16 @@ function SocialLinks() {
         href={`https://bsky.app/profile/phillipcarter.dev`}
         target="_blank"
         rel="noopener noreferrer"
-        className="p-2 rounded-lg
-                   hover:bg-purple-50 dark:hover:bg-purple-900/10
-                   transition-colors duration-200"
+        className="p-1 transition-colors duration-150"
         aria-label="Bluesky Profile"
       >
         <svg
-          width={16}
-          height={16}
+          width={14}
+          height={14}
           viewBox="0 0 24 24"
-          className="fill-gray-600 dark:fill-gray-400
-                     hover:fill-purple-700 dark:hover:fill-purple-300
-                     transition-colors duration-200"
+          className="fill-retro-ink-muted dark:fill-retro-muted
+                     hover:fill-retro-ink-accent dark:hover:fill-retro-accent
+                     transition-colors duration-150"
         >
           <path d={BlueskyIcon.path} />
         </svg>
@@ -62,18 +58,16 @@ function SocialLinks() {
         href={`https://github.com/cartermp`}
         target="_blank"
         rel="noopener noreferrer"
-        className="p-2 rounded-lg
-                   hover:bg-purple-50 dark:hover:bg-purple-900/10
-                   transition-colors duration-200"
+        className="p-1 transition-colors duration-150"
         aria-label="GitHub Profile"
       >
         <svg
-          width={16}
-          height={16}
+          width={14}
+          height={14}
           viewBox="0 0 24 24"
-          className="fill-gray-600 dark:fill-gray-400
-                     hover:fill-purple-700 dark:hover:fill-purple-300
-                     transition-colors duration-200"
+          className="fill-retro-ink-muted dark:fill-retro-muted
+                     hover:fill-retro-ink-accent dark:hover:fill-retro-accent
+                     transition-colors duration-150"
         >
           <path d={GithubIcon.path} />
         </svg>
@@ -82,18 +76,16 @@ function SocialLinks() {
         href="https://www.linkedin.com/in/phillip-carter-4714a135"
         target="_blank"
         rel="noopener noreferrer"
-        className="p-2 rounded-lg
-                   hover:bg-purple-50 dark:hover:bg-purple-900/10
-                   transition-colors duration-200"
+        className="p-1 transition-colors duration-150"
         aria-label="LinkedIn Profile"
       >
         <svg
-          width={16}
-          height={16}
+          width={14}
+          height={14}
           viewBox="0 0 448 512"
-          className="fill-gray-600 dark:fill-gray-400
-                     hover:fill-purple-700 dark:hover:fill-purple-300
-                     transition-colors duration-200"
+          className="fill-retro-ink-muted dark:fill-retro-muted
+                     hover:fill-retro-ink-accent dark:hover:fill-retro-accent
+                     transition-colors duration-150"
         >
           <path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z" />
         </svg>
@@ -118,66 +110,67 @@ export default function RootLayout({ children }: RootLayoutProps) {
         `}} />
       </head>
       <body
-        className={`antialiased min-h-screen text-slate-900 dark:text-slate-50 ${inter.className} ${codeFont.variable}`}
+        className={`min-h-screen bg-retro-paper dark:bg-retro-bg text-retro-ink dark:text-retro-text ${codeFont.variable} font-mono`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ScrollToTop />
-          <div className="relative isolate min-h-screen overflow-x-hidden lg:overflow-visible bg-slate-100 dark:bg-slate-950 selection:bg-lime-200 selection:text-slate-900 dark:selection:bg-emerald-400/30">
-            <div className="pointer-events-none absolute inset-0">
-              <div className="absolute inset-0 opacity-65 mix-blend-soft-light bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.18),transparent_42%),radial-gradient(circle_at_82%_12%,rgba(16,185,129,0.18),transparent_34%),radial-gradient(circle_at_60%_82%,rgba(14,165,233,0.16),transparent_36%)]" />
-              <div className="absolute inset-0 opacity-60 bg-[linear-gradient(rgba(148,163,184,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.16)_1px,transparent_1px)] bg-[size:160px_160px]" />
-              <div className="absolute inset-0 mix-blend-overlay bg-[radial-gradient(120%_60%_at_50%_-10%,rgba(255,255,255,0.65),transparent)] dark:bg-[radial-gradient(120%_60%_at_50%_-10%,rgba(255,255,255,0.08),transparent)]" />
-            </div>
-            <div className="relative max-w-6xl mx-auto px-5 sm:px-6 py-10 lg:py-12">
-              <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-                <aside className="h-fit lg:sticky lg:top-10 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-[0_20px_90px_rgba(15,23,42,0.25)] p-5 lg:p-6 space-y-6">
+          <div className="crt-scanlines relative min-h-screen">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-10">
+              <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
+
+                {/* Sidebar */}
+                <aside className="h-fit lg:sticky lg:top-8 border border-retro-paper-border dark:border-retro-border space-y-0">
+
+                  {/* Name / Logo */}
                   <Link
                     href="/"
-                    className="group flex items-center gap-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-3 hover:border-sky-400 dark:hover:border-sky-500 transition-colors"
+                    className="flex items-center gap-3 border-b border-retro-paper-border dark:border-retro-border
+                               px-4 py-3 hover:bg-retro-paper-surface dark:hover:bg-retro-surface
+                               transition-colors duration-150"
                   >
-                    <span className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-200 via-emerald-200 to-purple-200 dark:from-sky-500/20 dark:via-emerald-500/20 dark:to-purple-500/20 text-lg font-bold text-slate-900 dark:text-slate-50 shadow-inner shadow-white/40 dark:shadow-white/5">
+                    <span className="flex h-9 w-9 items-center justify-center border border-retro-paper-border dark:border-retro-border text-xs font-bold text-retro-ink dark:text-retro-text shrink-0">
                       PC
-                      <span className="absolute inset-0 rounded-2xl border border-white/50 dark:border-white/10" />
                     </span>
-                    <div className="flex flex-col gap-1">
-                      <span className="font-mono text-sm text-slate-500 dark:text-slate-400">/blog</span>
-                      <span className="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-50">
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-xs text-retro-ink-muted dark:text-retro-muted">/blog</span>
+                      <span className="text-base font-bold text-retro-ink dark:text-retro-text truncate">
                         Phillip Carter
                       </span>
                     </div>
                   </Link>
 
-                  <SidebarAboutPanel className="space-y-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-4">
-                    <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">About</div>
-                    <div className="space-y-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-                      <p>In my day job, I’m a PM Director at Salesforce working on their Automations platform. I used to work at Honeycomb, where I led AI efforts. Prior to this, I worked on Honeycomb&apos;s telemetry pipeline, OpenTelemetry efforts, and API. I also worked on the .NET team at Microsoft for several years, including 5 years as the PM for the F# programming language and tools.</p>
-                      <p>I’m also a maintainer in the OpenTelemetry project, primarily focusing on the website. I do occasionally send PRs to other parts of the project, though. I will occasionally release updates to some packages I still maintain.</p>
+                  {/* About */}
+                  <SidebarAboutPanel className="border-b border-retro-paper-border dark:border-retro-border px-4 py-3 space-y-2">
+                    <div className="text-xs uppercase tracking-widest text-retro-ink-muted dark:text-retro-muted">
+                      -- about --
+                    </div>
+                    <div className="space-y-3 text-xs leading-relaxed text-retro-ink dark:text-retro-text">
+                      <p>In my day job, I&apos;m a PM Director at Salesforce working on their Automations platform. I used to work at Honeycomb, where I led AI efforts. Prior to this, I worked on Honeycomb&apos;s telemetry pipeline, OpenTelemetry efforts, and API. I also worked on the .NET team at Microsoft for several years, including 5 years as the PM for the F# programming language and tools.</p>
+                      <p>I&apos;m also a maintainer in the OpenTelemetry project, primarily focusing on the website. I do occasionally send PRs to other parts of the project, though. I will occasionally release updates to some packages I still maintain.</p>
                     </div>
                   </SidebarAboutPanel>
 
-                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/70 px-4 py-2.5">
-                    <div className="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
-                      <span className="h-3 w-3 rounded-sm bg-slate-300 dark:bg-slate-700" />
-                      <span>links</span>
-                    </div>
-                    <div className="flex items-center gap-3">
+                  {/* Links */}
+                  <div className="flex items-center justify-between px-4 py-2.5">
+                    <span className="text-xs text-retro-ink-muted dark:text-retro-muted">[links]</span>
+                    <div className="flex items-center gap-1">
                       <SocialLinks />
                       <ModeToggle />
                     </div>
                   </div>
+
                 </aside>
 
-                <div className="space-y-6 min-w-0">
-                  <div className="rounded-[28px] border border-slate-200/80 dark:border-slate-800/80 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-[0_20px_90px_rgba(15,23,42,0.25)]">
-                    <div className="relative overflow-hidden rounded-[28px] border border-slate-100/80 dark:border-slate-800/80">
-                      <div className="absolute -inset-x-10 -top-10 h-40 bg-gradient-to-br from-sky-200/50 via-transparent to-purple-200/40 dark:from-sky-500/15 dark:via-transparent dark:to-purple-500/15 blur-3xl" />
-                      <div className="absolute inset-0 border border-white/60 dark:border-white/5 rounded-[28px] pointer-events-none" />
-                      <div className="relative p-6 sm:p-8 lg:p-10">
-                        <main>{children}</main>
-                      </div>
-                    </div>
+                {/* Main content */}
+                <div className="min-w-0 border border-retro-paper-border dark:border-retro-border">
+                  <div className="border-b border-retro-paper-border dark:border-retro-border px-4 py-1.5 text-xs text-retro-ink-muted dark:text-retro-muted">
+                    phillipcarter.dev
+                  </div>
+                  <div className="p-5 sm:p-7">
+                    <main>{children}</main>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>

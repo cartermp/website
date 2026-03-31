@@ -4,15 +4,16 @@ export function TagList({ tags }: { tags: string }) {
   if (!tags) return null;
   
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex gap-1.5 flex-wrap">
       {tags.split(',').map(tag => tag.trim()).map(tag => (
         <Link
           key={tag}
           href={`/tags/${encodeURIComponent(tag)}`}
-          className="text-xs px-3 py-1 rounded-full border border-slate-300/80 dark:border-slate-700/80
-                     bg-white/70 dark:bg-slate-900/60 text-slate-700 dark:text-slate-200
-                     tracking-[0.1em] uppercase hover:border-sky-400 dark:hover:border-sky-500
-                     transition-colors"
+          className="text-xs px-2 py-0.5 border border-retro-paper-border dark:border-retro-border
+                     text-retro-ink-muted dark:text-retro-muted uppercase tracking-wide
+                     hover:border-retro-ink-accent dark:hover:border-retro-accent
+                     hover:text-retro-ink-accent dark:hover:text-retro-accent
+                     transition-colors duration-150"
         >
           {tag}
         </Link>

@@ -30,39 +30,35 @@ export default function TagPage(props: { params: TagPageParams }) {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <h1 className="mb-2 text-2xl text-purple-700 dark:text-purple-300">
+    <div className="space-y-6">
+      <div className="space-y-1">
+        <h1 className="text-base font-bold text-retro-ink-accent dark:text-retro-accent">
           Posts tagged with &quot;{tag}&quot;
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-xs text-retro-ink-muted dark:text-retro-muted">
           {posts.length} {posts.length === 1 ? 'post' : 'posts'}
         </p>
       </div>
-      <ul className="space-y-6">
+      <ul className="space-y-3">
         {posts.map((post) => (
-          <li key={post._id} className="group">
-            <div className="space-y-2">
-              <Link href={post.slug} className="block -mx-2 p-2 rounded">
-                <div className="flex items-baseline justify-between gap-4">
-                  <span className="text-purple-700 dark:text-purple-300 text-lg">❯</span>
-                  <span className="flex-1 font-medium text-lg text-gray-600 dark:text-gray-400
-                                  hover:text-purple-700 dark:hover:text-purple-300 
-                                  transition-colors">
-                    {post.title}
-                  </span>
-                  <time className="text-lg text-gray-500 dark:text-gray-400">
-                    {new Date(post.date).toLocaleDateString()}
-                  </time>
-                </div>
-              </Link>
+          <li key={post._id} className="relative border border-retro-paper-border dark:border-retro-border hover:bg-retro-paper-surface dark:hover:bg-retro-surface transition-colors duration-150">
+            <Link href={post.slug} className="absolute inset-0 z-[1]" aria-label={post.title} />
+            <div className="p-4 pointer-events-none">
+              <div className="flex items-baseline justify-between gap-4 mb-1.5">
+                <span className="font-bold text-sm text-retro-ink-accent dark:text-retro-accent leading-snug">
+                  {post.title}
+                </span>
+                <time className="text-xs text-retro-ink-muted dark:text-retro-muted shrink-0">
+                  {new Date(post.date).toLocaleDateString()}
+                </time>
+              </div>
               {post.description && (
-                <p className="text-sm text-gray-600 dark:text-gray-400 ml-6">
+                <p className="text-xs text-retro-ink-muted dark:text-retro-muted leading-relaxed mb-2">
                   {post.description}
                 </p>
               )}
               {post.tags && (
-                <div className="ml-6">
+                <div className="relative z-[2] pointer-events-auto">
                   <TagList tags={post.tags} />
                 </div>
               )}
@@ -70,6 +66,11 @@ export default function TagPage(props: { params: TagPageParams }) {
           </li>
         ))}
       </ul>
+      <div className="pt-2">
+        <Link href="/" className="text-xs text-retro-ink-muted dark:text-retro-muted hover:text-retro-ink-accent dark:hover:text-retro-accent transition-colors duration-150">
+          ← back
+        </Link>
+      </div>
     </div>
   )
 }

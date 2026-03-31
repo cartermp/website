@@ -51,12 +51,12 @@ const components = {
     );
   },
   h1: ({ children }: any) => (
-    <h1 className="mt-8 mb-4 text-2xl font-bold text-purple-700 dark:text-purple-300">
+    <h1 className="mt-8 mb-4 text-2xl font-bold text-retro-ink-accent dark:text-retro-accent">
       {children}
     </h1>
   ),
   h2: ({ children }: any) => (
-    <h2 className="mt-8 mb-4 text-xl font-semibold text-purple-700 dark:text-purple-300 group">
+    <h2 className="mt-8 mb-4 text-xl font-bold text-retro-ink-accent dark:text-retro-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
         <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -66,7 +66,7 @@ const components = {
     </h2>
   ),
   h3: ({ children }: any) => (
-    <h3 className="mt-8 mb-4 text-lg font-semibold text-purple-700 dark:text-purple-300 group">
+    <h3 className="mt-8 mb-4 text-lg font-bold text-retro-ink-accent dark:text-retro-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
         <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -76,7 +76,7 @@ const components = {
     </h3>
   ),
   h4: ({ children }: any) => (
-    <h4 className="mt-8 mb-4 text-base font-semibold text-purple-700 dark:text-purple-300 group">
+    <h4 className="mt-8 mb-4 text-base font-bold text-retro-ink-accent dark:text-retro-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
         <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -86,7 +86,7 @@ const components = {
     </h4>
   ),
   h5: ({ children }: any) => (
-    <h5 className="mt-8 mb-4 text-sm font-semibold text-purple-700 dark:text-purple-300 group">
+    <h5 className="mt-8 mb-4 text-sm font-bold text-retro-ink-accent dark:text-retro-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
         <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -96,7 +96,7 @@ const components = {
     </h5>
   ),
   h6: ({ children }: any) => (
-    <h6 className="mt-8 mb-4 text-xs font-semibold text-purple-700 dark:text-purple-300 group">
+    <h6 className="mt-8 mb-4 text-xs font-bold text-retro-ink-accent dark:text-retro-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
         <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -107,7 +107,7 @@ const components = {
   ),
   a: ({ children, ...props }: any) => (
     <a
-      className="font-medium text-purple-600 dark:text-purple-400 underline underline-offset-4 hover:text-purple-800 dark:hover:text-purple-300"
+      className="font-medium text-retro-ink-accent dark:text-retro-accent underline underline-offset-4 hover:text-retro-ink dark:hover:text-retro-text"
       {...props}
     >
       {children}
@@ -142,14 +142,14 @@ const components = {
   code: ({ className, children, ...props }: any) => {
     const match = /language-(\w+)/.exec(className || '');
     return match ? (
-      <pre className="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-x-auto">
+      <pre className="p-4 bg-retro-paper-surface dark:bg-retro-surface border border-retro-paper-border dark:border-retro-border overflow-x-auto">
         <code className={className} {...props}>
           {children}
         </code>
       </pre>
     ) : (
       <code
-        className="px-1.5 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono text-sm"
+        className="px-1.5 py-0.5 border border-retro-paper-border dark:border-retro-border bg-retro-paper-surface dark:bg-retro-surface text-retro-ink dark:text-retro-text font-mono text-sm"
         {...props}
       >
         {children}

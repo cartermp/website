@@ -75,25 +75,25 @@ export default async function PostPage(props: {
 
   return (
     <article className="prose prose-sm sm:prose-base dark:prose-invert max-w-none pb-6 break-words">
-      <h1 className="mb-2 text-purple-700 dark:text-purple-300">{post.title}</h1>
+      <h1 className="mb-2 text-retro-ink-accent dark:text-retro-accent">{post.title}</h1>
       {post.description && (
-        <p className="text-xl mt-0 text-slate-700 dark:text-slate-200">
+        <p className="text-xl mt-0 text-retro-ink dark:text-retro-text">
           {post.description}
         </p>
       )}
       <div className="flex flex-col gap-4 mb-8">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-retro-ink-muted dark:text-retro-muted">
           <time>{date}</time>
-          <div className="hidden sm:block w-px h-4 bg-gray-200 dark:bg-gray-700" />
+          <div className="hidden sm:block w-px h-4 bg-retro-paper-border dark:bg-retro-border" />
           <span>{readingTime}</span>
-          <div className="hidden sm:block w-px h-4 bg-gray-200 dark:bg-gray-700" />
+          <div className="hidden sm:block w-px h-4 bg-retro-paper-border dark:bg-retro-border" />
           {post.tags && <TagList tags={post.tags} />}
         </div>
       </div>
-      <hr className="my-4" />
+      <hr className="my-4 border-retro-paper-border dark:border-retro-border" />
       <Mdx code={mdxSource} />
 
-      <footer className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-800">
+      <footer className="mt-8 pt-4 border-t border-retro-paper-border dark:border-retro-border">
         <div className="not-prose mb-4 space-y-2">
           {post.tags && (
             <>
@@ -104,13 +104,13 @@ export default async function PostPage(props: {
         <div className="flex items-center justify-between">
           <Link
             href="/"
-            className="text-base text-gray-600 dark:text-gray-400
-                     hover:text-purple-700 dark:hover:text-purple-300
+            className="text-base text-retro-ink-muted dark:text-retro-muted
+                     hover:text-retro-ink-accent dark:hover:text-retro-accent
                      transition-colors"
           >
             ← Home
           </Link>
-          <time className="text-base text-gray-500 dark:text-gray-400">
+          <time className="text-base text-retro-ink-muted dark:text-retro-muted">
             {new Date(post.date).toLocaleDateString()}
           </time>
         </div>

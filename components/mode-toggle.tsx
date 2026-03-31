@@ -15,7 +15,7 @@ export function ModeToggle() {
   if (!mounted) {
     return (
       <button
-        className="border rounded-md w-6 h-6 flex items-center justify-center"
+        className="border border-retro-paper-border dark:border-retro-border w-6 h-6 flex items-center justify-center text-retro-ink-muted dark:text-retro-muted"
         aria-label="Toggle theme"
       >
         <span className="sr-only">Toggle mode</span>
@@ -42,7 +42,7 @@ export function ModeToggle() {
   return (
     <button
       onClick={() => setTheme(currentTheme === "light" ? "dark" : "light")}
-      className="border rounded-md w-6 h-6 flex items-center justify-center"
+      className="border border-retro-paper-border dark:border-retro-border w-6 h-6 flex items-center justify-center text-retro-ink-muted dark:text-retro-muted hover:text-retro-ink-accent dark:hover:text-retro-accent transition-colors duration-150"
       aria-label="Toggle theme"
     >
       <span className="sr-only">Toggle mode</span>
