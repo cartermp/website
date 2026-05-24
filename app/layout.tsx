@@ -114,7 +114,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ScrollToTop />
-          <div className="crt-scanlines relative min-h-screen">
+          <div className="relative min-h-screen">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-10">
               <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
 
