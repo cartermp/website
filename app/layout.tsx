@@ -101,8 +101,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
-              const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-              const theme = localStorage.getItem('theme') || systemTheme;
+              const theme = localStorage.getItem('theme') || 'light';
               document.documentElement.classList.add(theme);
               document.documentElement.style.colorScheme = theme;
             } catch (e) {}
@@ -112,7 +111,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body
         className={`min-h-screen bg-retro-paper dark:bg-retro-bg text-retro-ink dark:text-retro-text ${codeFont.variable} font-mono`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <ScrollToTop />
           <div className="relative min-h-screen">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-10">
