@@ -36,6 +36,7 @@ module.exports = {
         DEFAULT: {
           css: {
             pre: false,
+            '--tw-prose-bullets': '#1a2e0a',
             'code': {
               fontSize: '0.82em',
             },
