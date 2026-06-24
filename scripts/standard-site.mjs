@@ -89,6 +89,82 @@ async function ensurePublication() {
   return res.data.uri
 }
 
+function hexToRgb(hex) {
+  const m = hex.replace("#", "").match(/^([0-9a-f]{6})$/i)
+  if (!m) throw new Error(`bad hex: ${hex}`)
+  const n = parseInt(m[1], 16)
+  return {
+    $type: "site.standard.theme.color#rgb",
+    r: (n >> 16) & 0xff,
+    g: (n >> 8) & 0xff,
+    b: n & 0xff,
+  }
+}
+
+const BASIC_THEME = {
+  $type: "site.standard.theme.basic",
+  background: hexToRgb("#f0e8d0"),
+  foreground: hexToRgb("#1a2e0a"),
+  accent: hexToRgb("#1a6e10"),
+  accentForeground: hexToRgb("#f0e8d0"),
+}
+
+async function enhancePublication() {
+  const profileRes = await fetch(
+    `https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${encodeURIComponent(HANDLE)}`,
+  )
+  if (!profileRes.ok) {
+    console.error(`Failed to fetch bsky profile: ${profileRes.status}`)
+    process.exit(1)
+  }
+  const profile = await profileRes.json()
+  if (!profile.avatar) {
+    console.error("Bsky profile has no avatar.")
+    process.exit(1)
+  }
+
+  const imgRes = await fetch(profile.avatar)
+  if (!imgRes.ok) {
+    console.error(`Failed to download avatar: ${imgRes.status}`)
+    process.exit(1)
+  }
+  const buf = Buffer.from(await imgRes.arrayBuffer())
+  const mimeType = imgRes.headers.get("content-type") ?? "image/jpeg"
+  console.log(`Avatar: ${buf.length} bytes, ${mimeType}`)
+
+  const uploadRes = await agent.com.atproto.repo.uploadBlob(buf, { encoding: mimeType })
+  const iconBlob = uploadRes.data.blob
+  console.log(`Uploaded blob: ${iconBlob.ref?.$link ?? iconBlob.ref}`)
+
+  const list = await agent.com.atproto.repo.listRecords({
+    repo: did,
+    collection: PUB_COLLECTION,
+    limit: 100,
+  })
+  const match = list.data.records.find(
+    (r) => r.value?.url === PUB_URL && isTid(r.uri.split("/").pop()),
+  )
+  if (!match) {
+    console.error("No TID-keyed publication record found. Run `publication` first.")
+    process.exit(1)
+  }
+  const rkey = match.uri.split("/").pop()
+
+  const newRecord = {
+    ...match.value,
+    icon: iconBlob,
+    basicTheme: BASIC_THEME,
+  }
+
+  await agent.com.atproto.repo.putRecord({
+    repo: did,
+    collection: PUB_COLLECTION,
+    rkey,
+    record: newRecord,
+  })
+  console.log(`Publication enhanced: ${match.uri}`)
+}
+
 async function repointDocuments(newSiteUri) {
   if (!newSiteUri) {
     console.error("Need publication AT-URI (arg or STANDARD_PUBLICATION_URI env).")
@@ -230,6 +306,8 @@ const command = process.argv[2]
 
 if (command === "publication") {
   await ensurePublication()
+} else if (command === "enhance-publication") {
+  await enhancePublication()
 } else if (command === "documents") {
   const uri = process.argv[3] || process.env.STANDARD_PUBLICATION_URI
   await backfillDocuments(uri)
