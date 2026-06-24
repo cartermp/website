@@ -52,10 +52,42 @@ async function ensurePublication() {
   return res.data.uri
 }
 
-function rkeyFromSlug(slug) {
-  // AT Protocol rkey: [a-zA-Z0-9_~.:-]{1,512}, no leading dot
-  const safe = slug.replace(/[^a-zA-Z0-9_~.:-]/g, "-").slice(0, 200)
-  return safe.replace(/^\./, "-")
+async function resetDocuments() {
+  // Delete every site.standard.document record under this repo and strip
+  // standardUri lines from post frontmatter.
+  let cursor
+  let deleted = 0
+  do {
+    const res = await agent.com.atproto.repo.listRecords({
+      repo: did,
+      collection: DOC_COLLECTION,
+      limit: 100,
+      cursor,
+    })
+    for (const r of res.data.records) {
+      const rkey = r.uri.split("/").pop()
+      await agent.com.atproto.repo.deleteRecord({
+        repo: did,
+        collection: DOC_COLLECTION,
+        rkey,
+      })
+      console.log(`  deleted ${r.uri}`)
+      deleted++
+    }
+    cursor = res.data.cursor
+  } while (cursor)
+  console.log(`Deleted ${deleted} document records.`)
+
+  const files = (await fs.readdir(POSTS_DIR)).filter((f) => f.endsWith(".mdx"))
+  for (const file of files) {
+    const fullPath = path.join(POSTS_DIR, file)
+    const raw = await fs.readFile(fullPath, "utf8")
+    const stripped = raw.replace(/^standardUri:.*\r?\n/m, "")
+    if (stripped !== raw) {
+      await fs.writeFile(fullPath, stripped)
+      console.log(`  stripped standardUri from ${file}`)
+    }
+  }
 }
 
 async function backfillDocuments(siteUri) {
@@ -98,10 +130,11 @@ async function backfillDocuments(siteUri) {
       ...(tags && tags.length ? { tags } : {}),
     }
 
-    const res = await agent.com.atproto.repo.putRecord({
+    // No explicit rkey — the PDS generates a TID, which the site.standard.document
+    // lexicon requires.
+    const res = await agent.com.atproto.repo.createRecord({
       repo: did,
       collection: DOC_COLLECTION,
-      rkey: rkeyFromSlug(slug),
       record,
     })
     const uri = res.data.uri
@@ -131,12 +164,14 @@ if (command === "publication") {
 } else if (command === "documents") {
   const uri = process.argv[3] || process.env.STANDARD_PUBLICATION_URI
   await backfillDocuments(uri)
+} else if (command === "reset-documents") {
+  await resetDocuments()
 } else if (command === "all") {
   const uri = await ensurePublication()
   await backfillDocuments(uri)
 } else {
   console.error(
-    "Usage: node scripts/standard-site.mjs <publication | documents [at://...] | all>",
+    "Usage: node scripts/standard-site.mjs <publication | documents [at://...] | reset-documents | all>",
   )
   process.exit(1)
 }
