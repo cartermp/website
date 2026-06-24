@@ -18,7 +18,10 @@ const PUB_DESCRIPTION =
   process.env.STANDARD_PUBLICATION_DESCRIPTION ?? "Phillip Carter's spot on the web."
 const PUB_COLLECTION = "site.standard.publication"
 const DOC_COLLECTION = "site.standard.document"
-const PUB_RKEY = "self"
+
+function isTid(rkey) {
+  return /^[234567abcdefghijklmnopqrstuvwxyz]{13}$/.test(rkey)
+}
 
 if (!HANDLE || !APP_PASSWORD) {
   console.error("Missing env: set BSKY_HANDLE and BSKY_APP_PASSWORD.")
@@ -42,14 +45,80 @@ async function ensurePublication() {
     description: PUB_DESCRIPTION,
     preferences: { showInDiscover: true },
   }
-  const res = await agent.com.atproto.repo.putRecord({
+
+  const list = await agent.com.atproto.repo.listRecords({
     repo: did,
     collection: PUB_COLLECTION,
-    rkey: PUB_RKEY,
+    limit: 100,
+  })
+
+  // The site.standard.publication lexicon requires a TID rkey. Delete any
+  // legacy non-TID records (e.g. `self`) so they don't shadow the new one.
+  let reusable = null
+  for (const r of list.data.records) {
+    const rkey = r.uri.split("/").pop()
+    if (!isTid(rkey)) {
+      await agent.com.atproto.repo.deleteRecord({
+        repo: did,
+        collection: PUB_COLLECTION,
+        rkey,
+      })
+      console.log(`  deleted legacy publication ${r.uri}`)
+    } else if (r.value?.url === PUB_URL) {
+      reusable = { uri: r.uri, rkey }
+    }
+  }
+
+  if (reusable) {
+    await agent.com.atproto.repo.putRecord({
+      repo: did,
+      collection: PUB_COLLECTION,
+      rkey: reusable.rkey,
+      record,
+    })
+    console.log(`Publication (updated): ${reusable.uri}`)
+    return reusable.uri
+  }
+
+  const res = await agent.com.atproto.repo.createRecord({
+    repo: did,
+    collection: PUB_COLLECTION,
     record,
   })
-  console.log(`Publication: ${res.data.uri}`)
+  console.log(`Publication (created): ${res.data.uri}`)
   return res.data.uri
+}
+
+async function repointDocuments(newSiteUri) {
+  if (!newSiteUri) {
+    console.error("Need publication AT-URI (arg or STANDARD_PUBLICATION_URI env).")
+    process.exit(1)
+  }
+  let cursor
+  let updated = 0
+  do {
+    const res = await agent.com.atproto.repo.listRecords({
+      repo: did,
+      collection: DOC_COLLECTION,
+      limit: 100,
+      cursor,
+    })
+    for (const r of res.data.records) {
+      if (r.value?.site === newSiteUri) continue
+      const rkey = r.uri.split("/").pop()
+      const record = { ...r.value, site: newSiteUri }
+      await agent.com.atproto.repo.putRecord({
+        repo: did,
+        collection: DOC_COLLECTION,
+        rkey,
+        record,
+      })
+      console.log(`  updated ${r.uri}`)
+      updated++
+    }
+    cursor = res.data.cursor
+  } while (cursor)
+  console.log(`Updated ${updated} document records.`)
 }
 
 async function resetDocuments() {
@@ -166,12 +235,16 @@ if (command === "publication") {
   await backfillDocuments(uri)
 } else if (command === "reset-documents") {
   await resetDocuments()
+} else if (command === "repoint-documents") {
+  const uri = process.argv[3] || process.env.STANDARD_PUBLICATION_URI
+  await repointDocuments(uri)
 } else if (command === "all") {
   const uri = await ensurePublication()
   await backfillDocuments(uri)
+  await repointDocuments(uri)
 } else {
   console.error(
-    "Usage: node scripts/standard-site.mjs <publication | documents [at://...] | reset-documents | all>",
+    "Usage: node scripts/standard-site.mjs <publication | documents [at://...] | reset-documents | repoint-documents [at://...] | all>",
   )
   process.exit(1)
 }
