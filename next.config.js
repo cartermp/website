@@ -14,6 +14,15 @@ const nextConfig = {
       },
     ];
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/.well-known/site.standard.publication",
+        destination: "/api/standard/publication",
+      },
+    ];
+  },
 };
 
 module.exports = withContentlayer(nextConfig);

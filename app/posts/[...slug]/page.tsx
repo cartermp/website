@@ -75,6 +75,9 @@ export default async function PostPage(props: {
 
   return (
     <article className="prose prose-sm sm:prose-base dark:prose-invert max-w-none pb-6 break-words">
+      {post.standardUri && (
+        <link rel="site.standard.document" href={post.standardUri} />
+      )}
       <h1 className="mb-2 text-retro-ink-accent dark:text-retro-accent">{post.title}</h1>
       {post.description && (
         <p className="text-xl mt-0 text-retro-ink dark:text-retro-text">
