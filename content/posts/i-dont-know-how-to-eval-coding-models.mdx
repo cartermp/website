@@ -1,0 +1,51 @@
+---
+title: "I don't know how to evaluate coding models"
+description: "The rate of LLM improvements for coding keeps increasing, and I can't keep up."
+date: "2026-07-01"
+tags: ai, llms
+standardUri: "at://did:plc:nevxkulynwc5m2sk4jalv4c7/site.standard.document/3mozzmqmqio2u"
+---
+
+A while back, I wrote about how [it's exhausting keeping up with AI models]. The crux of my exhaustion was:
+
+1. Improvements on industry standard benchmarks usually don't mean much for me
+2. Evals look backwards, not forward, so I can't tell if the model will be better for what I want to do tomorrow
+
+This is still true today, but amplified for the coding domain specifically.
+
+## Another day, another model
+
+Over the past month, I've watched Claude Sonnet 5, Claude Fable, Claude Fable (yoinked by government), GPT 5.6 (delayed by government), Kimi K2.7, GLM 5.2, DeepSeek V4, MiniMaxM3, and several other model releases that I don't even remember.
+
+*Every one of these makes some bold claims about being better at coding*. Every single fucking one of them. I do not have enough time in the day to build features for my personal software and evaluate how effective those models are for that building.
+
+I know that all of these are probably good enough, just like the models released at the end of *last year* were already good enough for most of what I need anyways. But when they all claim to make progress on shortcomings of their predecessors and competitors, it's hard not to pay attention and try things out.
+
+## Conflicting reports of revolutionary behavior
+
+I've heard too many conflicting arguments about various top of the line models on Bluesky and Hacker News:
+
+- Claude Fable completely changes the game with coding
+- Claude Fable is dumb and keeps reverting back to Opus
+- Claude Opus 4.8 is a total game changer for running agents in a long loop
+- Claude Opus 4.8 is a whiny bitch of a model that refuses to do stuff
+- Claude Sonnet isn't good enough
+- Claude Sonnet is really underrated (my take!)
+- GPT 5.5 is underrated
+- GPT 5.5 lacks in "personality" such that it's not nice to use
+- GLM 5.2 can replace Opus
+- GLM 5.2 can't be trusted to replace Opus
+
+Even when models aren't getting [roflstomped by the US Government for stupid reasons](https://www.anthropic.com/news/fable-mythos-access), it's too hard to make sense of what you should actually use.
+
+## I'm sticking with the basics
+
+I'm close to the point where I don't care anymore, and will treat almost all models are interchangeable. Because at the end of the day, what I do is:
+
+- Clearly identify what I want my software to do
+- Write out a clear, outcome-oriented prompt describing what it should do
+- Write a skill, if I think it's needed, but usually not
+- Define clear criteria, if possible, how to judge the success of a task, and send that to the agent too
+- Break up tasks, whether by myself or LLM-assisted, and keep the scope of each agent loop very small
+
+And so far, it hasn't mattered much if the model is Claude Sonnet, Claude Opus, GPT 5.4, GPT 5.5, or GLM 5.2. All of them seem pretty good to me. Maybe I just don't have hard problems to solve?
