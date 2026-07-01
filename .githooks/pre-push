@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+set -e
+
+if [ ! -f .env.local ]; then
+  echo "pre-push: .env.local not found — skipping standard.site sync." >&2
+  echo "pre-push: copy .env.local.example to .env.local to enable." >&2
+  exit 0
+fi
+
+echo "pre-push: syncing standard.site records for new posts…" >&2
+npm run --silent posts:sync
+
+if ! git diff --quiet -- content/posts/; then
+  echo "" >&2
+  echo "pre-push: standardUri was written into:" >&2
+  git diff --name-only -- content/posts/ | sed 's/^/  /' >&2
+  echo "" >&2
+  echo "Commit these frontmatter updates and push again." >&2
+  exit 1
+fi
