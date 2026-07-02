@@ -15,28 +15,38 @@ This is still true today, but amplified for the coding domain specifically.
 
 ## Another day, another model
 
-Over the past month, I've watched Claude Sonnet 5, Claude Fable, Claude Fable (yoinked by government), GPT 5.6 (delayed by government), Kimi K2.7, GLM 5.2, DeepSeek V4, MiniMaxM3, and several other model releases that I don't even remember.
+Over the past month, I've watched Claude Sonnet 5, Claude Fable, Claude Fable (yoinked by government), GPT 5.6 (delayed by government), Kimi K2.7, GLM 5.2, DeepSeek V4, MiniMax-M3, and several other model releases that I don't even remember get released.
 
-**Every one of these makes some bold claims about being better at coding**. Every single fucking one of them. I don't have enough time in the day to evaluate how effective those models are compared to one another or what came before them.
+**Every one of these makes some bold claims about being better at coding than their competition**. Every single fucking one of them. I don't have enough time in the day to evaluate how effective those models are compared to one another or what came before them.
 
-I know that all of these are probably good enough, just like the models released at the end of *last year* were already good enough for most of what I need anyways. But when they all claim to make progress on shortcomings of their predecessors and competitors, it's hard not to pay attention and try things out.
+I know that all of these are probably good enough, just like the models released at the end of *last year* were already good enough for a lot of what I need anyways. But when they all claim to make progress on shortcomings of their predecessors and competitors, it's hard not to pay attention and try things out.
 
 ## Conflicting reports of revolutionary behavior
 
 I've heard too many conflicting arguments about various top of the line models on Bluesky and Hacker News:
 
 - Claude Fable completely changes the game with coding
-- Claude Fable is dumb and keeps reverting back to Opus
+- Claude Fable keeps reverting back to Opus and feels nerfed
 - Claude Opus 4.8 is a total game changer for running agents in a long loop
-- Claude Opus 4.8 is a whiny bitch of a model that refuses to do stuff
+- Claude Opus 4.8 vibes are way off and it refused to do stuff too often
 - Claude Sonnet isn't good enough
-- Claude Sonnet is really underrated (my take!)
+- Claude Sonnet is underrated (my take!)
 - GPT 5.5 is underrated
 - GPT 5.5 lacks in "personality" such that it's not nice to use
-- GLM 5.2 can replace Opus
-- GLM 5.2 can't be trusted to replace Opus
+- GLM 5.2 can totally replace Opus
+- GLM 5.2 is a very poor Opus replacement
 
 Even when models aren't getting [roflstomped by the US Government for stupid reasons](https://www.anthropic.com/news/fable-mythos-access), it's too hard to make sense of what you should actually use.
+
+## Reasoning modes muddy the waters
+
+Claude and GPT now have reasoning modes like "high", "extra high", and "max". Usually, the "max" scores the highest on some benchmark, but it's typically a modest gain.
+
+Can you, with a straight face, tell me when it's appropriate to use "high" vs. "extra high"? Are you sure you're being intellectually honest? Because I absolutely cannot.
+
+## Most benchmark results are incremental improvements
+
+As I wrote in my earlier post, a small percentage increase in a coding benchmark result doesn't mean much to me. As of writing this post, [GPT 5.5 Extra High scores 0.5% higher on a Cursor Benchmark than Opus 4.8 Max](https://cursor.com/evals). Nearly all the top models score within 20% of one another, which tells me almost nothing about how effective all of these models are for tasks that I need to complete tomorrow.
 
 ## I'm sticking with the basics
 
@@ -49,3 +59,7 @@ I'm close to the point where I don't care anymore, and will treat almost all mod
 - Break up tasks, whether by myself or LLM-assisted, and keep the scope of each agent loop very small
 
 And so far, it hasn't mattered much if the model is Claude Sonnet, Claude Opus, GPT 5.4, GPT 5.5, or GLM 5.2. All of them seem pretty good to me. Maybe I just don't have hard problems to solve?
+
+Increasingly, I've leaned more on the high-end models on "super duper xxxtra max high mode" reasoning configuration to help me come up with a plan that I have lesser-scoring models execute on. But I'm even starting to second-guess this workflow now, too, because I found that Sonnet 5 is very good at jamming with me on a plan.
+
+What does all of that mean? I don't know. It isn't clear to me how to evaluate these things objectively for my needs.
