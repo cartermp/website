@@ -1,0 +1,60 @@
+---
+title: "Don't build your own CRM"
+description: "You really don't want to be in the business of building your own Salesforce."
+date: "2026-07-22"
+tags: engineering, enterprise
+---
+
+It's becoming in vogue for companies to talk about building their own CRM to forgo some expensive Salesforce licenses.
+
+Salesforce is really expensive no matter the size of your organization. If your engineering team can build web applications, why not build something that covers the 20% of Salesforce features you actually use? It's so easy, right?
+
+Hahahaha.
+
+## The engineering problem isn't CRUD over a few tables
+
+If all your organization wanted was a slick web UI for tracking and updating accounts, contacts, and sales opportunities, then there isn't a hard problem to be solved. The problem is that almost no organization stops there.
+
+Every department eventually discovers that the CRM is the obvious place to store *their* information too:
+
+- Marketing wants campaign attribution
+- Support wants customer history
+- Finance wants billing metadata
+- Legal wants audit trails
+- Sales wants forecasting
+- Security wants several layers of permissions
+- Someone needs to administer it all and they need controls
+- Some departments introduce approval processes that need to be enforced in the CRM
+- Each department has particular UI requirements that aren't shared with other departments
+- Each department has many different manual processes that need to be incorporated somehow
+- Everyone agrees it is a company-wide disaster if data gets corrupted or lost
+
+None of these requests are unreasonable, but they're all natural consequences of having a shared customer database. No serious engineering team would build separate databases with different data models for each department, nor would their stakeholders want that anyways. This sort of work is genuinely challenging when enough concerns come to the table, turning what seemed like a simple internal tool into a complex coordination layer between departments.
+
+## The liability problems are bigger than the engineering problems
+
+The engineering work is substantial once you're done with baby's first CRM, but that's not even the thing to worry about. The bigger cost is that you've now become responsible for your company's systems of record.
+
+Here's a handful of the kinds of questions people may ask down the road:
+
+- Can we continue operating on customer data if the engineers who built the system leave?
+- Can we prove that nobody accessed customer data they were not authorized to see?
+- Can we explain why one employee could see pricing, contract terms, or customer information that another employee could not?
+- Can we show which *version* of a contract was in effect when a deal was signed?
+- Can we explain each and every reason why a specific customer was able to bypass our normal rules for deals?
+- Can we prove that a salesperson didn't modify a record to sweeten a deal?
+- Can Finance reconcile booked revenue back to the exact customer records and approvals that produced it?
+- Can we demonstrate that customer consent was valid when their data was collected or used?
+- Can we prove that someone who opted out of marketing was not re-enrolled by another system?
+- Can we produce a complete and defensible record in response to a subpoena or discovery request?
+- Can we tell regulators, under oath, that all of these controls actually work?
+
+The great thing about paying Salesforce a bunch of money is that they're generally the ones who catch shit for problems in the above questions, not you.
+
+When you buy Salesforce, you're not just buying software. You're buying a company that spends an enormous amount of time thinking about these problems because they have to.
+
+## There isn't a lot of evidence of successfully rolling your own CRM
+
+A few years ago there was a public push by Klarna to announce in an earnings call how they're replacing Salesforce and ~1200 or so other SaaS tools. It seems that [reality is more complicated than that](https://www.cxtoday.com/crm/klarna-didnt-replace-salesforce-it-replaced-them-with-alternative-saas-apps/) and while they may have fully exited from Salesforce they couldn't "AI their way out of" the problems of owning a CRM for a whole business.
+
+Recently, a healthcare company known as [Curative](https://curative.com/) explained how they were able to cancel a $600k contract with Salesforce because their vibe-coded CRM that took two months to build was able to do what they needed. That's a _very_ small contract, so my guess is they're not yet having to deal with the ugly realities surrounding customer data yet. Or they're operating with a tremendous amount of risk that could end their company if they get unlucky. Either way, I expect this solution not to work out for them in the long run. Declaring success after you built the initial version of something isn't particularly strong evidence.
