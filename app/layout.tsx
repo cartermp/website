@@ -161,8 +161,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
                         -- about --
                       </div>
                       <div className="space-y-3 text-xs leading-relaxed text-retro-ink dark:text-retro-text">
-                        {aboutParagraphs.map((paragraph) => (
-                          <p key={paragraph}>{paragraph}</p>
+                        {aboutParagraphs.map((paragraph, index) => (
+                          <p key={index}>{paragraph}</p>
                         ))}
                       </div>
                     </SidebarAboutPanel>
