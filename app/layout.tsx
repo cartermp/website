@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { allPages } from "contentlayer/generated"
 import "./globals.css"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { JetBrains_Mono } from "next/font/google"
@@ -12,6 +13,19 @@ import {
   siBluesky as BlueskyIcon,
   siGithub as GithubIcon,
 } from "simple-icons";
+
+function getAboutParagraphs(): string[] {
+  const about = allPages.find((page) => page.slugAsParams === "about")
+  if (!about) {
+    return []
+  }
+
+  return about.body.raw
+    .trim()
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+}
 
 const codeFont = JetBrains_Mono({
   subsets: ['latin'],
@@ -95,6 +109,8 @@ function SocialLinks() {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  const aboutParagraphs = getAboutParagraphs()
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -138,16 +154,19 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     </div>
                   </Link>
 
-                  {/* About */}
-                  <SidebarAboutPanel className="border-b border-retro-paper-border dark:border-retro-border px-4 py-3 space-y-2">
-                    <div className="text-xs uppercase tracking-widest text-retro-ink-muted dark:text-retro-muted">
-                      -- about --
-                    </div>
-                    <div className="space-y-3 text-xs leading-relaxed text-retro-ink dark:text-retro-text">
-                      <p>In my day job, I&apos;m a PM Director at Salesforce working on their Automations platform. I used to work at Honeycomb, where I led AI efforts. Prior to this, I worked on Honeycomb&apos;s telemetry pipeline, OpenTelemetry efforts, and API. I also worked on the .NET team at Microsoft for several years, including 5 years as the PM for the F# programming language and tools.</p>
-                      <p>I&apos;m also a maintainer in the OpenTelemetry project, primarily focusing on the website. I do occasionally send PRs to other parts of the project, though. I will occasionally release updates to some packages I still maintain.</p>
-                    </div>
-                  </SidebarAboutPanel>
+                  {/* About — sourced from content/pages/about.mdx */}
+                  {aboutParagraphs.length > 0 && (
+                    <SidebarAboutPanel className="border-b border-retro-paper-border dark:border-retro-border px-4 py-3 space-y-2">
+                      <div className="text-xs uppercase tracking-widest text-retro-ink-muted dark:text-retro-muted">
+                        -- about --
+                      </div>
+                      <div className="space-y-3 text-xs leading-relaxed text-retro-ink dark:text-retro-text">
+                        {aboutParagraphs.map((paragraph, index) => (
+                          <p key={index}>{paragraph}</p>
+                        ))}
+                      </div>
+                    </SidebarAboutPanel>
+                  )}
 
                   {/* Links */}
                   <div className="flex items-center justify-between px-4 py-2.5">
