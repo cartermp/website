@@ -9,6 +9,7 @@ import { Analytics } from "@/components/analytics"
 import { ModeToggle } from "@/components/mode-toggle"
 import { ScrollToTop } from "@/components/ScrollToTop"
 import { SidebarAboutPanel } from "@/components/SidebarAboutPanel"
+import { MobileNavTrayLock } from "@/components/MobileNavTray"
 import {
   siBluesky as BlueskyIcon,
   siGithub as GithubIcon,
@@ -41,6 +42,12 @@ export const metadata: Metadata = {
       "application/rss+xml": "/rss.xml",
     },
   },
+  }
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover" as const,
 }
 
 interface RootLayoutProps {
@@ -108,6 +115,18 @@ function SocialLinks() {
   );
 }
 
+function LinksTray({ className = "" }: { className?: string }) {
+  return (
+    <div className={`flex items-center justify-between px-4 py-2.5 ${className}`.trim()}>
+      <span className="text-xs text-retro-ink-muted dark:text-retro-muted">[links]</span>
+      <div className="flex items-center gap-1">
+        <SocialLinks />
+        <ModeToggle />
+      </div>
+    </div>
+  );
+}
+
 export default function RootLayout({ children }: RootLayoutProps) {
   const aboutParagraphs = getAboutParagraphs()
 
@@ -129,12 +148,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <ScrollToTop />
-          <div className="relative min-h-screen">
+          <div className="relative min-h-screen pb-[calc(3.25rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 lg:py-10">
               <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
 
-                {/* Sidebar */}
-                <aside className="h-fit lg:sticky lg:top-8 border border-retro-paper-border dark:border-retro-border space-y-0">
+                {/* Sidebar — after content on mobile so the page ends with nav context */}
+                <aside className="order-2 lg:order-none h-fit lg:sticky lg:top-8 border border-retro-paper-border dark:border-retro-border space-y-0">
 
                   {/* Name / Logo */}
                   <Link
@@ -168,19 +187,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     </SidebarAboutPanel>
                   )}
 
-                  {/* Links */}
-                  <div className="flex items-center justify-between px-4 py-2.5">
-                    <span className="text-xs text-retro-ink-muted dark:text-retro-muted">[links]</span>
-                    <div className="flex items-center gap-1">
-                      <SocialLinks />
-                      <ModeToggle />
-                    </div>
-                  </div>
+                  {/* Desktop links (mobile uses the fixed bottom tray) */}
+                  <LinksTray className="max-lg:hidden" />
 
                 </aside>
 
-                {/* Main content */}
-                <div className="min-w-0 border border-retro-paper-border dark:border-retro-border">
+                {/* Main content — first on mobile */}
+                <div className="order-1 lg:order-none min-w-0 border border-retro-paper-border dark:border-retro-border">
                   <div className="border-b border-retro-paper-border dark:border-retro-border px-4 py-1.5 text-xs text-retro-ink-muted dark:text-retro-muted">
                     phillipcarter.dev
                   </div>
@@ -192,6 +205,20 @@ export default function RootLayout({ children }: RootLayoutProps) {
               </div>
             </div>
           </div>
+
+          {/* Mobile nav tray — pinned to the visual bottom, including safe-area */}
+          <MobileNavTrayLock />
+          <nav
+            aria-label="Site links"
+            className="mobile-nav-tray lg:hidden fixed inset-x-0 bottom-0 z-50
+                       border-t border-retro-paper-border dark:border-retro-border
+                       bg-retro-paper dark:bg-retro-bg"
+          >
+            <div className="max-w-6xl mx-auto">
+              <LinksTray />
+            </div>
+          </nav>
+
           <Analytics />
           <SpeedInsights />
         </ThemeProvider>

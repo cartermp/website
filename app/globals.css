@@ -12,3 +12,19 @@
     opacity: 0;
   }
 }
+
+/*
+ * Keep the mobile nav tray glued to the visible bottom of the screen.
+ * --mobile-nav-offset is set by MobileNavTrayLock from visualViewport so the
+ * tray does not jump upward when mobile browser chrome shows/hides after load.
+ */
+.mobile-nav-tray {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translate3d(0, var(--mobile-nav-offset, 0px), 0);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Isolate from ancestor paint/overflow so fixed positioning stays viewport-relative */
+  backface-visibility: hidden;
+}
