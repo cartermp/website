@@ -5,6 +5,12 @@ const nextConfig = {
   reactStrictMode: true,
   // swcMinify is no longer needed in Next.js 15 as it's enabled by default
 
+  output: "export",
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
+
   async redirects() {
     return [
       {
