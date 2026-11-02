@@ -25,6 +25,7 @@ jobs:
           node-version: "22"
           cache: pnpm
       - uses: actions/configure-pages@v5
+        id: pages
       - name: Restore Next.js cache
         uses: actions/cache@v4
         with:
@@ -36,6 +37,8 @@ jobs:
       - run: pnpm test --runInBand
       - run: pnpm build
         env:
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
           STANDARD_PUBLICATION_URI: ${{ vars.STANDARD_PUBLICATION_URI }}
       - uses: actions/upload-pages-artifact@v3
         with:

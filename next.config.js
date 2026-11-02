@@ -3,7 +3,8 @@ const { withContentlayer } = require("next-contentlayer");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // swcMinify is no longer needed in Next.js 15 as it's enabled by default
+  // configure-pages supplies /website for project Pages and an empty path for custom domains.
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
 
   output: "export",
   trailingSlash: true,

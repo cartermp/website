@@ -3,6 +3,7 @@
 import React from 'react';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 import Image from 'next/image';
+import { withBasePath } from '@/lib/site';
 
 // Define interface for image props
 interface ImgProps {
@@ -25,7 +26,7 @@ const components = {
       const imgChild = children as React.ReactElement;
       const imgProps = imgChild.props as ImgProps;
       const { src, alt, ...restImgProps } = imgProps;
-      const imageSrc = src.startsWith('/') ? src : `/${src}`;
+      const imageSrc = /^(https?:|data:|\/\/)/.test(src) ? src : withBasePath(src.startsWith('/') ? src : `/${src}`);
       
       return (
         <div className="my-6 overflow-hidden rounded-lg max-w-full">
@@ -109,13 +110,14 @@ const components = {
     <a
       className="font-medium text-retro-ink-accent dark:text-retro-accent underline underline-offset-4 hover:text-retro-ink dark:hover:text-retro-text"
       {...props}
+      href={withBasePath(props.href || "")}
     >
       {children}
     </a>
   ),
   img: ({ src, alt, ...props }: ImgProps) => {
     // Handle both absolute and relative paths
-    const imageSrc = src.startsWith('/') ? src : `/${src}`;
+    const imageSrc = /^(https?:|data:|\/\/)/.test(src) ? src : withBasePath(src.startsWith('/') ? src : `/${src}`);
     return (
       <Image
         src={imageSrc}

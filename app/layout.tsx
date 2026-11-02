@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { withBasePath } from "@/lib/site"
 import Link from "next/link"
 import { allPages } from "contentlayer/generated"
 import "./globals.css"
@@ -33,10 +34,10 @@ const codeFont = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Phillip Carter",
   description: "Phillip Carter's spot on the web.",
-  metadataBase: new URL("https://phillipcarter.dev"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://phillipcarter.dev"),
   alternates: {
     types: {
-      "application/rss+xml": "/rss.xml",
+      "application/rss+xml": withBasePath("/rss.xml"),
     },
   },
 }

@@ -22,7 +22,10 @@ check the build without deploying.
 
 The site uses the custom domain `phillipcarter.dev`, recorded in `public/CNAME`.
 Configure that custom domain in Pages settings and point its DNS to GitHub Pages.
-Links and assets assume the site is served at the domain root.
+The deployment workflow detects the Pages base path, so both project URLs such as
+`https://cartermp.github.io/website/` and custom domains work. For a local project-path
+build, run `NEXT_PUBLIC_BASE_PATH=/website pnpm build`. Serve `out/` mounted at that
+prefix when previewing it.
 
 RSS is exported to `/rss.xml`. If publication verification is needed, set the
 repository Actions variable `STANDARD_PUBLICATION_URI` to the publication's AT URI.
