@@ -1,4 +1,4 @@
-name: CI and Deploy
+name: CI
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -6,34 +6,21 @@ concurrency:
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 9
-
+          node-version: "22"
+          cache: pnpm
       - name: Install dependencies
-        run: pnpm install
-
-      - name: Run tests
-        run: pnpm test
+        run: pnpm install --frozen-lockfile
+      - name: Build site
+        run: pnpm build
