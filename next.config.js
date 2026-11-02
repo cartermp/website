@@ -11,24 +11,6 @@ const nextConfig = {
     unoptimized: true,
   },
 
-  async redirects() {
-    return [
-      {
-        source: "/email/:path*",
-        destination: "https://email.phillipcarter.dev/:path*",
-        permanent: false,
-      },
-    ];
-  },
-
-  async rewrites() {
-    return [
-      {
-        source: "/.well-known/site.standard.publication",
-        destination: "/api/standard/publication",
-      },
-    ];
-  },
 };
 
 module.exports = withContentlayer(nextConfig);

@@ -1,3 +1,5 @@
+export const dynamic = "force-static"
+
 import { allPosts } from "contentlayer/generated"
 
 const SITE_URL =

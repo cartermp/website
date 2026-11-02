@@ -2,10 +2,8 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { allPages } from "contentlayer/generated"
 import "./globals.css"
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import { JetBrains_Mono } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Analytics } from "@/components/analytics"
 import { ModeToggle } from "@/components/mode-toggle"
 import { ScrollToTop } from "@/components/ScrollToTop"
 import { SidebarAboutPanel } from "@/components/SidebarAboutPanel"
@@ -192,8 +190,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
               </div>
             </div>
           </div>
-          <Analytics />
-          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
