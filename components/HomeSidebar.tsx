@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { allPages } from "contentlayer/generated"
+import { allPages } from "@/lib/content"
 import { ModeToggle } from "@/components/mode-toggle"
 import { SidebarAboutPanel } from "@/components/SidebarAboutPanel"
 import {

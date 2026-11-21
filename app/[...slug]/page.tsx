@@ -1,9 +1,8 @@
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
-import { allPages } from "contentlayer/generated"
+import { allPages } from "@/lib/content"
 
 import { Mdx } from "@/components/mdx-components"
-import { processMdx } from "@/lib/mdx-utils"
 
 // Define the params type for Next.js 15
 type PageParams = Promise<{ slug: string[] }>
@@ -55,14 +54,11 @@ export default async function PagePage(props: {
     notFound()
   }
   
-  // Process the MDX content
-  const mdxSource = await processMdx(page.body.raw)
-
   return (
     <article className="py-6 prose prose-sm sm:prose-base dark:prose-invert break-words">
       <h1 className="mb-2 text-purple-700 dark:text-purple-300">{page.title}</h1>
       {page.description && <p className="text-xl">{page.description}</p>}
-      <Mdx code={mdxSource} />
+      <Mdx source={page.body.raw} />
     </article>
   )
 }

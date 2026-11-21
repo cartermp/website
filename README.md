@@ -4,7 +4,7 @@ https://phillipcarter.dev
 
 ## Development
 
-Use Node.js 22 and the pnpm version pinned in `package.json`.
+Use Node.js 22.19 or later and the pnpm version pinned in `package.json`.
 
 - `pnpm install --frozen-lockfile` installs dependencies.
 - `pnpm dev` starts the development server.

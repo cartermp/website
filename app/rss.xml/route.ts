@@ -1,6 +1,6 @@
 export const dynamic = "force-static"
 
-import { allPosts } from "contentlayer/generated"
+import { allPosts } from "@/lib/content"
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://phillipcarter.dev"

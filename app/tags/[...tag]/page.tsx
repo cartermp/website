@@ -1,4 +1,4 @@
-import { allPosts } from 'contentlayer/generated'
+import { allPosts } from '@/lib/content'
 import { notFound } from 'next/navigation';
 import Link from 'next/link'
 import { TagList } from '@/components/TagList'

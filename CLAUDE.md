@@ -9,8 +9,8 @@
 
 ## Architecture
 
-This is a static Next.js 15 personal website with a blog and browser games.
-Contentlayer manages MDX posts in `content/posts/` and pages in `content/pages/`.
+This is a static Next.js 16 personal website with a blog and browser games.
+The content loader reads MDX posts from `content/posts/` and pages from `content/pages/`.
 Tailwind CSS provides styling and `next-themes` handles theme switching.
 `@/*` maps to the repository root. TypeScript strict mode is enabled.
 

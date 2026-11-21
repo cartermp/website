@@ -1,7 +1,6 @@
-'use client';
-
 import React from 'react';
-import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
 import Image from 'next/image';
 import { withBasePath } from '@/lib/site';
 
@@ -160,49 +159,10 @@ const components = {
   },
 };
 
-// Create a loading component
-const LoadingComponent = () => (
-  <div className="animate-pulse">
-    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2.5"></div>
-    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2.5"></div>
-    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6 mb-2.5"></div>
-    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-2.5"></div>
-  </div>
-);
-
-interface MdxProps {
-  code: MDXRemoteSerializeResult;
-}
-
-export function Mdx({ code }: MdxProps) {
-  const [isMounted, setIsMounted] = React.useState(false);
-  
-  // Set isMounted to true when the component mounts (client-side only)
-  React.useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  
-  // Show a loading skeleton until the component is mounted
-  if (!isMounted) {
-    return <LoadingComponent />;
-  }
-  
-  try {
-    // Render the MDX content
-    return (
-      <div className="mdx-content min-w-0 break-words">
-        <MDXRemote {...code} components={components} />
-      </div>
-    );
-  } catch (error) {
-    console.error('Error rendering MDX:', error);
-    return (
-      <div className="p-4 border border-red-300 bg-red-50 dark:bg-red-900/10 dark:border-red-800 rounded-lg">
-        <h3 className="text-red-700 dark:text-red-300 font-semibold">Error rendering content</h3>
-        <p className="text-red-600 dark:text-red-400 mt-2">
-          {error instanceof Error ? error.message : 'An unknown error occurred'}
-        </p>
-      </div>
-    );
-  }
+export function Mdx({ source }: { source: string }) {
+  return (
+    <div className="mdx-content min-w-0 break-words">
+      <MDXRemote source={source} components={components} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
+    </div>
+  );
 }

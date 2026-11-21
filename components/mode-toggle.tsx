@@ -3,14 +3,11 @@
 import * as React from "react"
 import { useTheme } from "next-themes"
 
+const subscribe = () => () => {}
+
 export function ModeToggle() {
   const { setTheme, theme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-  
-  // After mounting, we have access to the theme
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = React.useSyncExternalStore(subscribe, () => true, () => false)
   
   if (!mounted) {
     return (

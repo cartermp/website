@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation"
-import { allPosts } from "contentlayer/generated"
+import { allPosts } from "@/lib/content"
 import { Metadata } from "next"
 import { Mdx } from "@/components/mdx-components"
 import Link from "next/link"
 import { TagList } from "@/components/TagList"
-import { processMdx } from "@/lib/mdx-utils"
 
 // Define the params type for Next.js 15
 type PostParams = Promise<{ slug: string[] }>
@@ -70,9 +69,6 @@ export default async function PostPage(props: {
   const date = formatDate(post.date)
   const readingTime = getReadingTime(post.body.raw)
   
-  // Process the MDX content
-  const mdxSource = await processMdx(post.body.raw)
-
   return (
     <article className="prose prose-sm mx-auto max-w-[75ch] break-words pb-6 sm:prose-base dark:prose-invert">
       {post.standardUri && (
@@ -94,7 +90,7 @@ export default async function PostPage(props: {
         </div>
       </div>
       <hr className="my-4 border-retro-paper-border dark:border-retro-border" />
-      <Mdx code={mdxSource} />
+      <Mdx source={post.body.raw} />
 
       <footer className="mt-8 pt-4 border-t border-retro-paper-border dark:border-retro-border">
         <div className="not-prose mb-4 space-y-2">

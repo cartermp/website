@@ -1,5 +1,5 @@
 import { HomeSidebar } from "@/components/HomeSidebar"
-import { allPosts } from "@/.contentlayer/generated"
+import { allPosts } from "@/lib/content"
 import Link from "next/link"
 import { TagList } from "@/components/TagList"
 
