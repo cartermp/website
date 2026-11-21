@@ -1,23 +1,11 @@
 import { allPages } from "@/lib/content"
 import { ModeToggle } from "@/components/mode-toggle"
+import { Mdx } from "@/components/mdx-components"
 import {
   siBluesky as BlueskyIcon,
   siGithub as GithubIcon,
   siX as XIcon,
 } from "simple-icons";
-
-function getAboutParagraphs(): string[] {
-  const about = allPages.find((page) => page.slugAsParams === "about")
-  if (!about) {
-    return []
-  }
-
-  return about.body.raw
-    .trim()
-    .split(/\n\s*\n/)
-    .map((paragraph) => paragraph.trim())
-    .filter(Boolean)
-}
 
 function SocialLinks() {
   return (
@@ -92,7 +80,7 @@ function SocialLinks() {
 }
 
 export function HomeIntro() {
-  const aboutParagraphs = getAboutParagraphs()
+  const bio = allPages.find((page) => page.slugAsParams === "about")?.body.raw.trim()
 
   return (
     <header className="home-intro rounded-[2rem_2rem_2rem_0.65rem] px-6 py-8 sm:px-10 sm:py-11">
@@ -102,11 +90,9 @@ export function HomeIntro() {
         </h1>
         <ModeToggle />
       </div>
-      {aboutParagraphs.length > 0 && (
-        <section aria-label="About" className="mt-6 max-w-[59ch] space-y-3 text-base leading-[1.7] text-muted sm:text-lg">
-          {aboutParagraphs.map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
+      {bio && (
+        <section aria-label="About" className="home-about mt-6 max-w-[59ch] text-base leading-relaxed text-muted sm:text-lg">
+          <Mdx source={bio} />
         </section>
       )}
       <div aria-label="Social profiles" role="group" className="mt-5 flex items-center gap-2">
