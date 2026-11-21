@@ -1,20 +1,20 @@
 # Repository Guide
 
-## Development Commands
-
-- `pnpm dev` starts the Next.js development server.
-- `pnpm build` exports the site to `out/` for GitHub Pages.
-- `pnpm lock` refreshes the lockfile after dependency changes.
-- `pnpm test` runs Jest tests when present.
+See [README.md](README.md) for setup, writing posts, and deploying the site.
+Follow the build and lockfile requirements in [AGENTS.md](AGENTS.md).
 
 ## Architecture
 
-This is a static Next.js 16 personal website with a blog and browser games.
-The content loader reads MDX posts from `content/posts/` and pages from `content/pages/`.
-Tailwind CSS provides styling and `next-themes` handles theme switching.
-`@/*` maps to the repository root. TypeScript strict mode is enabled.
-
-All routes must support static export. There is no runtime database,
-authentication, middleware, or server API. Static GET handlers are exported at
-build time. `scripts/finalize-export.mjs` adds GitHub Pages metadata and optional
-publication verification. See README.md for deployment setup.
+- **Content.** [lib/content.ts](lib/content.ts) reads MDX frontmatter and derives
+  slugs from filenames. The homepage uses the About page as its bio source.
+- **Rendering.** [components/mdx-components.tsx](components/mdx-components.tsx)
+  renders MDX and highlights fenced code blocks with Shiki at build time.
+  Individual posts use a standalone reading layout.
+- **Appearance.** [app/globals.css](app/globals.css) defines the shared color
+  palette and typography. The site follows the system color scheme by default
+  and remembers a manual choice.
+- **Export.** Next.js generates static routes and assets in `out/`.
+  [scripts/finalize-export.mjs](scripts/finalize-export.mjs) adds Pages metadata
+  and the optional standard.site verification file. Keep routes compatible
+  with static export and use [lib/site.ts](lib/site.ts) for local asset URLs
+  that need the GitHub Pages base path.
