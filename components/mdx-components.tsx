@@ -1,6 +1,7 @@
 import React from 'react';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
+import rehypeShiki, { type RehypeShikiOptions } from '@shikijs/rehype';
 import Image from 'next/image';
 import { withBasePath } from '@/lib/site';
 
@@ -51,63 +52,48 @@ const components = {
     );
   },
   h1: ({ children }: any) => (
-    <h1 className="mt-8 mb-4 text-2xl font-bold text-retro-ink-accent dark:text-retro-accent">
+    <h1 className="mt-8 mb-4 text-2xl font-bold text-accent">
       {children}
     </h1>
   ),
   h2: ({ children }: any) => (
-    <h2 className="mt-8 mb-4 text-xl font-bold text-retro-ink-accent dark:text-retro-accent group">
+    <h2 className="mt-8 mb-4 text-xl font-bold text-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
-        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          #
-        </span>
       </a>
     </h2>
   ),
   h3: ({ children }: any) => (
-    <h3 className="mt-8 mb-4 text-lg font-bold text-retro-ink-accent dark:text-retro-accent group">
+    <h3 className="mt-8 mb-4 text-lg font-bold text-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
-        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          #
-        </span>
       </a>
     </h3>
   ),
   h4: ({ children }: any) => (
-    <h4 className="mt-8 mb-4 text-base font-bold text-retro-ink-accent dark:text-retro-accent group">
+    <h4 className="mt-8 mb-4 text-base font-bold text-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
-        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          #
-        </span>
       </a>
     </h4>
   ),
   h5: ({ children }: any) => (
-    <h5 className="mt-8 mb-4 text-sm font-bold text-retro-ink-accent dark:text-retro-accent group">
+    <h5 className="mt-8 mb-4 text-sm font-bold text-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
-        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          #
-        </span>
       </a>
     </h5>
   ),
   h6: ({ children }: any) => (
-    <h6 className="mt-8 mb-4 text-xs font-bold text-retro-ink-accent dark:text-retro-accent group">
+    <h6 className="mt-8 mb-4 text-xs font-bold text-accent group">
       <a href={`#${typeof children === 'string' ? children.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : ''}`} className="no-underline text-inherit">
         {children}
-        <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          #
-        </span>
       </a>
     </h6>
   ),
   a: ({ children, ...props }: any) => (
     <a
-      className="font-medium text-retro-ink-accent dark:text-retro-accent underline underline-offset-4 hover:text-retro-ink dark:hover:text-retro-text"
+      className="font-medium text-accent underline underline-offset-4 hover:text-ink"
       {...props}
       href={withBasePath(props.href || "")}
     >
@@ -140,29 +126,27 @@ const components = {
       <iframe className="w-full max-w-full aspect-video" {...props} />
     </div>
   ),
-  code: ({ className, children, ...props }: any) => {
-    const match = /language-(\w+)/.exec(className || '');
-    return match ? (
-      <pre className="p-4 bg-retro-paper-surface dark:bg-retro-surface border border-retro-paper-border dark:border-retro-border overflow-x-auto">
-        <code className={className} {...props}>
-          {children}
-        </code>
-      </pre>
-    ) : (
-      <code
-        className="px-1.5 py-0.5 border border-retro-paper-border dark:border-retro-border bg-retro-paper-surface dark:bg-retro-surface text-retro-ink dark:text-retro-text font-mono text-sm"
-        {...props}
-      >
-        {children}
-      </code>
-    );
-  },
 };
+
+const highlighting = {
+  themes: { light: 'github-light', dark: 'github-dark-dimmed' },
+  defaultColor: false,
+  fallbackLanguage: 'text',
+} satisfies RehypeShikiOptions;
 
 export function Mdx({ source }: { source: string }) {
   return (
     <div className="mdx-content min-w-0 break-words">
-      <MDXRemote source={source} components={components} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
+      <MDXRemote
+        source={source}
+        components={components}
+        options={{
+          mdxOptions: {
+            remarkPlugins: [remarkGfm],
+            rehypePlugins: [[rehypeShiki, highlighting]],
+          },
+        }}
+      />
     </div>
   );
 }

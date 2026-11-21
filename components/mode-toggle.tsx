@@ -1,79 +1,47 @@
 "use client"
 
-import * as React from "react"
+import { useSyncExternalStore } from "react"
 import { useTheme } from "next-themes"
 
 const subscribe = () => () => {}
 
-export function ModeToggle() {
-  const { setTheme, theme, resolvedTheme } = useTheme()
-  const mounted = React.useSyncExternalStore(subscribe, () => true, () => false)
-  
-  if (!mounted) {
-    return (
-      <button
-        className="border border-retro-paper-border dark:border-retro-border w-6 h-6 flex items-center justify-center text-retro-ink-muted dark:text-retro-muted"
-        aria-label="Toggle theme"
-      >
-        <span className="sr-only">Toggle mode</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-4 h-4"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-          />
-        </svg>
-      </button>
-    )
-  }
+const themeChoices = {
+  system: {
+    label: "System",
+    next: "light",
+    icon: <><rect x="3" y="4" width="18" height="13" rx="2" /><path d="M8 21h8m-4-4v4" /></>,
+  },
+  light: {
+    label: "Light",
+    next: "dark",
+    icon: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19m0-14-1.4 1.4M6.4 17.6 5 19" /></>,
+  },
+  dark: {
+    label: "Dark",
+    next: "system",
+    icon: <path d="M20.8 15.1A9 9 0 0 1 8.9 3.2a9 9 0 1 0 11.9 11.9Z" />,
+  },
+} as const
 
-  const currentTheme = theme === "system" ? resolvedTheme : theme
+export function ModeToggle() {
+  const { theme, setTheme } = useTheme()
+  const mounted = useSyncExternalStore(subscribe, () => true, () => false)
+  const mode = mounted && (theme === "light" || theme === "dark") ? theme : "system"
+  const current = themeChoices[mode]
+  const label = `Theme: ${current.label}. Switch to ${themeChoices[current.next].label}.`
 
   return (
     <button
-      onClick={() => setTheme(currentTheme === "light" ? "dark" : "light")}
-      className="border border-retro-paper-border dark:border-retro-border w-6 h-6 flex items-center justify-center text-retro-ink-muted dark:text-retro-muted hover:text-retro-ink-accent dark:hover:text-retro-accent transition-colors duration-150"
-      aria-label="Toggle theme"
+      type="button"
+      aria-label={label}
+      title={label}
+      disabled={!mounted}
+      onClick={() => setTheme(current.next)}
+      className="grid size-10 shrink-0 cursor-pointer place-items-center rounded-full text-muted transition-colors hover:bg-canvas/60 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
-      <span className="sr-only">Toggle mode</span>
-      {currentTheme === "dark" ? (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-4 h-4"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"
-          />
-        </svg>
-      ) : (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="w-4 h-4"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
-          />
-        </svg>
-      )}
+      <svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        {current.icon}
+      </svg>
     </button>
   )
 }

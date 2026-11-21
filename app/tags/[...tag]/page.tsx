@@ -30,30 +30,30 @@ export default function TagPage(props: { params: TagPageParams }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-[52rem] space-y-6">
       <div className="space-y-1">
-        <h1 className="text-base font-bold text-retro-ink-accent dark:text-retro-accent">
+        <h1 className="font-display text-3xl font-medium text-ink">
           Posts tagged with &quot;{tag}&quot;
         </h1>
-        <p className="text-xs text-retro-ink-muted dark:text-retro-muted">
+        <p className="text-xs text-muted">
           {posts.length} {posts.length === 1 ? 'post' : 'posts'}
         </p>
       </div>
       <ul className="space-y-3">
         {posts.map((post) => (
-          <li key={post._id} className="relative border border-retro-paper-border dark:border-retro-border hover:bg-retro-paper-surface dark:hover:bg-retro-surface transition-colors duration-150">
+          <li key={post._id} className="relative rounded-2xl border border-line hover:bg-surface transition-colors duration-150">
             <Link href={post.slug} className="absolute inset-0 z-[1]" aria-label={post.title} />
             <div className="p-4 pointer-events-none">
               <div className="flex items-baseline justify-between gap-4 mb-1.5">
-                <span className="font-bold text-sm text-retro-ink-accent dark:text-retro-accent leading-snug">
+                <span className="font-bold text-sm text-accent leading-snug">
                   {post.title}
                 </span>
-                <time className="text-xs text-retro-ink-muted dark:text-retro-muted shrink-0">
+                <time className="text-xs text-muted shrink-0">
                   {new Date(post.date).toLocaleDateString()}
                 </time>
               </div>
               {post.description && (
-                <p className="text-xs text-retro-ink-muted dark:text-retro-muted leading-relaxed mb-2">
+                <p className="text-xs text-muted leading-relaxed mb-2">
                   {post.description}
                 </p>
               )}
@@ -67,7 +67,7 @@ export default function TagPage(props: { params: TagPageParams }) {
         ))}
       </ul>
       <div className="pt-2">
-        <Link href="/" className="text-xs text-retro-ink-muted dark:text-retro-muted hover:text-retro-ink-accent dark:hover:text-retro-accent transition-colors duration-150">
+        <Link href="/" className="text-xs text-muted hover:text-accent transition-colors duration-150">
           ← back
         </Link>
       </div>

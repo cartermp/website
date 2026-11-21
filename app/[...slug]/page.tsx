@@ -55,8 +55,8 @@ export default async function PagePage(props: {
   }
   
   return (
-    <article className="py-6 prose prose-sm sm:prose-base dark:prose-invert break-words">
-      <h1 className="mb-2 text-purple-700 dark:text-purple-300">{page.title}</h1>
+    <article className="py-6 prose reading-prose mx-auto max-w-[68ch] break-words sm:prose-lg">
+      <h1 className="mb-2 font-display text-ink">{page.title}</h1>
       {page.description && <p className="text-xl">{page.description}</p>}
       <Mdx source={page.body.raw} />
     </article>
