@@ -9,8 +9,6 @@
     "test": "jest --config jest.config.js --passWithNoTests",
     "test:watch": "npx jest --watch --config jest.config.js",
     "test:coverage": "npx jest --coverage --config jest.config.js",
-    "posts:sync": "node --env-file=.env.local scripts/standard-site.mjs documents",
-    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
     "lock": "pnpm install --lockfile-only"
   },
   "dependencies": {
@@ -44,7 +42,6 @@
     "vfile": "^6.0.3"
   },
   "devDependencies": {
-    "@atproto/api": "^0.32.5",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^8.0.0",
     "@testing-library/react": "^16.3.3",

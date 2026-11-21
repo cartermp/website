@@ -22,7 +22,6 @@ function readDocuments(directory: "pages" | "posts") {
         title: data.title,
         description: typeof data.description === "string" ? data.description : undefined,
         tags: typeof data.tags === "string" ? data.tags : undefined,
-        standardUri: typeof data.standardUri === "string" ? data.standardUri : undefined,
         body: { raw: content },
         date: data.date,
       }

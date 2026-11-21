@@ -39,7 +39,6 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
           NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
-          STANDARD_PUBLICATION_URI: ${{ vars.STANDARD_PUBLICATION_URI }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out

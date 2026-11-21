@@ -14,7 +14,7 @@ Follow the build and lockfile requirements in [AGENTS.md](AGENTS.md).
   palette and typography. The site follows the system color scheme by default
   and remembers a manual choice.
 - **Export.** Next.js generates static routes and assets in `out/`.
-  [scripts/finalize-export.mjs](scripts/finalize-export.mjs) adds Pages metadata
-  and the optional standard.site verification file. Keep routes compatible
+  [scripts/finalize-export.mjs](scripts/finalize-export.mjs) adds the Pages
+  marker so GitHub serves the exported assets. Keep routes compatible
   with static export and use [lib/site.ts](lib/site.ts) for local asset URLs
   that need the GitHub Pages base path.

@@ -51,10 +51,4 @@ For a local project-path build, run `NEXT_PUBLIC_BASE_PATH=/website NEXT_PUBLIC_
 
 The static route `/email/` redirects to `email.phillipcarter.dev`.
 
-## Optional standard.site publishing
-
-Copy [.env.local.example](.env.local.example) to `.env.local` and fill in the Bluesky handle, app password, and existing publication AT URI. `pnpm posts:sync` publishes eligible posts as standard.site documents and writes their `standardUri` values into post frontmatter. Commit those values with the posts. The [pre-push hook](.githooks/pre-push) runs the same sync when `.env.local` exists.
-
-Set the repository Actions variable `STANDARD_PUBLICATION_URI` to the publication AT URI to export the verification file at `/.well-known/site.standard.publication`. For a local build, pass that variable in the shell environment when running `pnpm build`.
-
 [MIT license](LICENSE)

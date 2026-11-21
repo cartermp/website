@@ -72,9 +72,6 @@ export default async function PostPage(props: {
   
   return (
     <article className="prose reading-prose mx-auto max-w-[68ch] break-words pb-6 sm:prose-lg">
-      {post.standardUri && (
-        <link rel="site.standard.document" href={post.standardUri} />
-      )}
       <h1 className="mb-4 font-display text-ink">{post.title}</h1>
       {post.description && (
         <p className="mt-0 text-lg text-muted sm:text-xl">
