@@ -1,62 +1,57 @@
-import { HomeSidebar } from "@/components/HomeSidebar"
+import { HomeIntro } from "@/components/HomeIntro"
+import { TagList } from "@/components/TagList"
 import { allPosts } from "@/lib/content"
 import Link from "next/link"
-import { TagList } from "@/components/TagList"
+
+const postDate = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+})
 
 export default function Home() {
-  allPosts.sort((a, b) => {
-    return new Date(b.date).getTime() - new Date(a.date).getTime()
-  })
-  
+  const posts = [...allPosts].sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+
   return (
-    <div className="grid gap-4 lg:grid-cols-[280px_minmax(0,1fr)]">
-      <HomeSidebar />
-      <div className="min-w-0 border border-retro-paper-border dark:border-retro-border">
-        <div className="border-b border-retro-paper-border px-4 py-1.5 text-xs text-retro-ink-muted dark:border-retro-border dark:text-retro-muted">
-          phillipcarter.dev
-        </div>
-        <div className="space-y-6 p-5 sm:p-7">
-          <div className="flex items-center gap-2 text-xs text-retro-ink-muted dark:text-retro-muted">
-            <span className="flex-1 border-t border-retro-paper-border dark:border-retro-border" />
-            <span>[ log ]</span>
-            <span className="flex-1 border-t border-retro-paper-border dark:border-retro-border" />
-          </div>
-          <ul className="space-y-3">
-            {allPosts.map((post, index) => (
-              <li key={post._id}
-                className="relative border border-retro-paper-border dark:border-retro-border
-                           hover:bg-retro-paper-surface dark:hover:bg-retro-surface
-                           transition-colors duration-150"
-              >
-                {/* Full-card link overlay */}
-                <Link href={post.slug} className="absolute inset-0 z-[1]" aria-label={post.title} />
-                <div className="relative p-4 pointer-events-none">
-                  <div className="flex items-center gap-2 text-xs text-retro-ink-muted dark:text-retro-muted mb-2">
-                    <span>{String(index + 1).padStart(2, "0")}.</span>
-                    <span className="flex-1 border-t border-retro-paper-border dark:border-retro-border" />
-                    <time>{new Date(post.date).toLocaleDateString()}</time>
-                  </div>
-                  <div className="space-y-1.5">
-                    <h2 className="text-base font-bold leading-snug text-retro-ink-accent dark:text-retro-accent">
-                      {post.title}
-                    </h2>
-                    {post.description && (
-                      <p className="text-xs text-retro-ink-muted dark:text-retro-muted leading-relaxed">
-                        {post.description}
-                      </p>
-                    )}
-                    {post.tags && (
-                      <div className="relative z-[2] pointer-events-auto">
-                        <TagList tags={post.tags} />
-                      </div>
-                    )}
-                  </div>
+    <div className="mx-auto max-w-3xl">
+      <HomeIntro />
+
+      <section aria-labelledby="posts" className="mt-8 sm:mt-10">
+        <h2 id="posts" className="mb-3 text-xs font-semibold uppercase tracking-widest text-retro-ink-muted dark:text-retro-muted">
+          Posts
+        </h2>
+        <ul className="divide-y divide-retro-paper-border border-y border-retro-paper-border dark:divide-retro-border dark:border-retro-border">
+          {posts.map((post) => (
+            <li
+              key={post._id}
+              className="relative grid gap-1 px-2 py-4 transition-colors hover:bg-retro-paper-surface focus-within:bg-retro-paper-surface sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-6 sm:px-4 dark:hover:bg-retro-surface dark:focus-within:bg-retro-surface"
+            >
+              <h3 className="text-base font-bold leading-snug text-retro-ink-accent sm:text-lg dark:text-retro-accent">
+                <Link
+                  href={post.slug}
+                  className="before:absolute before:inset-0 before:content-[''] hover:underline focus-visible:underline"
+                >
+                  {post.title}
+                </Link>
+              </h3>
+              <time dateTime={post.date} className="whitespace-nowrap text-xs leading-6 text-retro-ink-muted dark:text-retro-muted">
+                {postDate.format(new Date(post.date))}
+              </time>
+              {post.description && (
+                <p className="text-sm leading-relaxed text-retro-ink-muted sm:col-span-2 dark:text-retro-muted">
+                  {post.description}
+                </p>
+              )}
+              {post.tags && (
+                <div className="relative z-10 mt-2 w-fit sm:col-span-2">
+                  <TagList tags={post.tags} />
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   )
 }

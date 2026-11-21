@@ -1,7 +1,5 @@
-import Link from "next/link"
 import { allPages } from "@/lib/content"
 import { ModeToggle } from "@/components/mode-toggle"
-import { SidebarAboutPanel } from "@/components/SidebarAboutPanel"
 import {
   siBluesky as BlueskyIcon,
   siGithub as GithubIcon,
@@ -81,53 +79,32 @@ function SocialLinks() {
   );
 }
 
-export function HomeSidebar() {
+export function HomeIntro() {
   const aboutParagraphs = getAboutParagraphs()
 
   return (
-    <aside className="h-fit lg:sticky lg:top-8 border border-retro-paper-border dark:border-retro-border space-y-0">
-
-      {/* Name / Logo */}
-      <Link
-        href="/"
-        className="flex items-center gap-3 border-b border-retro-paper-border dark:border-retro-border
-                   px-4 py-3 hover:bg-retro-paper-surface dark:hover:bg-retro-surface
-                   transition-colors duration-150"
-      >
-        <span className="flex h-9 w-9 items-center justify-center border border-retro-paper-border dark:border-retro-border text-xs font-bold text-retro-ink dark:text-retro-text shrink-0">
-          PC
-        </span>
-        <div className="flex flex-col min-w-0">
-          <span className="text-xs text-retro-ink-muted dark:text-retro-muted">/blog</span>
-          <span className="text-base font-bold text-retro-ink dark:text-retro-text truncate">
-            Phillip Carter
-          </span>
-        </div>
-      </Link>
-
-      {/* About — sourced from content/pages/about.mdx */}
-      {aboutParagraphs.length > 0 && (
-        <SidebarAboutPanel className="border-b border-retro-paper-border dark:border-retro-border px-4 py-3 space-y-2">
-          <div className="text-xs uppercase tracking-widest text-retro-ink-muted dark:text-retro-muted">
-            -- about --
+    <header className="border border-t-4 border-retro-paper-border border-t-retro-ink-accent bg-retro-paper-surface px-5 py-6 sm:px-8 sm:py-8 dark:border-retro-border dark:border-t-retro-accent dark:bg-retro-surface">
+      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Phillip Carter</h1>
+        <div className="flex items-center gap-3">
+          <div aria-label="Social profiles" role="group" className="flex items-center gap-2">
+            <SocialLinks />
           </div>
-          <div className="space-y-3 text-xs leading-relaxed text-retro-ink dark:text-retro-text">
+          <ModeToggle />
+        </div>
+      </div>
+      {aboutParagraphs.length > 0 && (
+        <section aria-labelledby="about" className="mt-5 max-w-[72ch]">
+          <h2 id="about" className="mb-2 text-xs font-semibold uppercase tracking-widest text-retro-ink-muted dark:text-retro-muted">
+            About
+          </h2>
+          <div className="space-y-3 text-sm leading-relaxed sm:text-base">
             {aboutParagraphs.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
           </div>
-        </SidebarAboutPanel>
+        </section>
       )}
-
-      {/* Links */}
-      <div className="flex items-center justify-between px-4 py-2.5">
-        <span className="text-xs text-retro-ink-muted dark:text-retro-muted">[links]</span>
-        <div className="flex items-center gap-1">
-          <SocialLinks />
-          <ModeToggle />
-        </div>
-      </div>
-
-    </aside>
+    </header>
   )
 }
