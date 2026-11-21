@@ -74,7 +74,7 @@ export default async function PostPage(props: {
   const mdxSource = await processMdx(post.body.raw)
 
   return (
-    <article className="prose prose-sm sm:prose-base dark:prose-invert max-w-none pb-6 break-words">
+    <article className="prose prose-sm mx-auto max-w-[75ch] break-words pb-6 sm:prose-base dark:prose-invert">
       {post.standardUri && (
         <link rel="site.standard.document" href={post.standardUri} />
       )}
