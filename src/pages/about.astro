@@ -1,0 +1,11 @@
+---
+import { Content, frontmatter } from "../../content/pages/about.md"
+import SiteLayout from "../layouts/SiteLayout.astro"
+---
+<SiteLayout pageTitle={frontmatter.title} summary={frontmatter.description}>
+  <article class="prose reading-prose mx-auto max-w-[68ch] break-words py-6 sm:prose-lg">
+    <h1 class="mb-2 font-display text-ink">{frontmatter.title}</h1>
+    {frontmatter.description && <p class="text-xl">{frontmatter.description}</p>}
+    <div class="markdown-content min-w-0 break-words"><Content /></div>
+  </article>
+</SiteLayout>

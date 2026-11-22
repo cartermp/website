@@ -1,5 +1,5 @@
 ---
-import { getEntry, render } from "astro:content"
+import { Content as Bio } from "../../content/pages/about.md"
 import SiteLayout from "../layouts/SiteLayout.astro"
 import ThemeToggle from "../components/ThemeToggle.astro"
 import SocialLinks from "../components/SocialLinks.astro"
@@ -7,8 +7,6 @@ import PostList from "../components/PostList.astro"
 import { getPosts, title } from "../lib/site"
 
 const posts = await getPosts()
-const about = await getEntry("pages", "about")
-const Bio = about ? (await render(about)).Content : undefined
 ---
 <SiteLayout>
   <div class="mx-auto max-w-[52rem]">
@@ -17,11 +15,9 @@ const Bio = about ? (await render(about)).Content : undefined
         <h1 class="font-display text-5xl leading-[0.98] font-medium tracking-[-0.055em] text-accent sm:text-7xl">{title}</h1>
         <ThemeToggle />
       </div>
-      {Bio && (
-        <section aria-label="About" class="home-about mt-6 max-w-[59ch] text-base leading-relaxed text-muted sm:text-lg">
-          <div class="markdown-content min-w-0 break-words"><Bio /></div>
-        </section>
-      )}
+      <section aria-label="About" class="home-about mt-6 max-w-[59ch] text-base leading-relaxed text-muted sm:text-lg">
+        <div class="markdown-content min-w-0 break-words"><Bio /></div>
+      </section>
       <SocialLinks />
     </header>
     <section aria-labelledby="posts" class="mt-9 sm:mt-12">

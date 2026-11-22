@@ -38,16 +38,23 @@ tags: engineering, ai
 Write the post here.
 ```
 
-Only `title` and `date` are required. Label fenced code blocks with a language such as `fsharp`, `go`, or `json` for Shiki highlighting in both themes. Put post images in [public/img](public/img) and reference them as `/img/filename.png`. Edit [about.md](content/pages/about.md) to update the homepage bio.
+Only `title` and `date` are required. Label fenced code blocks with a language such as `fsharp`, `go`, or `json` for Shiki highlighting in both themes. Put post images in [public/img](public/img) and reference them as `/img/filename.png`. Edit [about.md](content/pages/about.md) to update both the homepage bio and `/about/`.
 
 ## Deploy
 
-[The Pages workflow](.github/workflows/nextjs.yml) deploys `out/` on pushes to `main`. [Pull request checks](.github/workflows/ci.yml) build the site without deploying it.
+[The Pages workflow](.github/workflows/pages.yml) checks and builds pull requests. Pushes to `main` and manual runs also deploy `out/`.
 
 For a new setup, select **GitHub Actions** under **Settings → Pages**. To use a custom domain, set it there and point its DNS to GitHub Pages. The workflow detects whether the site is served at the domain root or a project path such as `/website/`. Run the workflow again after changing the domain so the exported links and assets use the new path.
 
 For a local project-path build, run `SITE_BASE_PATH=/website SITE_URL=https://cartermp.github.io/website pnpm build` and serve `out/` under `/website/`.
 
 The static route `/email/` redirects to `email.phillipcarter.dev`.
+
+## How it fits together
+
+- [The posts collection](src/content.config.ts) validates Markdown frontmatter and derives post slugs from filenames. [PostList](src/components/PostList.astro) renders both the homepage and tag listings.
+- [Global CSS](src/styles/global.css) defines both palettes. [The site layout](src/layouts/SiteLayout.astro) applies the system theme or a reader’s saved choice before the page renders.
+- [Astro config](astro.config.mjs) wires up Tailwind and Shiki, prefixes Markdown asset URLs for project sites, and preserves encoded tag URLs such as `/tags/F%23/`. [The RSS endpoint](src/pages/rss.xml.ts) preserves existing item identifiers.
+- [AGENTS.md](AGENTS.md) records the build and lockfile requirements.
 
 [MIT license](LICENSE)
