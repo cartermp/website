@@ -1,0 +1,10 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro"
+import { localPath } from "../lib/site"
+---
+<SiteLayout pageTitle="Page not found">
+  <div class="mx-auto max-w-[52rem] space-y-4">
+    <h1 class="font-display text-4xl font-medium">Page not found</h1>
+    <a class="text-accent hover:underline" href={localPath("/")}>← Home</a>
+  </div>
+</SiteLayout>

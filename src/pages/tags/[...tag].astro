@@ -1,0 +1,41 @@
+---
+import SiteLayout from "../../layouts/SiteLayout.astro"
+import TagList from "../../components/TagList.astro"
+import { getPosts, localPath, postPath } from "../../lib/site"
+
+export async function getStaticPaths() {
+  const posts = await getPosts()
+  const tags = new Set(posts.flatMap((post) => post.data.tags))
+  return Array.from(tags, (tag) => ({
+    params: { tag },
+    props: { tag, posts: posts.filter((post) => post.data.tags.includes(tag)) },
+  }))
+}
+
+const { tag, posts } = Astro.props
+const title = `Posts tagged with "${tag}"`
+---
+<SiteLayout pageTitle={title}>
+  <div class="mx-auto max-w-[52rem] space-y-6">
+    <div class="space-y-1">
+      <h1 class="font-display text-3xl font-medium text-ink">{title}</h1>
+      <p class="text-xs text-muted">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+    </div>
+    <ul class="space-y-3">
+      {posts.map(({ id, data }) => (
+        <li class="relative rounded-2xl border border-line transition-colors hover:bg-surface">
+          <a href={postPath(id)} class="absolute inset-0 z-[1]" aria-label={data.title}></a>
+          <div class="pointer-events-none p-4">
+            <div class="mb-1.5 flex items-baseline justify-between gap-4">
+              <span class="text-sm font-bold leading-snug text-accent">{data.title}</span>
+              <time datetime={data.date.toISOString()} class="shrink-0 text-xs text-muted">{data.date.toLocaleDateString("en-US", { timeZone: "UTC" })}</time>
+            </div>
+            {data.description && <p class="mb-2 text-xs leading-relaxed text-muted">{data.description}</p>}
+            <div class="pointer-events-auto relative z-[2] w-fit"><TagList tags={data.tags} /></div>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <a href={localPath("/")} class="text-xs text-muted transition-colors hover:text-accent">← back</a>
+  </div>
+</SiteLayout>

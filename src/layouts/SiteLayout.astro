@@ -1,0 +1,66 @@
+---
+import "@fontsource-variable/dm-sans"
+import "@fontsource-variable/fraunces"
+import "../styles/global.css"
+import { description, localPath, title } from "../lib/site"
+
+const { pageTitle = title, summary = description } = Astro.props
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={summary} />
+    <link rel="icon" href={localPath("/favicon.ico")} />
+    <link rel="alternate" type="application/rss+xml" title={title} href={localPath("/rss.xml")} />
+    <script is:inline>
+      (() => {
+        const system = matchMedia("(prefers-color-scheme: dark)")
+        let mode = "system"
+        try {
+          const saved = localStorage.getItem("theme")
+          if (saved === "light" || saved === "dark") mode = saved
+        } catch {
+          // Keep following the system when storage is unavailable.
+        }
+
+        const choices = {
+          system: { next: "light", label: "Theme: System. Switch to Light." },
+          light: { next: "dark", label: "Theme: Light. Switch to Dark." },
+          dark: { next: "system", label: "Theme: Dark. Switch to System." },
+        }
+
+        const apply = () => {
+          const dark = mode === "dark" || (mode === "system" && system.matches)
+          document.documentElement.dataset.theme = mode
+          document.documentElement.classList.toggle("dark", dark)
+          document.documentElement.style.colorScheme = dark ? "dark" : "light"
+          const button = document.querySelector("[data-theme-toggle]")
+          if (button) {
+            button.title = choices[mode].label
+            button.setAttribute("aria-label", choices[mode].label)
+          }
+        }
+
+        apply()
+        document.addEventListener("DOMContentLoaded", apply, { once: true })
+        system.addEventListener("change", apply)
+        document.addEventListener("click", (event) => {
+          if (!(event.target instanceof Element) || !event.target.closest("[data-theme-toggle]")) return
+          mode = choices[mode].next
+          try { localStorage.setItem("theme", mode) } catch {
+            // The selected mode still applies for this page.
+          }
+          apply()
+        })
+      })()
+    </script>
+  </head>
+  <body class="min-h-screen bg-canvas font-sans text-ink antialiased">
+    <main class="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
+      <slot />
+    </main>
+  </body>
+</html>

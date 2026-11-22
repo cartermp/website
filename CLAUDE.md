@@ -3,18 +3,12 @@
 See [README.md](README.md) for setup, writing posts, and deploying the site.
 Follow the build and lockfile requirements in [AGENTS.md](AGENTS.md).
 
-## Architecture
-
-- **Content.** [lib/content.ts](lib/content.ts) reads MDX frontmatter and derives
-  slugs from filenames. The homepage uses the About page as its bio source.
-- **Rendering.** [components/mdx-components.tsx](components/mdx-components.tsx)
-  renders MDX and highlights fenced code blocks with Shiki at build time.
-  Individual posts use a standalone reading layout.
-- **Appearance.** [app/globals.css](app/globals.css) defines the shared color
-  palette and typography. The site follows the system color scheme by default
-  and remembers a manual choice.
-- **Export.** Next.js generates static routes and assets in `out/`.
-  [scripts/finalize-export.mjs](scripts/finalize-export.mjs) adds the Pages
-  marker so GitHub serves the exported assets. Keep routes compatible
-  with static export and use [lib/site.ts](lib/site.ts) for local asset URLs
-  that need the GitHub Pages base path.
+- [Content collections](src/content.config.ts) validate the Markdown in
+  `content/`. The homepage renders `content/pages/about.md` as the bio.
+- [Astro pages](src/pages) generate static posts, tag pages, and RSS.
+  Preserve existing URLs and RSS item identifiers when changing routes.
+- [Global CSS](src/styles/global.css) defines both color palettes.
+  [The site layout](src/layouts/SiteLayout.astro) applies the system theme
+  or the reader’s saved preference before the page renders.
+- [Astro config](astro.config.mjs) sets up Tailwind, Shiki, and Pages base
+  paths. GitHub Pages publishes the `out/` export.

@@ -3,57 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && node scripts/finalize-export.mjs",
-    "lint": "eslint .",
-    "test": "jest --config jest.config.js --passWithNoTests",
-    "test:watch": "npx jest --watch --config jest.config.js",
-    "test:coverage": "npx jest --coverage --config jest.config.js",
+    "dev": "astro dev --port 3000",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
     "lock": "pnpm install --lockfile-only"
   },
   "dependencies": {
-    "@shikijs/rehype": "^4.6.0",
-    "@tailwindcss/postcss": "^4.3.5",
-    "@tailwindcss/typography": "^0.5.20",
-    "@types/node": "26.6.6",
-    "@types/react": "19.3.0",
-    "@types/react-dom": "19.3.0",
-    "bright": "^1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.4.6",
-    "gray-matter": "^4.0.3",
-    "marked": "^18.2.1",
-    "next": "^16.4.6",
-    "next-mdx-remote": "^6.0.0",
-    "next-themes": "^0.4.6",
-    "postcss": "8.5.33",
-    "react": "19.3.1",
-    "react-dom": "19.3.1",
-    "react-markdown": "^10.1.0",
-    "rehype-raw": "^7.0.0",
-    "rehype-react": "^8.0.0",
-    "remark-gfm": "^4.0.1",
-    "remark-parse": "^11.0.0",
-    "remark-rehype": "^11.1.2",
-    "simple-icons": "^16.38.0",
-    "tailwindcss": "4.3.5",
-    "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "unified": "^11.0.5",
-    "vfile": "^6.0.3"
+    "astro": "^7.4.13",
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "simple-icons": "^16.38.1",
+    "@astrojs/markdown-satteri": "^0.4.10"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.2",
-    "@testing-library/jest-dom": "^8.0.0",
-    "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^14.6.13",
-    "@types/jest": "^30.0.0",
-    "jest": "^30.5.2",
-    "jest-environment-jsdom": "^30.5.2",
-    "typescript-native": "npm:typescript@7.0.2",
-    "undici": "^8.13.1"
+    "@astrojs/check": "^0.9.12",
+    "@tailwindcss/vite": "^4.3.5",
+    "@tailwindcss/typography": "^0.5.20",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^6.0.2"
   },
   "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af",
   "engines": {
-    "node": ">=22.19.0"
+    "node": ">=24"
   }
 }

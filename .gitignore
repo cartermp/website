@@ -5,11 +5,8 @@
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-
-# next.js
-/.next/
+# Astro
+/.astro/
 /out/
 
 # production
@@ -27,10 +24,9 @@ yarn-error.log*
 # local env files
 .env*.local
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
-next-env.d.ts
-.contentlayer
+/.pnpm-store/
+/.next/
+/.contentlayer/
+/next-env.d.ts

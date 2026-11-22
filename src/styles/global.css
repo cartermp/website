@@ -10,8 +10,8 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
-  --font-sans: var(--font-body), system-ui, sans-serif;
-  --font-display: var(--font-editorial), Georgia, serif;
+  --font-sans: "DM Sans Variable", system-ui, sans-serif;
+  --font-display: "Fraunces Variable", Georgia, serif;
 }
 
 :root {
@@ -38,11 +38,11 @@
   background: linear-gradient(120deg, var(--surface), var(--tint));
 }
 
-.home-about .mdx-content > * + * {
+.home-about .markdown-content > * + * {
   margin-block-start: 0.95rem;
 }
 
-.home-about .mdx-content > ul {
+.home-about .markdown-content > ul {
   margin-block-start: 0.45rem;
   padding-inline-start: 1.3em;
   list-style: disc;
@@ -74,7 +74,7 @@
   --tw-prose-td-borders: var(--line);
 }
 
-.mdx-content pre {
+.markdown-content pre {
   overflow-x: auto;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
@@ -84,29 +84,45 @@
   tab-size: 4;
 }
 
-.mdx-content pre:focus-visible {
+.markdown-content pre:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
-.mdx-content .shiki,
-.mdx-content .shiki span {
+.markdown-content .astro-code,
+.markdown-content .astro-code span {
   color: var(--shiki-light, inherit);
 }
 
-.dark .mdx-content .shiki,
-.dark .mdx-content .shiki span {
+.dark .markdown-content .astro-code,
+.dark .markdown-content .astro-code span {
   color: var(--shiki-dark, inherit);
 }
 
-.mdx-content :not(pre) > code:not(pre code) {
+.markdown-content :not(pre) > code:not(pre code) {
   border-radius: 0.3rem;
   background: var(--surface);
   padding: 0.1em 0.35em;
   font-weight: 500;
 }
 
-.mdx-content :not(pre) > code:not(pre code)::before,
-.mdx-content :not(pre) > code:not(pre code)::after {
+.markdown-content :not(pre) > code:not(pre code)::before,
+.markdown-content :not(pre) > code:not(pre code)::after {
   content: none;
+}
+
+[data-theme-toggle] [data-mode] { display: none; }
+:root[data-theme="system"] [data-mode="system"],
+:root[data-theme="light"] [data-mode="light"],
+:root[data-theme="dark"] [data-mode="dark"] { display: inline; }
+:root:not([data-theme]) [data-theme-toggle] { display: none; }
+
+.reading-prose .markdown-content img {
+  height: auto;
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+.reading-prose .markdown-content :is(h2, h3, h4, h5, h6) {
+  color: var(--accent);
 }
