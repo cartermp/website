@@ -5,9 +5,7 @@ date: "2026-11-21"
 tags: ai, llms
 ---
 
-There's a lot of talk online, particularly on X, about how people have set up a systems where bots orchestrate N agents to write a ton of code, emitting hundreds or thousands of PRs towards some goal.
-
-The problem that I see with this is that, at the end of the day, there just isn't a whole lot more wonderful software coming out the other end.
+There's a lot of talk online about how people have set up a systems where bots orchestrate fleets agents to write a ton of code, emitting hundreds or thousands of PRs towards some goal. By producing orders of magnitude more code than ever before, you can ostensibly get so much more done and very quickly.
 
 ## The post about making Grok Bot
 
@@ -17,17 +15,20 @@ She [posted about how she (and to an extent the Grok Bot team)](https://x.com/po
 
 This is actually pretty cool once you get past the initial feeling of being uncomfortable with that much code flying around. I've believed myself for a few years now that validation is the bottleneck, and it's actually quite hard, and software teams of the future will build validation systems more than anything else.
 
-The problem is that Grok Bot is just not very good yet:
+The prevailing theory here is that agentic systems let add a substantial amount of development velocity, so much so that even if there's some short-term disruptions or bugs they get blasted through by the sheer amount of code solving problems.
 
-- A significant drop-off in quality for "at work"-style assistant flows
-- All of a user's bots currently share one computer
-- Sensitive data leakage (the infamous dude whose bot posted his personal finances to his company slack)
+The problem is that Grok Bot is just not very good at once you're past the initial honeymoon phase of using a stateful AI assistant:
+
+- Surprisingly (in a very bad way) high token burn rate for simple tasks
+- A significant drop-off in quality when you try to do real-world, producive work with it
+- A wild amount of security issues, particularly given that all bots share the same computer and credentials
+- Sensitive data leakage issues (the infamous dude whose bot posted his personal finances to his company slack)
 - Many reports of mobile issues, be it general stability or just draining the battery
 - Failed or incomplete runs still charge you money
-- Tons of examples online of people complaining about having to babysit it through instructions
+- Tons of examples online of people complaining about having to babysit it through tasks
 - Marking things as done when they're not done
 
-FWIW I don't think Grok Bot is especially bad compared to other assistants. I've had nothing but trouble with Muse for really basic stuff as well, and if I think about it for all of ten seconds it's obvious there's very hard problems here.
+I don't think Grok Bot is especially bad compared to other assistants. I've had nothing but trouble with Muse for really basic stuff as well, and if I think about it for all of ten seconds it's obvious there's very hard problems here.
 
 But what I'm getting at is: thousands of PRs a month doesn't seem to achieve a really great product. I can't help but feel a strong discordance with the excitement around flinging around so much code when the product it's all in service towards just doesn't work very well yet. This is valuing outputs over outcomes all over again.
 
@@ -37,13 +38,13 @@ Things are still very early, but we're trying this too.
 
 The platform I work on has some bugs. About a thousand or so are explicitly filed, with easily another 10k or so hidden and not discovered yet. It is what it is.
 
-You'd think that with a thousand+ legit bugs, many of them related, you could sic a fleet of agents on them and get all the bugs fixed, right?
+You'd think that with a thousand+ legit bugs, many of them related, you could unleash a fleet of agents on them and get all the bugs fixed.
 
-Well, you can. And many tokens can be burned in the process. And yet, some of the core problems that we care about still seem unsolved weeks later. If you were a user of a client connecting to the platform I work on, you'd still have the same issues that you had about three weeks ago.
+You can. And yet, some of the core problems that we care about still seem unsolved weeks later. If you were a user of a client connecting to the platform I work on, you'd still have the same issues that you had about three weeks ago.
 
 Maybe on our end we're just not trying hard enough. I know that our own validation systems aren't good enough and we have much improvement to make on having robust SLOs and other telemetry that we can _fully_ trust and hand off to agents for most things.
 
-But so far, the bottom line hasn't changed much.
+But so far, the bottom line hasn't changed.
 
 ## The work that counts but doesn't count
 
@@ -60,6 +61,6 @@ And yet, I can't help but feel like these don't really count. In each case, noth
 
 The vast, vast majority of software in the world just doesn't work like that. Most business problems don't get solved because you could rewrite a codebase to Rust, improve perf by X%, or prove you can do well on a (typically flawed) benchmark.
 
-Often what's stated for these kinds of efforts is there's _so much potential_, but what's funny about that is none of these efforts seemed to have realized much of that potential so far.
+Often what's stated for these kinds of efforts is there's _so much potential_ to do more, but so far all I see is go unrealized.
 
-So far, by my measure, it's all just bluster.
+Maybe it's all just bluster.
