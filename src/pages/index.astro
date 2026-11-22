@@ -3,15 +3,12 @@ import { getEntry, render } from "astro:content"
 import SiteLayout from "../layouts/SiteLayout.astro"
 import ThemeToggle from "../components/ThemeToggle.astro"
 import SocialLinks from "../components/SocialLinks.astro"
-import TagList from "../components/TagList.astro"
-import { getPosts, postPath, title } from "../lib/site"
+import PostList from "../components/PostList.astro"
+import { getPosts, title } from "../lib/site"
 
 const posts = await getPosts()
 const about = await getEntry("pages", "about")
 const Bio = about ? (await render(about)).Content : undefined
-const postDate = new Intl.DateTimeFormat("en-US", {
-  month: "short", day: "numeric", year: "numeric", timeZone: "UTC",
-})
 ---
 <SiteLayout>
   <div class="mx-auto max-w-[52rem]">
@@ -29,20 +26,7 @@ const postDate = new Intl.DateTimeFormat("en-US", {
     </header>
     <section aria-labelledby="posts" class="mt-9 sm:mt-12">
       <h2 id="posts" class="mb-3 px-2 font-display text-2xl font-medium tracking-tight text-ink sm:px-4">Posts</h2>
-      <ul class="divide-y divide-line border-t border-line">
-        {posts.map(({ id, data }) => (
-          <li class="relative grid gap-1 px-2 py-5 transition-colors hover:bg-surface focus-within:bg-surface sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-6 sm:px-4">
-            <h3 class="font-display text-xl font-medium leading-snug tracking-tight text-ink sm:text-2xl">
-              <a href={postPath(id)} class="before:absolute before:inset-0 before:content-[''] decoration-1 underline-offset-4 hover:text-accent hover:underline focus-visible:underline">{data.title}</a>
-            </h3>
-            <time datetime={data.date.toISOString()} class="whitespace-nowrap text-sm leading-7 text-muted">{postDate.format(data.date)}</time>
-            {data.description && <p class="text-base leading-relaxed text-muted sm:col-span-2">{data.description}</p>}
-            {data.tags.length > 0 && (
-              <div class="relative z-10 mt-2 w-fit sm:col-span-2"><TagList tags={data.tags} /></div>
-            )}
-          </li>
-        ))}
-      </ul>
+      <PostList posts={posts} />
     </section>
   </div>
 </SiteLayout>
