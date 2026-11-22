@@ -13,7 +13,7 @@ const { pageTitle = title, summary = description } = Astro.props
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={summary} />
-    <link rel="icon" href={localPath("/favicon.ico")} />
+    <link rel="icon" type="image/png" sizes="48x48" href={localPath("/profile-icon.png")} />
     <link rel="alternate" type="application/rss+xml" title={title} href={localPath("/rss.xml")} />
     <script is:inline>
       (() => {
