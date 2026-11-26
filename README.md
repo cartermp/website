@@ -21,7 +21,7 @@ Open [localhost:3000](http://localhost:3000). The site builds without a database
 | `pnpm build` | Builds and exports the site to `out/` |
 | `pnpm lock` | Refreshes the lockfile after dependency changes |
 
-Run `pnpm preview` after building to preview the production export.
+Run `pnpm preview` after building to preview the production export. Run `python3 scripts/check-export.py` to check local links and assets in `out/`.
 
 ## Write a post
 
@@ -42,7 +42,7 @@ Only `title` and `date` are required. Label fenced code blocks with a language s
 
 ## Deploy
 
-[The Pages workflow](.github/workflows/pages.yml) checks and builds pull requests. Pushes to `main` and manual runs also deploy `out/`.
+[The Pages workflow](.github/workflows/pages.yml) checks and builds pull requests. Pushes to `main` and manual runs also deploy `out/`. Pushes that only change the README, agent instructions, or license skip deployment.
 
 For a new setup, select **GitHub Actions** under **Settings → Pages**. To use a custom domain, set it there and point its DNS to GitHub Pages. The workflow detects whether the site is served at the domain root or a project path such as `/website/`. Run the workflow again after changing the domain so the exported links and assets use the new path.
 

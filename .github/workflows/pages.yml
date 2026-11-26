@@ -5,6 +5,10 @@ on:
     branches: [main]
   push:
     branches: [main]
+    paths-ignore:
+      - README.md
+      - AGENTS.md
+      - LICENSE
   workflow_dispatch:
 
 permissions:
@@ -32,7 +36,10 @@ jobs:
       - uses: actions/configure-pages@v5
         if: github.event_name != 'pull_request'
         id: pages
-      - run: pnpm build
+      - name: Build and verify export
+        run: |
+          pnpm build
+          python3 scripts/check-export.py
         env:
           SITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}
           SITE_URL: ${{ steps.pages.outputs.base_url }}

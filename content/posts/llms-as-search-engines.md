@@ -5,7 +5,7 @@ date: "2025-05-03"
 tags: llms, data, search
 ---
 
-I recently wrote that [LLMs are weird computers](./llms-computers) and I think that's a useful way to think about them. Computers can also be made into computing _systems_, and search engines are a type of computing system.
+I recently wrote that [LLMs are weird computers](/posts/llms-computers/) and I think that's a useful way to think about them. Computers can also be made into computing _systems_, and search engines are a type of computing system.
 
 Recently, there's been [discourse](https://bsky.app/profile/annleckie.com/post/3lo2xddgo3k2i) [about this topic](https://bsky.app/profile/caseynewton.bsky.social/post/3lo4tdybmgk2v) and it hasn't been very productive. Rather than distill my thoughts into a small post form, I thought I'd briefly elaborate on my own position here.
 

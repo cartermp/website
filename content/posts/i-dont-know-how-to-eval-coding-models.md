@@ -5,7 +5,7 @@ date: "2026-07-01"
 tags: ai, llms
 ---
 
-A while back, I wrote about how [it's exhausting keeping up with AI models](./ai-evals-exhausting). The crux of my exhaustion was:
+A while back, I wrote about how [it's exhausting keeping up with AI models](/posts/ai-evals-exhausting/). The crux of my exhaustion was:
 
 1. Improvements on industry standard benchmarks usually don't mean much for me
 2. Evals look backwards, not forward, so I can't tell if the model will be better for what I want to do tomorrow

@@ -151,7 +151,7 @@ With AI assistance, my development loop is more dynamic and iterative than the b
 
 ### Build durable context
 
-[RAG](https://arxiv.org/abs/2005.11401) is something most people building with AI have learned is an essential pattern, and the quality of an AI integration is a direct function of the [relevancy, magnitude, and quality](./llms-three-properties) of the contextual data you pass to an AI model.
+[RAG](https://arxiv.org/abs/2005.11401) is something most people building with AI have learned is an essential pattern, and the quality of an AI integration is a direct function of the [relevancy, magnitude, and quality](/posts/llms-three-properties/) of the contextual data you pass to an AI model.
 
 This is especially true for using AI for real-world coding instead of tiny little side projects.
 

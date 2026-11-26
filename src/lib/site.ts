@@ -5,6 +5,13 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, "")
 export const title = "Phillip Carter"
 export const description = "Phillip Carter's spot on the web."
 
+export const canonicalOrigin = "https://phillipcarter.dev"
+
+export function canonicalUrl(path: string) {
+  const pathname = base && path.startsWith(`${base}/`) ? path.slice(base.length) : path
+  return `${canonicalOrigin}${pathname}`
+}
+
 export function localPath(path: string) {
   return `${base}${path}`
 }

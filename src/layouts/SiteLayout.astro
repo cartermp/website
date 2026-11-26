@@ -2,9 +2,18 @@
 import "@fontsource-variable/dm-sans"
 import "@fontsource-variable/fraunces"
 import "../styles/global.css"
-import { description, localPath, title } from "../lib/site"
+import { canonicalOrigin, canonicalUrl, description, localPath, title } from "../lib/site"
 
-const { pageTitle = title, summary = description } = Astro.props
+interface Props {
+  pageTitle?: string
+  summary?: string
+  kind?: "article" | "website"
+  noindex?: boolean
+}
+
+const { pageTitle = title, summary = description, kind = "website", noindex = false } = Astro.props
+const canonical = canonicalUrl(Astro.url.pathname)
+const image = `${canonicalOrigin}/social-preview.png`
 ---
 <!doctype html>
 <html lang="en">
@@ -13,6 +22,21 @@ const { pageTitle = title, summary = description } = Astro.props
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={summary} />
+    {noindex ? <meta name="robots" content="noindex" /> : (
+      <>
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content={kind} />
+        <meta property="og:site_name" content={title} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={summary} />
+        <meta property="og:image" content={image} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Phillip Carter — phillipcarter.dev" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </>
+    )}
     <link rel="icon" type="image/png" sizes="48x48" href={localPath("/profile-icon.png")} />
     <link rel="alternate" type="application/rss+xml" title={title} href={localPath("/rss.xml")} />
     <script is:inline>

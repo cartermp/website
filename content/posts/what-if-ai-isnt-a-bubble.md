@@ -5,7 +5,7 @@ date: "2025-12-15"
 tags: ai, llms
 ---
 
-Earlier this year I claimed that [LLMs are computers](./llms-computers) and that:
+Earlier this year I claimed that [LLMs are computers](/posts/llms-computers/) and that:
 
 1. Just like the early days of PCs, they are not very good yet, but will improve
 2. Long term, they may be one of the most impactful aspects of our economies moving forward

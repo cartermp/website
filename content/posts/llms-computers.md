@@ -96,7 +96,7 @@ This inversion is really weird. We've spent decades working with computers that 
 
 ## LLMs aren't just about text anymore
 
-In 2024, not only did [LLMs get much faster to run](./llm-training-efficiency), but multi-modality went mainstream. Now you can do things like:
+In 2024, not only did [LLMs get much faster to run](/posts/llm-training-efficiency/), but multi-modality went mainstream. Now you can do things like:
 
 - Upload a picture of food and ask ChatGPT to give you a range of calories as an estimate
 - Use a coding assistant, paste in a picture of the UI doing something weird, and ask it to fix it in a particular way
