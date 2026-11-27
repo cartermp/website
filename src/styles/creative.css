@@ -329,3 +329,85 @@
 [data-theme="creative"] a:not(.post-title-link) {
   position: relative;
 }
+
+.creative-mobile-parade {
+  display: none;
+}
+
+@media (max-width: 40rem) {
+  [data-theme="creative"] body {
+    background-attachment: scroll;
+  }
+
+  [data-theme="creative"] .creative-drifter {
+    left: 0.12rem;
+    color: #751a9c;
+    font-size: 0.95rem;
+    animation-name: creative-gutter-drift;
+  }
+
+  [data-theme="creative"] .creative-drifter:nth-of-type(even) {
+    left: auto;
+    right: 0.12rem;
+  }
+
+  /* On phones the cards cover the backdrop, so give stickers their own lane. */
+  [data-theme="creative"] .creative-mobile-parade {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: block;
+    overflow: hidden;
+    border-bottom: 0.15rem solid var(--ink);
+    background: #fff08c;
+    pointer-events: none;
+  }
+
+  .creative-parade-track {
+    display: flex;
+    width: 200%;
+  }
+
+  .creative-parade-group {
+    display: flex;
+    flex: 0 0 50%;
+    align-items: center;
+    justify-content: space-around;
+    height: 1.8rem;
+    color: #7e1793;
+    font: 900 1.1rem/1 system-ui, sans-serif;
+  }
+
+  .creative-parade-group span:nth-child(3n + 2) { color: #107364; }
+  .creative-parade-group span:nth-child(3n) { color: #bd187f; }
+
+  [data-theme="creative"] .markdown-content :is(h1, h2, h3, h4, h5, h6)[id] {
+    scroll-margin-block-start: 3rem;
+  }
+}
+
+@media (max-width: 40rem) and (prefers-reduced-motion: no-preference) {
+  .creative-parade-track {
+    animation: creative-parade 9s linear infinite;
+  }
+
+  .creative-parade-group span {
+    animation: creative-parade-hop 1.8s ease-in-out infinite alternate;
+  }
+
+  .creative-parade-group span:nth-child(even) { animation-delay: -0.9s; }
+}
+
+@keyframes creative-gutter-drift {
+  from { transform: translateY(calc(var(--dy) * -0.25)) rotate(-24deg) scale(0.8); }
+  to { transform: translateY(calc(var(--dy) * 0.75)) rotate(34deg) scale(1.12); }
+}
+
+@keyframes creative-parade {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes creative-parade-hop {
+  from { transform: translateY(-0.17rem) rotate(-17deg); }
+  to { transform: translateY(0.17rem) rotate(17deg); }
+}
