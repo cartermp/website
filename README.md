@@ -53,7 +53,7 @@ The static route `/email/` redirects to `email.phillipcarter.dev`.
 ## How it fits together
 
 - [The posts collection](src/content.config.ts) validates Markdown frontmatter and derives post slugs from filenames. [PostList](src/components/PostList.astro) renders both the homepage and tag listings.
-- [Global CSS](src/styles/global.css) defines both palettes. [The site layout](src/layouts/SiteLayout.astro) applies the system theme or a reader’s saved choice before the page renders.
+- [Global CSS](src/styles/global.css) and the [default theme styles](src/styles/creative.css) define the themes. [The site layout](src/layouts/SiteLayout.astro) applies a reader’s saved choice before the page renders.
 - [Astro config](astro.config.mjs) wires up Tailwind and Shiki, prefixes Markdown asset URLs for project sites, and preserves encoded tag URLs such as `/tags/F%23/`. [The RSS endpoint](src/pages/rss.xml.ts) preserves existing item identifiers.
 - [AGENTS.md](AGENTS.md) records the build and lockfile requirements.
 

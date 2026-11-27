@@ -1,0 +1,38 @@
+---
+interface Props {
+  scene: "home" | "posts" | "article"
+}
+
+const { scene } = Astro.props
+const stickers = {
+  home: ["✿", "✧", "♥", "★", "☻", "✹", "✿", "✷"],
+  posts: ["◆", "✷", "◉", "✹", "★", "◆", "✧", "●"],
+  article: ["✦", "☄", "✧", "✦", "☾", "✷", "✧", "★"],
+}
+
+const paths = [
+  { x: "3%", y: "17%", dx: "18vw", dy: "22vh", time: "9s", delay: "-5s" },
+  { x: "91%", y: "9%", dx: "-22vw", dy: "24vh", time: "13s", delay: "-7s" },
+  { x: "3%", y: "66%", dx: "20vw", dy: "-28vh", time: "14s", delay: "-12s" },
+  { x: "95%", y: "57%", dx: "-25vw", dy: "-24vh", time: "9s", delay: "-3s" },
+  { x: "9%", y: "38%", dx: "-9vw", dy: "18vh", time: "8s", delay: "-2s" },
+  { x: "83%", y: "71%", dx: "14vw", dy: "-34vh", time: "11s", delay: "-5s" },
+  { x: "80%", y: "93%", dx: "-25vw", dy: "-22vh", time: "15s", delay: "-8s" },
+  { x: "24%", y: "87%", dx: "-20vw", dy: "-27vh", time: "10s", delay: "-6s" },
+]
+---
+<div class="creative-decor" data-creative-scene={scene} aria-hidden="true">
+  <span class="creative-sunburst"></span>
+  <span class="creative-orbit"></span>
+  <span class="creative-squiggle"></span>
+  <span class="creative-star">✦</span>
+  <span class="creative-flower">✿</span>
+  {paths.map(({ x, y, dx, dy, time, delay }, index) => (
+    <span
+      class="creative-drifter"
+      style={`--x:${x};--y:${y};--dx:${dx};--dy:${dy};--time:${time};--delay:${delay}`}
+    >{stickers[scene][index]}</span>
+  ))}
+  <span class="creative-comet"></span>
+  <span class="creative-comet"></span>
+</div>

@@ -2,6 +2,8 @@
 import "@fontsource-variable/dm-sans"
 import "@fontsource-variable/fraunces"
 import "../styles/global.css"
+import "../styles/creative.css"
+import CreativeScene from "../components/CreativeScene.astro"
 import { canonicalOrigin, canonicalUrl, description, localPath, title } from "../lib/site"
 
 interface Props {
@@ -13,10 +15,11 @@ interface Props {
 
 const { pageTitle = title, summary = description, kind = "website", noindex = false } = Astro.props
 const canonical = canonicalUrl(Astro.url.pathname)
+const scene = canonical === `${canonicalOrigin}/` ? "home" : kind === "article" ? "article" : "posts"
 const image = `${canonicalOrigin}/social-preview.png`
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="creative">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -41,50 +44,71 @@ const image = `${canonicalOrigin}/social-preview.png`
     <link rel="alternate" type="application/rss+xml" title={title} href={localPath("/rss.xml")} />
     <script is:inline>
       (() => {
+        const root = document.documentElement
         const system = matchMedia("(prefers-color-scheme: dark)")
-        let mode = "system"
+        const modes = ["system", "light", "dark", "creative"]
+        let mode = root.dataset.theme
         try {
           const saved = localStorage.getItem("theme")
-          if (saved === "light" || saved === "dark") mode = saved
+          if (modes.includes(saved)) mode = saved
         } catch {
-          // Keep following the system when storage is unavailable.
+          // Keep the default when storage is unavailable.
         }
 
-        const choices = {
-          system: { next: "light", label: "Theme: System. Switch to Light." },
-          light: { next: "dark", label: "Theme: Light. Switch to Dark." },
-          dark: { next: "system", label: "Theme: Dark. Switch to System." },
-        }
-
-        const apply = () => {
+        const applyTheme = () => {
           const dark = mode === "dark" || (mode === "system" && system.matches)
-          document.documentElement.dataset.theme = mode
-          document.documentElement.classList.toggle("dark", dark)
-          document.documentElement.style.colorScheme = dark ? "dark" : "light"
-          const button = document.querySelector("[data-theme-toggle]")
-          if (button) {
-            button.title = choices[mode].label
-            button.setAttribute("aria-label", choices[mode].label)
-          }
+          root.dataset.theme = mode
+          root.classList.toggle("dark", dark)
+          root.style.colorScheme = dark ? "dark" : "light"
         }
 
-        apply()
-        document.addEventListener("DOMContentLoaded", apply, { once: true })
-        system.addEventListener("change", apply)
-        document.addEventListener("click", (event) => {
-          if (!(event.target instanceof Element) || !event.target.closest("[data-theme-toggle]")) return
-          mode = choices[mode].next
-          try { localStorage.setItem("theme", mode) } catch {
-            // The selected mode still applies for this page.
+        applyTheme()
+        system.addEventListener("change", applyTheme)
+        document.addEventListener("DOMContentLoaded", () => {
+          const picker = document.querySelector("[data-theme-picker]")
+          if (!picker) return
+          const trigger = picker.querySelector("summary")
+          const choices = [...picker.querySelectorAll("[data-theme-choice]")]
+          const updatePicker = () => {
+            for (const choice of choices) {
+              const selected = choice.dataset.themeChoice === mode
+              choice.setAttribute("aria-pressed", String(selected))
+              if (selected) trigger.setAttribute("aria-label", `Theme: ${choice.querySelector("span").textContent}`)
+            }
           }
-          apply()
-        })
+
+          updatePicker()
+          picker.dataset.themeReady = ""
+          picker.addEventListener("click", (event) => {
+            const choice = event.target.closest("[data-theme-choice]")
+            if (!choice) return
+            mode = choice.dataset.themeChoice
+            try { localStorage.setItem("theme", mode) } catch {
+              // The selected mode still applies for this page.
+            }
+            applyTheme()
+            updatePicker()
+            picker.open = false
+            trigger.focus()
+          })
+          picker.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && picker.open) {
+              picker.open = false
+              trigger.focus()
+            }
+          })
+          document.addEventListener("click", (event) => {
+            if (picker.open && !picker.contains(event.target)) picker.open = false
+          })
+        }, { once: true })
       })()
     </script>
   </head>
   <body class="min-h-screen bg-canvas font-sans text-ink antialiased">
+    <CreativeScene scene={scene} />
     <main class="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-12">
       <slot />
     </main>
+    <script>import "../lib/creative-hover"</script>
   </body>
 </html>

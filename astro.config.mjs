@@ -3,7 +3,7 @@ import { cp, readdir } from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 import { join } from "node:path"
 import tailwind from "@tailwindcss/vite"
-import { satteri } from "@astrojs/markdown-satteri"
+import { satteri, satteriHeadingIdsPlugin } from "@astrojs/markdown-satteri"
 
 const base = (process.env.SITE_BASE_PATH ?? "").replace(/\/$/, "")
 const site = process.env.SITE_URL || "https://phillipcarter.dev"
@@ -18,6 +18,27 @@ const prefixMarkdownUrls = {
       if (base && typeof url === "string" && /^\/(?!\/)/.test(url) && url !== base && !url.startsWith(`${base}/`)) {
         context.setProperty(node, attribute, `${base}${url}`)
       }
+    },
+  },
+}
+
+const headingPermalinks = {
+  name: "heading-permalinks",
+  element: {
+    filter: ["h1", "h2", "h3", "h4", "h5", "h6"],
+    visit(node, context) {
+      const id = node.properties?.id
+      if (typeof id !== "string" || !id) return
+      context.appendChild(node, {
+        type: "element",
+        tagName: "a",
+        properties: {
+          className: ["heading-permalink"],
+          href: `#${encodeURIComponent(id)}`,
+          ariaLabel: `Link to ${context.textContent(node)}`,
+        },
+        children: [],
+      })
     },
   },
 }
@@ -52,7 +73,8 @@ export default defineConfig({
     },
     processor: satteri({
       features: { smartPunctuation: false },
-      hastPlugins: [prefixMarkdownUrls],
+      // Run Astro's built-in slugger before adding links so existing IDs stay stable.
+      hastPlugins: [prefixMarkdownUrls, satteriHeadingIdsPlugin(), headingPermalinks],
     }),
   },
   vite: { plugins: [tailwind()] },
