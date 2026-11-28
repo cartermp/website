@@ -45,8 +45,7 @@ const image = `${canonicalOrigin}/social-preview.png`
     <script is:inline>
       (() => {
         const root = document.documentElement
-        const system = matchMedia("(prefers-color-scheme: dark)")
-        const modes = ["system", "light", "dark", "creative"]
+        const modes = ["light", "dark", "creative"]
         let mode = root.dataset.theme
         try {
           const saved = localStorage.getItem("theme")
@@ -56,14 +55,13 @@ const image = `${canonicalOrigin}/social-preview.png`
         }
 
         const applyTheme = () => {
-          const dark = mode === "dark" || (mode === "system" && system.matches)
+          const dark = mode === "dark"
           root.dataset.theme = mode
           root.classList.toggle("dark", dark)
           root.style.colorScheme = dark ? "dark" : "light"
         }
 
         applyTheme()
-        system.addEventListener("change", applyTheme)
         document.addEventListener("DOMContentLoaded", () => {
           const picker = document.querySelector("[data-theme-picker]")
           if (!picker) return

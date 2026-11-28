@@ -137,7 +137,6 @@
 }
 
 .theme-trigger [data-mode] { display: none; }
-[data-theme="system"] .theme-trigger [data-mode="system"],
 [data-theme="light"] .theme-trigger [data-mode="light"],
 [data-theme="dark"] .theme-trigger [data-mode="dark"],
 [data-theme="creative"] .theme-trigger [data-mode="creative"] { display: inline; }
